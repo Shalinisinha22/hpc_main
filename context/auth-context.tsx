@@ -1,55 +1,13 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-
-// Demo user credentials
-export const DEMO_USER = {
-  id: "user123",
-  password: "password123",
-  name: "John Doe",
-  email: "john.doe@example.com",
-  phone: "+91 9876543210",
-  membershipLevel: "Gold",
-  memberSince: "January 2022",
-  points: 1250,
-  upcomingStays: [
-    {
-      id: "stay1",
-      checkIn: "2025-04-15",
-      checkOut: "2025-04-18",
-      roomType: "Deluxe King Room",
-      guests: 2,
-    },
-  ],
-  pastStays: [
-    {
-      id: "past1",
-      checkIn: "2024-01-10",
-      checkOut: "2024-01-15",
-      roomType: "Executive Suite",
-      guests: 2,
-    },
-    {
-      id: "past2",
-      checkIn: "2023-08-22",
-      checkOut: "2023-08-25",
-      roomType: "Ocean View Room",
-      guests: 3,
-    },
-  ],
-  preferences: {
-    roomPreference: "High floor",
-    dietaryRestrictions: "Vegetarian",
-    specialRequests: "Extra pillows",
-  },
-}
-
-type User = typeof DEMO_USER
+import { authService } from "@/services/auth-service"
+import type { User, AuthResponse } from "@/types/auth"
 
 interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
-  login: (id: string, password: string) => Promise<boolean>
+  login: (email: string, password: string) => Promise<boolean>
   logout: () => void
 }
 
@@ -59,33 +17,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  // Check if user is already logged in (from localStorage)
+  // Check if user is already logged in
   useEffect(() => {
-    const storedAuth = localStorage.getItem("hpcAuth")
-    if (storedAuth === "true") {
-      setUser(DEMO_USER)
+    const token = localStorage.getItem("hpcToken")
+    const userData = localStorage.getItem("hpcUser")
+    if (token && userData) {
+      setUser(JSON.parse(userData))
       setIsAuthenticated(true)
     }
   }, [])
 
-  const login = async (id: string, password: string): Promise<boolean> => {
-    // In a real app, this would be an API call
-    if (id === DEMO_USER.id && password === DEMO_USER.password) {
-      setUser(DEMO_USER)
-      setIsAuthenticated(true)
-      localStorage.setItem("hpcAuth", "true")
-      return true
+  const login = async (email: string, password: string): Promise<boolean> => {
+    try {
+      const response = await authService.login(email, password)
+      if (response.success) {
+        const { token, name, email, role } = response.result
+        const userData: User = { name, email, role }
+        
+        // Save token and user data
+        localStorage.setItem("hpcToken", token)
+        localStorage.setItem("hpcUser", JSON.stringify(userData))
+        
+        setUser(userData)
+        setIsAuthenticated(true)
+        return true
+      }
+      return false
+    } catch (error) {
+      console.error("Login error:", error)
+      return false
     }
-    return false
   }
 
   const logout = () => {
     setUser(null)
     setIsAuthenticated(false)
-    localStorage.removeItem("hpcAuth")
+    localStorage.removeItem("hpcToken")
+    localStorage.removeItem("hpcUser")
   }
 
-  return <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {

@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
-import { useAuth, DEMO_USER } from "@/context/auth-context"
+import { useAuth } from "@/context/auth-context"
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { authService } from "@/services/auth-service"
 
 export default function Header() {
   const { toast } = useToast()
@@ -39,10 +40,17 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
 
   // Login form state
-  const [loginId, setLoginId] = useState("")
+  const [loginEmail, setLoginEmail] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+
+  // Registration form state
+  const [registerName, setRegisterName] = useState("")
+  const [registerEmail, setRegisterEmail] = useState("")
+  const [registerPassword, setRegisterPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [isRegistering, setIsRegistering] = useState(false)
 
   const bookingOptions = [
     { title: "Rooms & Suites", href: "/rooms", description: "Luxurious accommodations for your stay" },
@@ -100,7 +108,7 @@ export default function Header() {
   const handleLogin = async () => {
     setIsLoading(true)
     try {
-      const success = await login(loginId, loginPassword)
+      const success = await login(loginEmail, loginPassword)
       if (success) {
         setIsLoginDialogOpen(false)
         setIsPopoverOpen(false)
@@ -124,6 +132,103 @@ export default function Header() {
       })
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const validateRegistrationForm = () => {
+    if (!registerName || !registerEmail || !registerPassword || !confirmPassword) {
+      toast({
+        title: "Validation Error",
+        description: "All fields are required",
+        variant: "destructive",
+      })
+      return false
+    }
+
+    if (!registerEmail.includes("@")) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      })
+      return false
+    }
+
+    if (registerPassword.length < 6) {
+      toast({
+        title: "Validation Error",
+        description: "Password must be at least 6 characters long",
+        variant: "destructive",
+      })
+      return false
+    }
+
+    if (registerPassword !== confirmPassword) {
+      toast({
+        title: "Validation Error",
+        description: "Passwords do not match",
+        variant: "destructive",
+      })
+      return false
+    }
+
+    return true
+  }
+
+  const handleRegister = async () => {
+    if (!validateRegistrationForm()) {
+      return
+    }
+
+    setIsRegistering(true)
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: registerName,
+          email: registerEmail,
+          password: registerPassword,
+          role: "user",
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        toast({
+          title: "Registration successful",
+          description: "Your account has been created successfully!",
+        })
+
+        // Clear registration form
+        setRegisterName("")
+        setRegisterEmail("")
+        setRegisterPassword("")
+        setConfirmPassword("") // Add this line
+
+        // Close registration dialog and open login dialog
+        const dialogElement = document.querySelector('[role="dialog"]')
+        if (dialogElement) {
+          const closeButton = dialogElement.querySelector('button[aria-label="Close"]')
+          if (closeButton instanceof HTMLButtonElement) {
+            closeButton.click()
+          }
+        }
+        setIsLoginDialogOpen(true)
+      } else {
+        throw new Error(data.message || "Registration failed")
+      }
+    } catch (error) {
+      toast({
+        title: "Registration failed",
+        description: error instanceof Error ? error.message : "Something went wrong",
+        variant: "destructive",
+      })
+    } finally {
+      setIsRegistering(false)
     }
   }
 
@@ -270,30 +375,65 @@ export default function Header() {
                             <Label htmlFor="register-name" className="text-right">
                               Name
                             </Label>
-                            <Input id="register-name" className="col-span-3" />
+                            <Input
+                              id="register-name"
+                              className="col-span-3"
+                              value={registerName}
+                              onChange={(e) => setRegisterName(e.target.value)}
+                            />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="register-email" className="text-right">
                               Email
                             </Label>
-                            <Input id="register-email" type="email" className="col-span-3" />
+                            <Input
+                              id="register-email"
+                              type="email"
+                              className="col-span-3"
+                              value={registerEmail}
+                              onChange={(e) => setRegisterEmail(e.target.value)}
+                            />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="register-password" className="text-right">
                               Password
                             </Label>
-                            <Input id="register-password" type="password" className="col-span-3" />
+                            <Input
+                              id="register-password"
+                              type="password"
+                              className="col-span-3"
+                              value={registerPassword}
+                              onChange={(e) => setRegisterPassword(e.target.value)}
+                            />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="register-confirm" className="text-right">
+                            <Label htmlFor="register-confirm-password" className="text-right">
                               Confirm
                             </Label>
-                            <Input id="register-confirm" type="password" className="col-span-3" />
+                            <Input
+                              id="register-confirm-password"
+                              type="password"
+                              className="col-span-3"
+                              value={confirmPassword}
+                              onChange={(e) => setConfirmPassword(e.target.value)}
+                            />
                           </div>
                         </div>
                         <DialogFooter>
-                          <Button type="submit" className="bg-[#bf840d] hover:bg-[#a06f0b] text-white">
-                            Create Account
+                          <Button
+                            type="submit"
+                            className="bg-[#bf840d] hover:bg-[#a06f0b] text-white"
+                            onClick={handleRegister}
+                            disabled={isRegistering}
+                          >
+                            {isRegistering ? (
+                              <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                Creating Account...
+                              </div>
+                            ) : (
+                              "Create Account"
+                            )}
                           </Button>
                         </DialogFooter>
                       </DialogContent>
@@ -308,24 +448,25 @@ export default function Header() {
                           <DialogTitle>Sign In</DialogTitle>
                           <DialogDescription>
                             Enter your credentials to access your account.
-                            <div className="mt-2 p-2 bg-amber-50 text-amber-800 rounded-md text-xs">
+                            {/* <div className="mt-2 p-2 bg-amber-50 text-amber-800 rounded-md text-xs">
                               Demo credentials:
                               <br />
                               ID: {DEMO_USER.id}
                               <br />
                               Password: {DEMO_USER.password}
-                            </div>
+                            </div> */}
                           </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="login-id" className="text-right">
-                              User ID
+                            <Label htmlFor="login-email" className="text-right">
+                              Email
                             </Label>
                             <Input
-                              id="login-id"
-                              value={loginId}
-                              onChange={(e) => setLoginId(e.target.value)}
+                              id="login-email"
+                              type="email"
+                              value={loginEmail}
+                              onChange={(e) => setLoginEmail(e.target.value)}
                               className="col-span-3"
                             />
                           </div>
@@ -502,24 +643,25 @@ export default function Header() {
                         <DialogTitle>Sign In</DialogTitle>
                         <DialogDescription>
                           Enter your credentials to access your account.
-                          <div className="mt-2 p-2 bg-amber-50 text-amber-800 rounded-md text-xs">
+                          {/* <div className="mt-2 p-2 bg-amber-50 text-amber-800 rounded-md text-xs">
                             Demo credentials:
                             <br />
                             ID: {DEMO_USER.id}
                             <br />
                             Password: {DEMO_USER.password}
-                          </div>
+                          </div> */}
                         </DialogDescription>
                       </DialogHeader>
                       <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="mobile-login-id" className="text-right">
-                            User ID
+                          <Label htmlFor="mobile-login-email" className="text-right">
+                            Email
                           </Label>
                           <Input
-                            id="mobile-login-id"
-                            value={loginId}
-                            onChange={(e) => setLoginId(e.target.value)}
+                            id="mobile-login-email"
+                            type="email"
+                            value={loginEmail}
+                            onChange={(e) => setLoginEmail(e.target.value)}
                             className="col-span-3"
                           />
                         </div>
@@ -548,7 +690,7 @@ export default function Header() {
                           onClick={async () => {
                             setIsLoading(true)
                             try {
-                              const success = await login(loginId, loginPassword)
+                              const success = await login(loginEmail, loginPassword)
                               if (success) {
                                 setIsMenuOpen(false)
                                 toast({

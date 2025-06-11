@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import type { Room } from "@/types/room"
 import Image from "next/image"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
@@ -12,202 +13,62 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
-const rooms = [
-  {
-    name: "Deluxe King Room",
-    description:
-      "Spacious room with king-sized bed and modern amenities, perfect for couples or business travelers seeking comfort and style.",
-    price: 199,
-    images: [
-      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    ],
-    capacity: "3 Adults, 1 Child",
-    size: "32",
-    view: "City View",
-    bedType: "King",
-    amenities: [
-      "Free High-Speed WiFi",
-      '55" Smart TV',
-      "Mini Bar",
-      "24/7 Room Service",
-      "In-room Safe",
-      "Coffee Machine",
-      "Luxury Toiletries",
-      "Bathrobe and Slippers",
-    ],
-    maxAdults: 3,
-    maxChildren: 1,
-    additionalInfo: [
-      "Complimentary breakfast for two",
-      "Access to fitness center",
-      "Late check-out upon request",
-      "Turndown service",
-    ],
-  },
-  {
-    name: "Executive Suite",
-    description:
-      "Luxurious suite with separate living area and premium amenities, ideal for families or extended stays.",
-    price: 349,
-    images: [
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80",
-      "https://images.unsplash.com/photo-1591088398332-8a7791972843?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    ],
-    capacity: "4 Adults, 2 Children",
-    size: "48",
-    view: "City View",
-    bedType: "King",
-    amenities: [
-      "Free High-Speed WiFi",
-      '65" Smart TV',
-      "Executive Lounge Access",
-      "Premium Bath Amenities",
-      "Butler Service",
-      "24/7 Room Service",
-      "In-room Safe",
-      "Espresso Machine",
-    ],
-    maxAdults: 4,
-    maxChildren: 2,
-    additionalInfo: [
-      "Complimentary breakfast for four",
-      "Access to executive lounge",
-      "Evening cocktails",
-      "Personalized concierge service",
-    ],
-  },
-  {
-    name: "Ocean View Room",
-    description:
-      "Beautiful room with stunning ocean views and private balcony, perfect for romantic getaways or relaxing vacations.",
-    price: 279,
-    images: [
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80",
-      "https://images.unsplash.com/photo-1615874959474-d609969a20ed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80",
-    ],
-    capacity: "3 Adults, 2 Children",
-    size: "36",
-    view: "Ocean View",
-    bedType: "Queen",
-    amenities: [
-      "Private Balcony",
-      "Free High-Speed WiFi",
-      "Ocean View",
-      "Premium Bath Amenities",
-      "24/7 Room Service",
-      "In-room Safe",
-      "Coffee Machine",
-      "Hair Dryer",
-    ],
-    maxAdults: 3,
-    maxChildren: 2,
-    additionalInfo: [
-      "Complimentary beach access",
-      "Oceanfront dining options",
-      "Sunset views",
-      "Beach towels provided",
-    ],
-  },
-  {
-    name: "Family Suite",
-    description: "Spacious suite perfect for families with children, offering ample space and kid-friendly amenities.",
-    price: 399,
-    images: [
-      "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80",
-      "https://images.unsplash.com/photo-1630660664869-c9d3cc676880?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80",
-      "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80",
-    ],
-    capacity: "4 Adults, 3 Children",
-    size: "65",
-    view: "Garden View",
-    bedType: "King + Twin",
-    amenities: [
-      "Kids Play Area",
-      "Fully Equipped Kitchen",
-      "Family Entertainment System",
-      "Two Bathrooms",
-      "Free High-Speed WiFi",
-      '55" Smart TV',
-      "Cribs and High Chairs Available",
-      "Board Games and Toys",
-    ],
-    maxAdults: 4,
-    maxChildren: 3,
-    additionalInfo: [
-      "Connecting rooms available",
-      "Kids' meal options",
-      "Babysitting services",
-      "Family-friendly activities",
-    ],
-  },
-  {
-    name: "Presidential Suite",
-    description: "Our most luxurious accommodation with panoramic views and unparalleled amenities.",
-    price: 899,
-    images: [
-      "https://images.unsplash.com/photo-1631049552240-59c37f38802b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    ],
-    capacity: "6 Adults, 4 Children",
-    size: "120",
-    view: "Panoramic View",
-    bedType: "King + Queen",
-    amenities: [
-      "Private Infinity Pool",
-      "Dedicated Butler Service",
-      "Private Bar",
-      "Luxury Spa Treatments",
-      "Free High-Speed WiFi",
-      '75" Smart TV',
-      "Gourmet Kitchen",
-      "24-hour Concierge",
-    ],
-    maxAdults: 6,
-    maxChildren: 4,
-    additionalInfo: [
-      "Complimentary airport transfer",
-      "Private chef services",
-      "Exclusive access to club lounge",
-      "Personalized itinerary planning",
-    ],
-  },
-]
-
 export default function RoomsPage() {
-  const [filteredRooms, setFilteredRooms] = useState(rooms)
-  const [priceRange, setPriceRange] = useState([0, 1000])
+  const [rooms, setRooms] = useState<Room[]>([])
+  const [filteredRooms, setFilteredRooms] = useState<Room[]>([])
+  const [priceRange, setPriceRange] = useState([0, 20000])
   const [selectedView, setSelectedView] = useState("All")
   const [selectedBedType, setSelectedBedType] = useState("All")
   const [isFilterVisible, setIsFilterVisible] = useState(false)
   const [activeFilters, setActiveFilters] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/v1/rooms')
+        if(!response.ok) {
+          throw new Error('Failed to fetch rooms')  
+        }
+        const data = await response.json()
+
+
+
+          setRooms(data)
+          setFilteredRooms(data)
+
+      } catch (error) {
+        console.error('Error fetching rooms:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchRooms()
+  }, [])
 
   const filterRooms = () => {
     const filtered = rooms.filter(
       (room) =>
-        room.price >= priceRange[0] &&
-        room.price <= priceRange[1] &&
-        (selectedView === "All" || room.view.includes(selectedView)) &&
-        (selectedBedType === "All" || room.bedType.includes(selectedBedType)),
+        room.pricePerNight >= priceRange[0] &&
+        room.pricePerNight <= priceRange[1] &&
+        (selectedBedType === "All" || room.bedType.includes(selectedBedType))
     )
     setFilteredRooms(filtered)
+    console.log("Filtered Rooms:", filtered)
     updateActiveFilters()
   }
 
   const updateActiveFilters = () => {
     const filters = []
-    if (priceRange[0] > 0 || priceRange[1] < 1000) filters.push(`$${priceRange[0]} - $${priceRange[1]}`)
+    if (priceRange[0] > 0 || priceRange[1] < 20000) filters.push(`$${priceRange[0]} - $${priceRange[1]}`)
     if (selectedView !== "All") filters.push(selectedView)
     if (selectedBedType !== "All") filters.push(selectedBedType)
     setActiveFilters(filters)
   }
 
   const clearFilters = () => {
-    setPriceRange([0, 1000])
+    setPriceRange([0, 20000])
     setSelectedView("All")
     setSelectedBedType("All")
     setFilteredRooms(rooms)
@@ -259,7 +120,7 @@ export default function RoomsPage() {
                   <DollarSign className="w-4 h-4 mr-2" />
                   Price Range
                 </label>
-                <Slider min={0} max={1000} step={50} value={priceRange} onValueChange={setPriceRange} />
+                <Slider min={0} max={20000} step={50} value={priceRange} onValueChange={setPriceRange} />
                 <div className="flex justify-between text-sm text-amber-700">
                   <span>${priceRange[0]}</span>
                   <span>${priceRange[1]}</span>
@@ -328,24 +189,68 @@ export default function RoomsPage() {
         )}
 
         {/* Rooms Section */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredRooms.map((room, index) => (
-                <RoomCard key={index} room={room} />
-              ))}
+        {isLoading ? (
+          <div className="container mx-auto px-4 py-16">
+            <div className="flex justify-center items-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-600"></div>
             </div>
           </div>
-        </section>
+        ) : (
+          <section className="py-16">
+            {console.log("Filtered Rooms:", filteredRooms,rooms)}
+            <div className="container mx-auto px-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredRooms.map((room) => (
+                  <RoomCard key={room._id} room={room} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </main>
       <Footer />
     </div>
   )
 }
 
-function RoomCard({ room }: { room: (typeof rooms)[0] }) {
+function RoomCard({ room }: { room: Room }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [showAllAmenities, setShowAllAmenities] = useState(false)
+
+  // Parse the JSON strings safely
+  const parseJsonSafely = (jsonString: string) => {
+    try {
+      if (!jsonString) return [];
+      
+      // Handle the case where the string is already a JSON array
+      if (jsonString.startsWith('[') && jsonString.endsWith(']')) {
+        const parsed = JSON.parse(jsonString);
+        return Array.isArray(parsed) ? parsed : [];
+      }
+      
+      // Log the raw string for debugging
+      console.log('Raw string:', jsonString);
+      
+      return jsonString.split(',').map(item => 
+        item.trim()
+           .replace(/^\[?"|"?\]?$/g, '') 
+           .replace(/\\"/g, '"')         
+      ).filter(Boolean);                
+    } catch (error) {
+      console.error('Error parsing JSON:', error);
+      console.log('Failed to parse:', jsonString);
+      return [];
+    }
+  };
+
+  // Parse amenities and additional details with logging
+
+// const amenities= JSON.parse(room.amenities)
+//   console.log('Parsed amenities:', amenities);
+console.log(room.amenities)
+  
+  const additionalInfo = parseJsonSafely(room.additionalDetails[0]);
+  console.log('Parsed additional info:', additionalInfo);
 
   const nextImage = () => {
     setCurrentImageIndex((prevIndex) => (prevIndex + 1) % room.images.length)
@@ -359,87 +264,74 @@ function RoomCard({ room }: { room: (typeof rooms)[0] }) {
     <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
       <div className="relative aspect-[4/3]">
         <Image
-          src={room.images[currentImageIndex] || "/placeholder.svg"}
-          alt={room.name}
+          src={room.roomImage[currentImageIndex]?.url || "/placeholder.svg"}
+          alt={room.room_title}
           fill
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         <div className="absolute bottom-4 left-4 text-white">
-          <h2 className="text-2xl font-serif">{room.name}</h2>
-          <p className="text-sm opacity-80">{room.view}</p>
+          <h2 className="text-2xl font-serif">{room.room_title}</h2>
+          <p className="text-sm opacity-80">{room.status}</p>
         </div>
-        <button
-          onClick={prevImage}
-          className="absolute top-1/2 left-2 -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full p-2 transition-colors duration-300"
-          aria-label="Previous image"
-        >
-          <ArrowLeft className="w-6 h-6 text-white" />
-        </button>
-        <button
-          onClick={nextImage}
-          className="absolute top-1/2 right-2 -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full p-2 transition-colors duration-300"
-          aria-label="Next image"
-        >
-          <ArrowRight className="w-6 h-6 text-white" />
-        </button>
+        {room.roomImage.length > 1 && (
+          <>
+            <button onClick={prevImage} className="absolute top-1/2 left-2">
+              <ArrowLeft className="w-6 h-6 text-white" />
+            </button>
+            <button onClick={nextImage} className="absolute top-1/2 right-2">
+              <ArrowRight className="w-6 h-6 text-white" />
+            </button>
+          </>
+        )}
       </div>
       <CardContent className="p-6">
         <Tabs defaultValue="details">
           <TabsList className="w-full">
-            <TabsTrigger value="details" className="w-1/3">
-              Details
-            </TabsTrigger>
-            <TabsTrigger value="amenities" className="w-1/3">
-              Amenities
-            </TabsTrigger>
-            <TabsTrigger value="additional" className="w-1/3">
-              Additional
-            </TabsTrigger>
+            <TabsTrigger value="details">Details</TabsTrigger>
+            <TabsTrigger value="amenities">Amenities</TabsTrigger>
+            <TabsTrigger value="additional">Additional</TabsTrigger>
           </TabsList>
           <TabsContent value="details" className="mt-4">
-            <p className="text-gray-600 mb-4">{room.description}</p>
+            <p className="text-gray-600 mb-4">{room.desc}</p>
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div className="flex items-center gap-2">
-                <BedDouble className="w-4 h-4 text-amber-600" />
-                <span>{room.size} m²</span>
+                      <Hotel className="w-4 h-4 text-amber-600" />
+               
+                <span>{room.roomSize} sq ft</span>
               </div>
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-amber-600" />
-                <span>{room.capacity}</span>
+                <span>{room.max_person} Adults, {room.max_children} Children</span>
               </div>
               <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4 text-amber-600" />
-                <span>{room.view}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Hotel className="w-4 h-4 text-amber-600" />
-                <span>{room.bedType} Bed</span>
+           <BedDouble className="w-4 h-4 text-amber-600" />
+                <span>{room.bedType}</span>
               </div>
             </div>
           </TabsContent>
           <TabsContent value="amenities" className="mt-4">
             <ul className="grid grid-cols-2 gap-2 text-sm">
-              {room.amenities.slice(0, showAllAmenities ? undefined : 6).map((amenity, index) => (
+              {(room.amenities || []).slice(0, showAllAmenities ? undefined : 6).map((amenity: string, index: number) => (
                 <li key={index} className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-amber-600" />
                   <span>{amenity}</span>
                 </li>
               ))}
             </ul>
-            {room.amenities.length > 6 && (
-              <Button
-                variant="link"
+            {(room.amenities || []).length > 6 && (
+              <Button 
+                variant="link" 
                 onClick={() => setShowAllAmenities(!showAllAmenities)}
-                className="mt-2 text-amber-600"
+                className="text-amber-600 hover:text-amber-700 mt-2"
               >
-                {showAllAmenities ? "Show Less" : "Show All Amenities"}
+                {showAllAmenities ? "Show Less" : `Show All Amenities`}
               </Button>
             )}
           </TabsContent>
           <TabsContent value="additional" className="mt-4">
             <ul className="space-y-2 text-sm">
-              {room.additionalInfo.map((info, index) => (
+              {(additionalInfo || []).map((info: string, index: number) => (
                 <li key={index} className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-amber-600" />
                   <span>{info}</span>
@@ -450,14 +342,15 @@ function RoomCard({ room }: { room: (typeof rooms)[0] }) {
         </Tabs>
         <div className="mt-6 flex items-center justify-between">
           <div>
-            <span className="text-2xl font-bold text-amber-600">${room.price}</span>
+            <span className="text-2xl font-bold text-amber-600">₹{room?.pricePerNight.toLocaleString()}</span>
             <span className="text-gray-600">/night</span>
           </div>
           <Button
-            className="bg-amber-600 hover:bg-amber-700 text-white transition-colors duration-300"
+            className="bg-amber-600 hover:bg-amber-700"
             onClick={() => {
-              window.location.href = `/booking?roomId=${encodeURIComponent(room.name)}&roomName=${encodeURIComponent(room.name)}&roomPrice=${room.price}&roomImage=${encodeURIComponent(room.images[0])}`
-            }}
+              window.location.href = `/booking?roomId=${room._id}`
+            }
+            }
           >
             Book Now
           </Button>

@@ -13,16 +13,16 @@ import RoomResults from "./room-results"
 export default function BookingWidget() {
   const [checkInDate, setCheckInDate] = useState<Date>()
   const [checkOutDate, setCheckOutDate] = useState<Date>()
-  const [roomType, setRoomType] = useState<string>("any")
   const [adults, setAdults] = useState<string>("1")
   const [children, setChildren] = useState<string>("0")
+  const [noOfRooms, setNoOfRooms] = useState<string>("1")
   const [searchResult, setSearchResult] = useState<string | null>(null)
   const [showResults, setShowResults] = useState(false)
   const [checkInOpen, setCheckInOpen] = useState(false)
   const [checkOutOpen, setCheckOutOpen] = useState(false)
 
   const handleCheckAvailability = () => {
-    if (!checkInDate || !checkOutDate || !adults) {
+    if (!checkInDate || !checkOutDate || !adults || !noOfRooms) {
       setSearchResult("Please fill in all required fields.")
       setShowResults(false)
       return
@@ -104,20 +104,19 @@ export default function BookingWidget() {
             </Popover>
           </div>
 
-          {/* Room Type */}
+          {/* Number of Rooms */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Room Type</label>
-            <Select value={roomType} onValueChange={setRoomType}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Number of Rooms</label>
+            <Select value={noOfRooms} onValueChange={setNoOfRooms}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select Room" />
+                <SelectValue placeholder="Select Rooms" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="any">Any Room Type</SelectItem>
-                <SelectItem value="deluxe">Deluxe King Room</SelectItem>
-                <SelectItem value="executive">Executive Suite</SelectItem>
-                <SelectItem value="ocean">Ocean View Room</SelectItem>
-                <SelectItem value="family">Family Suite</SelectItem>
-                <SelectItem value="presidential">Presidential Suite</SelectItem>
+                <SelectItem value="1">1 Room</SelectItem>
+                <SelectItem value="2">2 Rooms</SelectItem>
+                <SelectItem value="3">3 Rooms</SelectItem>
+                <SelectItem value="4">4 Rooms</SelectItem>
+                <SelectItem value="5">5 Rooms</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -183,7 +182,7 @@ export default function BookingWidget() {
             checkOutDate={checkOutDate!}
             adults={Number.parseInt(adults)}
             children={Number.parseInt(children)}
-            roomType={roomType}
+            noOfRooms={Number.parseInt(noOfRooms)}
           />
         </div>
       )}

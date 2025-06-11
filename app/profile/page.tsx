@@ -28,9 +28,9 @@ export default function ProfilePage() {
   })
 
   const [preferences, setPreferences] = useState({
-    roomPreference: user?.preferences.roomPreference || "High floor",
-    dietaryRestrictions: user?.preferences.dietaryRestrictions || "None",
-    specialRequests: user?.preferences.specialRequests || "",
+    roomPreference: user?.preferences?.roomPreference || "High floor",
+    dietaryRestrictions: user?.preferences?.dietaryRestrictions || "None",
+    specialRequests: user?.preferences?.specialRequests || "",
   })
 
   const [passwords, setPasswords] = useState({
@@ -265,9 +265,9 @@ export default function ProfilePage() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      {user.upcomingStays.length > 0 ? (
+                      { user?.upcomingStays && user?.upcomingStays.length != 0 ? (
                         <div className="space-y-4">
-                          {user.upcomingStays.map((stay) => (
+                          {user?.upcomingStays.map((stay) => (
                             <div key={stay.id} className="border-b pb-4 last:border-0">
                               <div className="flex justify-between">
                                 <p className="font-medium">{stay.roomType}</p>
@@ -303,15 +303,15 @@ export default function ProfilePage() {
                       <div className="space-y-4">
                         <div>
                           <p className="text-sm text-gray-500">Room Preference</p>
-                          <p className="font-medium">{user.preferences.roomPreference}</p>
+                          <p className="font-medium">{user?.preferences?.roomPreference}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-500">Dietary Restrictions</p>
-                          <p className="font-medium">{user.preferences.dietaryRestrictions}</p>
+                          <p className="font-medium">{user?.preferences?.dietaryRestrictions}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-500">Special Requests</p>
-                          <p className="font-medium">{user.preferences.specialRequests}</p>
+                          <p className="font-medium">{user?.preferences?.specialRequests}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -334,7 +334,7 @@ export default function ProfilePage() {
                     <div className="space-y-8">
                       <div>
                         <h3 className="text-lg font-medium mb-4">Upcoming Stays</h3>
-                        {user.upcomingStays.length > 0 ? (
+                        {user?.upcomingStays &&  user?.upcomingStays.length > 0 ? (
                           <div className="space-y-4">
                             {user.upcomingStays.map((stay) => (
                               <div key={stay.id} className="border rounded-lg p-4">
@@ -369,7 +369,7 @@ export default function ProfilePage() {
 
                       <div>
                         <h3 className="text-lg font-medium mb-4">Past Stays</h3>
-                        {user.pastStays.length > 0 ? (
+                        {user.pastStays==[] && user?.pastStays.length > 0 ? (
                           <div className="space-y-4">
                             {user.pastStays.map((stay) => (
                               <div key={stay.id} className="border rounded-lg p-4 bg-gray-50">
@@ -412,11 +412,11 @@ export default function ProfilePage() {
                       <div className="bg-gradient-to-r from-amber-700 to-amber-500 rounded-lg p-6 text-white">
                         <div className="flex justify-between items-center mb-4">
                           <div>
-                            <h3 className="text-xl font-bold">{user.membershipLevel} Membership</h3>
+                            <h3 className="text-xl font-bold">{user?.membershipLevel} Membership</h3>
                             <p className="text-white/80">Member since {user.memberSince}</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-2xl font-bold">{user.points}</p>
+                            <p className="text-2xl font-bold">{user?.points}</p>
                             <p className="text-white/80">Points</p>
                           </div>
                         </div>
@@ -466,14 +466,14 @@ export default function ProfilePage() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {user.pastStays.map((stay, index) => (
+                      {user?.pastStays && user?.pastStays.map((stay, index) => (
                         <div key={index} className="flex items-start gap-4 border-b pb-4 last:border-0">
                           <div className="bg-gray-100 p-2 rounded-full">
                             <CalendarDays className="h-5 w-5 text-[#bf840d]" />
                           </div>
                           <div className="flex-1">
                             <div className="flex justify-between">
-                              <p className="font-medium">Stay at {stay.roomType}</p>
+                              <p className="font-medium">Stay at {stay?.roomType}</p>
                               <p className="text-sm text-gray-500">
                                 {new Date(stay.checkIn).toLocaleDateString()} -{" "}
                                 {new Date(stay.checkOut).toLocaleDateString()}
