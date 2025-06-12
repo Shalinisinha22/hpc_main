@@ -48,6 +48,7 @@ export default function Header() {
   // Registration form state
   const [registerName, setRegisterName] = useState("")
   const [registerEmail, setRegisterEmail] = useState("")
+  const [registerPhone, setRegisterPhone] = useState("")
   const [registerPassword, setRegisterPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [isRegistering, setIsRegistering] = useState(false)
@@ -136,7 +137,7 @@ export default function Header() {
   }
 
   const validateRegistrationForm = () => {
-    if (!registerName || !registerEmail || !registerPassword || !confirmPassword) {
+    if (!registerName || !registerEmail || !registerPhone || !registerPassword || !confirmPassword) {
       toast({
         title: "Validation Error",
         description: "All fields are required",
@@ -149,6 +150,15 @@ export default function Header() {
       toast({
         title: "Validation Error",
         description: "Please enter a valid email address",
+        variant: "destructive",
+      })
+      return false
+    }
+
+    if (!/^\d{10}$/.test(registerPhone)) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter a valid 10-digit phone number",
         variant: "destructive",
       })
       return false
@@ -190,6 +200,7 @@ export default function Header() {
         body: JSON.stringify({
           name: registerName,
           email: registerEmail,
+          phone: parseInt(registerPhone),
           password: registerPassword,
           role: "user",
         }),
@@ -206,8 +217,9 @@ export default function Header() {
         // Clear registration form
         setRegisterName("")
         setRegisterEmail("")
+        setRegisterPhone("")
         setRegisterPassword("")
-        setConfirmPassword("") // Add this line
+        setConfirmPassword("")
 
         // Close registration dialog and open login dialog
         const dialogElement = document.querySelector('[role="dialog"]')
@@ -392,6 +404,19 @@ export default function Header() {
                               className="col-span-3"
                               value={registerEmail}
                               onChange={(e) => setRegisterEmail(e.target.value)}
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="register-phone" className="text-right">
+                              Phone
+                            </Label>
+                            <Input
+                              id="register-phone"
+                              type="tel"
+                          
+                              className="col-span-3"
+                              value={registerPhone}
+                              onChange={(e) => setRegisterPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
                             />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">

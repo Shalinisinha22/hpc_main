@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Check, CreditCard, Calendar, Users, Info, Tag, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { api, useAuth } from '@/utils/auth'
 
 // Sample coupon codes
 const VALID_COUPONS = [
@@ -41,6 +42,7 @@ interface Room {
 export default function BookingPage() {
   const searchParams = useSearchParams()
   const { toast } = useToast()
+  // const { checkAuth } = useAuth();
   const [room, setRoom] = useState<Room | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -50,8 +52,8 @@ export default function BookingPage() {
 
   // Form state
   const [currentStep, setCurrentStep] = useState(1)
-  const [checkInDate, setCheckInDate] = useState("DD/MM/YY")
-  const [checkOutDate, setCheckOutDate] = useState("DD/MM/YY")
+  const [checkInDate, setCheckInDate] = useState("")
+  const [checkOutDate, setCheckOutDate] = useState("")
   const [guests, setGuests] = useState(2)
   const [noOfRooms, setNoOfRoom] = useState(1)
   const [name, setName] = useState("")
@@ -80,6 +82,19 @@ export default function BookingPage() {
   const taxesAndFees = basePrice * gstRate
   const discountAmount = appliedCoupon ? (basePrice * appliedCoupon.discount) / 100 : 0
   const totalPrice = basePrice + taxesAndFees - discountAmount
+
+
+
+
+  useEffect(() => {
+  const userData = localStorage.getItem('hpcUser')
+  if (userData) {
+    const user = JSON.parse(userData)
+    setName(user.name || '')
+    setEmail(user.email || '')
+    setPhone(user.phone || '')
+  }
+}, [])
 
   function calculateNights(checkIn: string, checkOut: string): number {
     if (!checkIn || !checkOut) return 1
@@ -123,6 +138,7 @@ export default function BookingPage() {
 
   const handleNextStep = () => {
     if (currentStep === 1) {
+      console.log(checkInDate, checkOutDate, adults, children, noOfRooms)
       if (!checkInDate || !checkOutDate) {
         toast({
           title: "Missing Information",
@@ -155,67 +171,67 @@ export default function BookingPage() {
     }
   }
 
-  const handleExpressCheckout = async () => {
-    if (!roomId || !checkInDate || !checkOutDate || !name || !email || !phone) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields before proceeding.",
-        variant: "destructive",
-      })
-      return
-    }
+  // const handleExpressCheckout = async () => {
+  //   if (!roomId || !checkInDate || !checkOutDate || !name || !email || !phone) {
+  //     toast({
+  //       title: "Missing Information",
+  //       description: "Please fill in all required fields before proceeding.",
+  //       variant: "destructive",
+  //     })
+  //     return
+  //   }
 
-    setIsProcessing(true)
-    try {
-      const bookingData = {
-        roomId,
-        checkInDate: new Date(checkInDate),
-        checkOutDate: new Date(checkOutDate),
-        noOfGuests: {
-          adults: Number(adults),
-          children: Number(children)
-        },
-        noOfRooms: Number(noOfRooms),
-        fullName: name,
-        email,
-        phone,
-        specialRequest: specialRequests,
-        totalPrice: totalPrice,
-        paymentStatus: 'confirmed'
-      }
+  //   setIsProcessing(true)
+  //   try {
+  //     const bookingData = {
+  //       roomId,
+  //       checkInDate: new Date(checkInDate),
+  //       checkOutDate: new Date(checkOutDate),
+  //       noOfGuests: {
+  //         adults: Number(adults),
+  //         children: Number(children)
+  //       },
+  //       noOfRooms: Number(noOfRooms),
+  //       fullName: name,
+  //       email,
+  //       phone,
+  //       specialRequest: specialRequests,
+  //       totalPrice: totalPrice,
+  //       paymentStatus: 'confirmed'
+  //     }
 
-      const response = await fetch('http://localhost:8000/api/v1/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          "authorization": `Bearer ${localStorage.getItem("hpcToken")}`
-        },
-        body: JSON.stringify(bookingData)
-      })
+  //     const response = await fetch('http://localhost:8000/api/v1/bookings', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         "authorization": `Bearer ${localStorage.getItem("hpcToken")}`
+  //       },
+  //       body: JSON.stringify(bookingData)
+  //     })
 
-      const result = await response.json()
+  //     const result = await response.json()
       
-      if (result.data) {
-        setBookingId(result.data?.bookingId || '')
-        setBookingComplete(true)
-        toast({
-          title: "Booking Confirmed!",
-          description: "Your express checkout was successful. Check your email for booking details.",
-        })
-      } else {
-        throw new Error(result.message || 'Failed to create booking')
-      }
-    } catch (error) {
-      console.error('Express checkout error:', error)
-      toast({
-        title: "Booking Failed",
-        description: error instanceof Error ? error.message : "Failed to complete booking. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsProcessing(false)
-    }
-  }
+  //     if (result?.bookingId) {
+  //       setBookingId(result.bookingId || '')
+  //       setBookingComplete(true)
+  //       toast({
+  //         title: "Booking Confirmed!",
+  //         description: "Your express checkout was successful. Check your email for booking details.",
+  //       })
+  //     } else {
+  //       throw new Error(result.message || 'Failed to create booking')
+  //     }
+  //   } catch (error) {
+  //     console.error('Express checkout error:', error)
+  //     toast({
+  //       title: "Booking Failed",
+  //       description: error instanceof Error ? error.message : "Failed to complete booking. Please try again.",
+  //       variant: "destructive",
+  //     })
+  //   } finally {
+  //     setIsProcessing(false)
+  //   }
+  // }
 
   const handleCompleteBooking = async () => {
     if (!roomId) {
@@ -246,33 +262,22 @@ export default function BookingPage() {
         paymentStatus: paymentMethod === 'pay-later' ? 'pending' : 'confirmed'
       }
 
-      const response = await fetch('http://localhost:8000/api/v1/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          "authorization": `Bearer ${localStorage.getItem("hpcToken")}`
-        },
-        body: JSON.stringify(bookingData)
-      })
-
-      const result = await response.json()
-      console.log ('Booking result:', result)
+      const response = await api.post('/bookings', bookingData);
+      console.log(response)
       
-      if (result.data) {
-        setBookingId(result.data?.bookingId || '')
+      if (response.data) {
+        setBookingId(response.data?.bookingId || '')
         setBookingComplete(true)
         toast({
           title: "Booking Confirmed!",
           description: "Your payment was successful. Check your email for booking details.",
         })
-      } else {
-        throw new Error(result.message || 'Failed to create booking')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Booking error:', error)
       toast({
         title: "Booking Failed",
-        description: error instanceof Error ? error.message : "Failed to complete booking. Please try again.",
+        description: error.response?.data?.message || "Failed to complete booking. Please try again.",
         variant: "destructive",
       })
     } finally {
@@ -293,23 +298,19 @@ export default function BookingPage() {
       }
 
       try {
-        // Update the API endpoint format
-        const response = await fetch(`http://localhost:8000/api/v1/rooms/${roomId}`)
-        if (!response.ok) {
-          throw new Error("Failed to fetch room details")
-      
-        }
-        const data = await response.json()
-        if (data) {
-          setRoom(data)
+        const response = await api.get(`/rooms/${roomId}`);
+
+        console.log(response)
+        if (response.status==200) {
+          setRoom(response.data)
         } else {
-          throw new Error(data.message || "Failed to fetch room details")
+          throw new Error(response.data.message || "Failed to fetch room details")
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching room details:", error)
         toast({
           title: "Error",
-          description: "Failed to load room details",
+          description: error.response?.data?.message || "Failed to load room details",
           variant: "destructive",
         })
       } finally {
@@ -319,6 +320,8 @@ export default function BookingPage() {
 
     fetchRoomDetails()
   }, [roomId, toast])
+
+
 
   // Show loading state
   if (isLoading) {
@@ -391,8 +394,7 @@ export default function BookingPage() {
                         Max {room.max_person} Adults, {room.max_children} Children
                       </span> */}
                       <span className="flex items-center gap-1">
-                     
-                        <CreditCard className="w-4 h-4" />
+                      <CreditCard className="w-4 h-4" />
                            Payment Status:
                         {paymentMethod === 'pay-later' ? 'Pay at Hotel' : 'Paid'}
                       </span>
@@ -505,7 +507,7 @@ export default function BookingPage() {
         <div className="container mx-auto px-4 max-w-5xl">
           <h1 className="text-3xl font-serif text-amber-900 mb-8 text-center">Complete Your Booking</h1>
 
-          {/* Express Checkout Option */}
+          {/* Express Checkout Option
           {!expressCheckout && (
             <div className="bg-amber-50 p-4 rounded-lg mb-8 flex items-center justify-between">
               <div className="flex items-center">
@@ -521,7 +523,7 @@ export default function BookingPage() {
                 {isProcessing ? "Processing..." : "Book Now"}
               </Button>
             </div>
-          )}
+          )} */}
 
           {/* Booking Steps */}
           <div className="flex justify-between mb-8">
@@ -667,77 +669,81 @@ export default function BookingPage() {
                   )}
 
                   {/* Step 2: Guest Information */}
-                  {currentStep === 2 && (
-                    <div className="space-y-6">
-                      <h2 className="text-xl font-medium flex items-center gap-2">
-                        <Users className="h-5 w-5 text-amber-600" />
-                        Guest Information
-                      </h2>
-                      <div>
-                        <Label htmlFor="name">Full Name *</Label>
-                        <Input
-                          id="name"
-                          placeholder="Enter your full name"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          required
-                          className="mt-1"
-                        />
-                      </div>
+              {currentStep === 2 && (
+  <div className="space-y-6">
+    <h2 className="text-xl font-medium flex items-center gap-2">
+      <Users className="h-5 w-5 text-amber-600" />
+   {!localStorage.getItem('hpcUser')?" Guest Information":" Your Information"}  
+    </h2>
+    <div>
+      <Label htmlFor="name">Full Name *</Label>
+      <Input
+        id="name"
+        placeholder="Enter your full name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+        className="mt-1"
+        disabled={!!localStorage.getItem('userData')}
+      />
+    </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="email">Email Address *</Label>
-                          <Input
-                            id="email"
-                            type="email"
-                            placeholder="your@email.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="mt-1"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="phone">Phone Number *</Label>
-                          <Input
-                            id="phone"
-                            placeholder="Your contact number"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            required
-                            className="mt-1"
-                          />
-                        </div>
-                      </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <Label htmlFor="email">Email Address *</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="your@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="mt-1"
+          disabled={!!localStorage.getItem('userData')}
+        />
+      </div>
+      <div>
+        <Label htmlFor="phone">Phone Number *</Label>
+        <Input
+          id="phone"
+          placeholder="Your contact number"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          required
+          className="mt-1"
+          disabled={!!localStorage.getItem('userData')}
+        />
+      </div>
+    </div>
 
-                      <div>
-                        <Label htmlFor="special-requests">Special Requests (Optional)</Label>
-                        <textarea
-                          id="special-requests"
-                          className="w-full min-h-[100px] p-2 border rounded-md mt-1"
-                          placeholder="Any special requests or preferences?"
-                          value={specialRequests}
-                          onChange={(e) => setSpecialRequests(e.target.value)}
-                        ></textarea>
-                      </div>
+    <div>
+      <Label htmlFor="special-requests">Special Requests (Optional)</Label>
+      <textarea
+        id="special-requests"
+        className="w-full min-h-[100px] p-2 border rounded-md mt-1"
+        placeholder="Any special requests or preferences?"
+        value={specialRequests}
+        onChange={(e) => setSpecialRequests(e.target.value)}
+      ></textarea>
+    </div>
 
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="save-info"
-                          checked={saveInfo}
-                          onCheckedChange={(checked) => setSaveInfo(!!checked)}
-                        />
-                        <label
-                          htmlFor="save-info"
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          Save my information for future bookings
-                        </label>
-                      </div>
-                    </div>
-                  )}
-
+    {!localStorage.getItem('hpcUser') && (
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id="save-info"
+          checked={saveInfo}
+          onCheckedChange={(checked) => setSaveInfo(!!checked)}
+        />
+        <label
+          htmlFor="save-info"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          Save my information for future bookings
+        </label>
+      </div>
+    )}
+  </div>
+)}
                   {/* Step 3: Payment */}
                   {currentStep === 3 && (
                     <div className="space-y-6">

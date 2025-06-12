@@ -31,8 +31,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await authService.login(email, password)
       if (response.success) {
-        const { token, name, email, role } = response.result
-        const userData: User = { name, email, role }
+        const { token, name, email, role,phone } = response.result
+        const userData: User = { name, email, phone, role }
         
         // Save token and user data
         localStorage.setItem("hpcToken", token)

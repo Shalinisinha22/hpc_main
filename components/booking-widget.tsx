@@ -115,8 +115,6 @@ export default function BookingWidget() {
                 <SelectItem value="1">1 Room</SelectItem>
                 <SelectItem value="2">2 Rooms</SelectItem>
                 <SelectItem value="3">3 Rooms</SelectItem>
-                <SelectItem value="4">4 Rooms</SelectItem>
-                <SelectItem value="5">5 Rooms</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -134,8 +132,7 @@ export default function BookingWidget() {
                   <SelectItem value="2">2 Adults</SelectItem>
                   <SelectItem value="3">3 Adults</SelectItem>
                   <SelectItem value="4">4 Adults</SelectItem>
-                  <SelectItem value="5">5 Adults</SelectItem>
-                  <SelectItem value="6">6 Adults</SelectItem>
+    
                 </SelectContent>
               </Select>
 
@@ -147,8 +144,7 @@ export default function BookingWidget() {
                   <SelectItem value="0">0 Children</SelectItem>
                   <SelectItem value="1">1 Child</SelectItem>
                   <SelectItem value="2">2 Children</SelectItem>
-                  <SelectItem value="3">3 Children</SelectItem>
-                  <SelectItem value="4">4 Children</SelectItem>
+                
                 </SelectContent>
               </Select>
             </div>
