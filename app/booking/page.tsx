@@ -484,13 +484,21 @@ export default function BookingPage() {
                 >
                   Return to Home
                 </Button>
-                <Button
+
+        
+                     {!localStorage.getItem('hpcUser') &&
+                 <Button
                   variant="outline"
                   className="border-amber-600 text-amber-600 hover:bg-amber-50"
                   onClick={() => (window.location.href = "/profile")}
                 >
                   View My Bookings
                 </Button>
+
+
+                     }  
+        
+             
               </div>
             </div>
           </div>
@@ -573,10 +581,11 @@ export default function BookingPage() {
                       </h2>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="check-in">Check-in Date *</Label>
+                          <Label htmlFor="check-in">Check-in Date * {checkInDate}</Label>
                           <Input
                             id="check-in"
                             type="date"
+                                 placeholder="DD/MM/YYYY"
                             value={checkInDate}
                             onChange={(e) => {
                               setCheckInDate(e.target.value)
@@ -588,7 +597,7 @@ export default function BookingPage() {
                             max={getMaxDateString()}
                             required
                             className="mt-1"
-                            placeholder="DD/MM/YYYY"
+                       
                             onFocus={(e) => e.target.type = 'date'}
                             onBlur={(e) => {
                               if (!e.target.value) e.target.type = 'text'

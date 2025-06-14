@@ -9,6 +9,7 @@ interface AuthContextType {
   isAuthenticated: boolean
   login: (email: string, password: string) => Promise<boolean>
   logout: () => void
+  handleTokenExpiration: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -56,8 +57,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("hpcUser")
   }
 
+  const handleTokenExpiration = () => {
+    setUser(null)
+    setIsAuthenticated(false)
+    localStorage.removeItem("hpcToken")
+    localStorage.removeItem("hpcUser")
+    // You can add toast notification here if needed
+    console.warn("Your session has expired. Please log in again.")
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, handleTokenExpiration }}>
       {children}
     </AuthContext.Provider>
   )

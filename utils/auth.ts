@@ -19,10 +19,15 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    // Handle 401 status or specific TOKEN_EXPIRED error
+    if (error.response?.status === 401 || 
+        error.response?.data?.code === 'TOKEN_EXPIRED') {
       // Clear token and user data
       localStorage.removeItem('hpcToken');
-      localStorage.removeItem('userData');
+      localStorage.removeItem('hpcUser');
+      
+      // Show user-friendly message
+      console.warn('Session expired. Please log in again.');
       
       // Redirect to login
       window.location.href = '/';

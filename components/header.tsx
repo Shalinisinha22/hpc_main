@@ -334,9 +334,11 @@ export default function Header() {
                         Profile
                       </Button>
                     </Link>
-                    <Button variant="outline" className="w-full justify-start">
-                      My Bookings
-                    </Button>
+                    <Link href="/my-bookings">
+                      <Button variant="outline" className="w-full justify-start">
+                        My Bookings
+                      </Button>
+                    </Link>
                     <Button variant="outline" className="w-full justify-start">
                       Preferences
                     </Button>
@@ -507,14 +509,14 @@ export default function Header() {
                               className="col-span-3"
                             />
                           </div>
-                          <div className="flex justify-end">
+                          {/* <div className="flex justify-end">
                             <Button
                               variant="link"
                               className="text-[#bf840d] hover:text-[#8B5E04] p-0 h-auto font-normal"
                             >
                               Forgot password?
                             </Button>
-                          </div>
+                          </div> */}
                         </div>
                         <DialogFooter>
                           <Button
@@ -529,9 +531,9 @@ export default function Header() {
                       </DialogContent>
                     </Dialog>
 
-                    <Button variant="link" className="text-[#bf840d] hover:text-[#8B5E04] p-0 h-auto font-normal">
+                    {/* <Button variant="link" className="text-[#bf840d] hover:text-[#8B5E04] p-0 h-auto font-normal">
                       Manage Booking
-                    </Button>
+                    </Button> */}
                   </div>
                 </PopoverContent>
               </Popover>
@@ -637,6 +639,14 @@ export default function Header() {
                       >
                         <User size={16} />
                         My Profile
+                      </Button>
+                    </Link>
+                    <Link href="/my-bookings">
+                      <Button
+                        variant="outline"
+                        className="border-[#bf840d] text-[#bf840d] hover:bg-[#bf840d] hover:text-white w-full flex items-center justify-center gap-2"
+                      >
+                        My Bookings
                       </Button>
                     </Link>
                     <Button
