@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
+import axios from "axios"
 import type { Room } from "@/types/room"
 import Image from "next/image"
 import Header from "@/components/header"
@@ -16,31 +17,25 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 export default function RoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([])
   const [filteredRooms, setFilteredRooms] = useState<Room[]>([])
-  const [priceRange, setPriceRange] = useState([0, 20000])
+  const [priceRange, setPriceRange] = useState([0, 50000])
   const [selectedView, setSelectedView] = useState("All")
   const [selectedBedType, setSelectedBedType] = useState("All")
   const [isFilterVisible, setIsFilterVisible] = useState(false)
   const [activeFilters, setActiveFilters] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState("")
 
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/v1/rooms')
-        if(!response.ok) {
-          throw new Error('Failed to fetch rooms')  
-        }
-        const data = await response.json()
-
-
-
-          setRooms(data)
-          setFilteredRooms(data)
-
-      } catch (error) {
-        console.error('Error fetching rooms:', error)
-      } finally {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/rooms`)
+        setRooms(response.data)
+        setFilteredRooms(response.data)
         setIsLoading(false)
+      } catch (err) {
+        setError("Failed to fetch rooms")
+        setIsLoading(false)
+        console.error("Error fetching rooms:", err)
       }
     }
 
@@ -78,6 +73,22 @@ export default function RoomsPage() {
   useEffect(() => {
     filterRooms()
   }, [priceRange, selectedView, selectedBedType])
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-red-500">{error}</div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-amber-50">
@@ -197,7 +208,7 @@ export default function RoomsPage() {
           </div>
         ) : (
           <section className="py-16">
-            {console.log("Filtered Rooms:", filteredRooms,rooms)}
+            {console.log("Filtered Rooms:", filteredRooms, rooms)}
             <div className="container mx-auto px-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredRooms.map((room) => (
@@ -221,16 +232,16 @@ function RoomCard({ room }: { room: Room }) {
   const parseJsonSafely = (jsonString: string) => {
     try {
       if (!jsonString) return [];
-      
+
       // Handle the case where the string is already a JSON array
       if (jsonString.startsWith('[') && jsonString.endsWith(']')) {
         const parsed = JSON.parse(jsonString);
         return Array.isArray(parsed) ? parsed : [];
       }
-      
+
       // Log the raw string for debugging
       console.log('Raw string:', jsonString);
-      
+
       return jsonString.split(',').map(item => 
         item.trim()
            .replace(/^\[?"|"?\]?$/g, '') 
@@ -248,7 +259,7 @@ function RoomCard({ room }: { room: Room }) {
 // const amenities= JSON.parse(room.amenities)
 //   console.log('Parsed amenities:', amenities);
 console.log(room.amenities)
-  
+
   const additionalInfo = parseJsonSafely(room.additionalDetails[0]);
   console.log('Parsed additional info:', additionalInfo);
 
@@ -349,8 +360,7 @@ console.log(room.amenities)
             className="bg-amber-600 hover:bg-amber-700"
             onClick={() => {
               window.location.href = `/booking?roomId=${room._id}`
-            }
-            }
+            }}
           >
             Book Now
           </Button>

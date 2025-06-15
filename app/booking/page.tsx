@@ -15,6 +15,7 @@ import { Check, CreditCard, Calendar, Users, Info, Tag, ArrowRight, ArrowLeft, C
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { api, useAuth } from '@/utils/auth'
+import axios from "axios"
 
 // Sample coupon codes
 const VALID_COUPONS = [
@@ -259,11 +260,17 @@ export default function BookingPage() {
         phone,
         specialRequest: specialRequests,
         totalPrice: totalPrice,
-        paymentStatus: paymentMethod === 'pay-later' ? 'pending' : 'confirmed'
+        paymentStatus: paymentMethod === 'pay-later' ? 'pending' : 'confirmed',
+        isGuest: !localStorage.getItem('hpcUser'),
       }
 
       const response = await api.post('/bookings', bookingData);
-      console.log(response)
+
+                      // const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/bookings`,bookingData)
+      
+      
+      console.log(response.data)
+
       
       if (response.data) {
         setBookingId(response.data?.bookingId || '')
@@ -486,7 +493,7 @@ export default function BookingPage() {
                 </Button>
 
         
-                     {!localStorage.getItem('hpcUser') &&
+                     {localStorage.getItem('hpcUser') &&
                  <Button
                   variant="outline"
                   className="border-amber-600 text-amber-600 hover:bg-amber-50"

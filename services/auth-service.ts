@@ -12,7 +12,7 @@ interface RegisterData {
 export const authService = {
   async register(data: RegisterData) {
     try {
-      const response = await fetch(`${env.API_BASE_URL}/users/register`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export const authService = {
 
   async login(email: string, password: string): Promise<AuthResponse> {
     try {
-      const response = await fetch(`${env.API_BASE_URL}/users/login`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
