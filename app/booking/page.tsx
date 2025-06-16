@@ -262,6 +262,7 @@ export default function BookingPage() {
         totalPrice: totalPrice,
         paymentStatus: paymentMethod === 'pay-later' ? 'pending' : 'confirmed',
         isGuest: !localStorage.getItem('hpcUser'),
+        token:localStorage.getItem("hpcToken") || ''
       }
 
       const response = await api.post('/bookings', bookingData);
@@ -497,7 +498,7 @@ export default function BookingPage() {
                  <Button
                   variant="outline"
                   className="border-amber-600 text-amber-600 hover:bg-amber-50"
-                  onClick={() => (window.location.href = "/profile")}
+                  onClick={() => (window.location.href = "/my-bookings")}
                 >
                   View My Bookings
                 </Button>

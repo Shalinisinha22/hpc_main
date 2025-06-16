@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* About Us */}
           <div>
-            <h3 className="text-2xl font-serif mb-6 text-amber-200">About Luxe Haven</h3>
+            <h3 className="text-2xl font-serif mb-6 text-amber-200">About HPC</h3>
             <p className="mb-6">
               Experience unparalleled luxury at  Hotel Patliputra Continental. Our commitment to excellence ensures your stay is nothing
               short of extraordinary.
