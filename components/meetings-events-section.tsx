@@ -3,7 +3,8 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Briefcase, Users, Gift, Calendar } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import axios from "axios"
 import {
   Dialog,
   DialogContent,
@@ -16,37 +17,61 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
-const eventSpaces = [
-  {
-    name: "Executive Boardroom",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93997118.jpg-eaN9O2PE6k6fzrdNPNweT0irLQn2U2.jpeg",
-    capacity: "Up to 20 guests",
-    description: "Modern boardroom featuring state-of-the-art facilities and professional ambiance.",
-  },
-  {
-    name: "Grand Ballroom",
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f18ac94e9591b198432d3a6068631b86.jpg-EeR8HFqT7XC0QriR0jGnlcxZ1zeDW1.jpeg",
-    capacity: "Up to 500 guests",
-    description: "Spacious venue perfect for large conferences, ceremonies, and grand celebrations.",
-  },
-  {
-    name: "Conference Hall",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93734625.jpg-p0c5fglcXNx8L5OMqfBPmtUn5rwrMw.jpeg",
-    capacity: "Up to 200 guests",
-    description: "Versatile space ideal for corporate meetings and training sessions.",
-  },
-  {
-    name: "Banquet Hall",
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/a36e56114f70852a3309d5b6792fd8ff-tozsIAyQowOKmgCKBDhSZruCFdu6qq.webp",
-    capacity: "Up to 300 guests",
-    description: "Elegant setting for conferences and corporate events with modern amenities.",
-  },
-]
+interface Hall {
+  _id: string
+  hall_name: string
+  max_capacity: number
+  short_intro: string
+  desc: string
+  length: number
+  breadth: number
+  height: number
+  area: number
+  guest_entry_point: string
+  additionalDetails: string[]
+  phone: string
+  email: string
+  seating: {
+    theatre: number
+    ushaped: number
+    boardroom: number
+    classroom: number
+    reception: number
+    _id: string
+  }
+  hall_image: Array<{
+    name: string
+    url: string
+    ext: string
+    _id: string
+  }>
+  status: string
+  cdate: string
+  __v: number
+}
 
 export default function MeetingsEventsSection() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [halls, setHalls] = useState<Hall[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchHalls = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/halls`)
+        setHalls(response.data)
+        setIsLoading(false)
+      } catch (err) {
+        setError("Failed to fetch halls")
+        setIsLoading(false)
+        console.error("Error fetching halls:", err)
+      }
+    }
+
+    fetchHalls()
+  }, [])
+
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
@@ -56,20 +81,43 @@ export default function MeetingsEventsSection() {
           resounding success.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {eventSpaces.map((space, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-xl overflow-hidden">
-              <div className="relative h-48">
-                <Image src={space.image || "/placeholder.svg"} alt={space.name} fill className="object-cover" />
+        {isLoading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#bf840d] mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading halls...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12 text-red-600">
+            <p>{error}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {halls.slice(0, 4).map((hall) => (
+              <div key={hall._id} className="bg-white rounded-lg shadow-xl overflow-hidden">
+                <div className="relative h-48">
+                  <Image 
+                    src={hall.hall_image && hall.hall_image.length > 0 ? hall.hall_image[0].url : "/placeholder.svg"} 
+                    alt={hall.hall_name} 
+                    fill 
+                    className="object-cover" 
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-serif mb-2 text-[#bf840d]">{hall.hall_name}</h3>
+                  <p className="text-gray-600 text-sm mb-2">Up to {hall.max_capacity} guests</p>
+                  <p className="text-gray-600 text-sm">{hall.short_intro}</p>
+                  {/* {hall.status === 'available' && (
+                    <div className="mt-2">
+                      <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                        Available
+                      </span>
+                    </div>
+                  )} */}
+                </div>
               </div>
-              <div className="p-6">
-                <h3 className="text-xl font-serif mb-2 text-[#bf840d]">{space.name}</h3>
-                <p className="text-gray-600 text-sm mb-2">{space.capacity}</p>
-                <p className="text-gray-600 text-sm">{space.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         <div className="text-center mb-12">
           <Button

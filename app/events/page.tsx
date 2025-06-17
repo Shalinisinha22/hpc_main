@@ -1,3 +1,7 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import axios from "axios"
 import Image from "next/image"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
@@ -6,6 +10,39 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Check } from "lucide-react"
 import { AutoScrollImageCarousel } from "@/components/auto-scroll-image-carousel"
 import { SeatingIcon } from "@/components/seating-icon"
+
+interface Hall {
+  _id: string
+  hall_name: string
+  max_capacity: number
+  short_intro: string
+  desc: string
+  length: number
+  breadth: number
+  height: number
+  area: number
+  guest_entry_point: string
+  additionalDetails: string[]
+  phone: string
+  email: string
+  seating: {
+    theatre: number
+    ushaped: number
+    boardroom: number
+    classroom: number
+    reception: number
+    _id: string
+  }
+  hall_image: Array<{
+    name: string
+    url: string
+    ext: string
+    _id: string
+  }>
+  status: string
+  cdate: string
+  __v: number
+}
 
 const eventSpaces = [
   {
@@ -161,6 +198,62 @@ const eventSpaces = [
 ]
 
 export default function EventsPage() {
+  const [halls, setHalls] = useState<Hall[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchHalls = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/halls`)
+        setHalls(response.data)
+        setIsLoading(false)
+      } catch (err) {
+        setError("Failed to fetch halls")
+        setIsLoading(false)
+        console.error("Error fetching halls:", err)
+      }
+    }
+
+    fetchHalls()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#bf840d] mx-auto"></div>
+            <p className="mt-4 text-lg text-gray-600">Loading halls...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow flex items-center justify-center">
+          <div className="text-center text-red-600">
+            <h2 className="text-2xl font-bold mb-4">Error</h2>
+            <p>{error}</p>
+            <Button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 bg-[#bf840d] hover:bg-[#8B5E04] text-white"
+            >
+              Retry
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -184,15 +277,47 @@ export default function EventsPage() {
         {/* Event Spaces Section */}
         <section className="py-16 bg-gradient-to-b from-white to-amber-50">
           <div className="container mx-auto px-4">
-            <h2 className="text-4xl font-serif text-center mb-12 text-[#bf840d]">Our Event Spaces</h2>
+            <h2 className="text-4xl font-serif text-center mb-12 text-[#bf840d]">Our Event Halls</h2>
             <div className="grid grid-cols-1 gap-16">
-              {eventSpaces.map((space, index) => (
-                <div key={index} className="bg-white rounded-lg overflow-hidden shadow-2xl border border-amber-100">
+              {halls.map((hall) => (
+                <div key={hall._id} className="bg-white rounded-lg overflow-hidden shadow-2xl border border-amber-100">
                   <div className="grid grid-cols-1 lg:grid-cols-2">
-                    <AutoScrollImageCarousel images={space.images} name={space.name} />
+                    {/* Hall Images */}
+                    <div className="relative h-96 lg:h-auto">
+                      {hall.hall_image && hall.hall_image.length > 0 ? (
+                        <AutoScrollImageCarousel 
+                          images={hall.hall_image.map(img => img.url)} 
+                          name={hall.hall_name} 
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                          <p className="text-gray-500">No image available</p>
+                        </div>
+                      )}
+                    </div>
+                    
                     <div className="p-8">
-                      <h3 className="text-3xl font-serif text-[#bf840d] mb-4">{space.name}</h3>
-                      <p className="text-gray-600 mb-6">{space.description}</p>
+                      <h3 className="text-3xl font-serif text-[#bf840d] mb-4">{hall.hall_name}</h3>
+                      <p className="text-gray-600 mb-4">{hall.short_intro}</p>
+                      
+                      {/* Full Description */}
+                      <div className="mb-6">
+                        <div 
+                          className="text-gray-700 text-sm leading-relaxed"
+                          dangerouslySetInnerHTML={{ __html: hall.desc }}
+                        />
+                      </div>
+                      
+                      {/* Status Badge */}
+                      {/* <div className="mb-4">
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          hall.status === 'available' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {hall.status.charAt(0).toUpperCase() + hall.status.slice(1)}
+                        </span>
+                      </div> */}
 
                       <Tabs defaultValue="details" className="w-full">
                         <TabsList className="grid w-full grid-cols-3">
@@ -200,47 +325,73 @@ export default function EventsPage() {
                           <TabsTrigger value="seating">Seating</TabsTrigger>
                           <TabsTrigger value="amenities">Amenities</TabsTrigger>
                         </TabsList>
+                        
                         <TabsContent value="details" className="mt-4">
-                          <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                              <p>
-                                <span className="font-semibold">Dimension:</span> {space.details.dimension}
-                              </p>
-                              <p>
-                                <span className="font-semibold">Area:</span> {space.details.area}
-                              </p>
-                              <p>
-                                <span className="font-semibold">Height:</span> {space.details.height}
-                              </p>
-                            </div>
-                            <div>
-                              <p>
-                                <span className="font-semibold">Max Capacity:</span> {space.capacity}
-                              </p>
-                              <p>
-                                <span className="font-semibold">Entry Points:</span> {space.details.entryPoints}
-                              </p>
-                            </div>
-                          </div>
-                        </TabsContent>
-                        <TabsContent value="seating" className="mt-4">
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-                            {Object.entries(space.details.seating).map(([style, capacity]) => (
-                              <div key={style} className="flex items-center">
-                                <SeatingIcon style={style.replace("u", "U")} className="w-6 h-6 mr-2 text-[#bf840d]" />
-                                <span>
-                                  {style.charAt(0).toUpperCase() + style.slice(1)}: {capacity}
-                                </span>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                            <div className="space-y-3">
+                              <h4 className="font-semibold text-[#bf840d] text-base mb-3">Physical Specifications</h4>
+                              <div className="bg-gray-50 p-3 rounded-lg">
+                                <p className="mb-2">
+                                  <span className="font-semibold">Dimensions:</span> {hall.length} ft × {hall.breadth} ft
+                                </p>
+                              
+                              
+                                <p className="mb-2">
+                                  <span className="font-semibold">Total Area:</span> {hall.area} sq ft
+                                </p>
+                                  <p className="mb-2">
+                                  <span className="font-semibold">Height:</span> <span>{hall.height} ft</span>
+                                </p>
+                             
                               </div>
-                            ))}
+                            </div>
+                            <div className="space-y-3">
+                              <h4 className="font-semibold text-[#bf840d] text-base mb-3">Capacity & Contact</h4>
+                              <div className="bg-gray-50 p-3 rounded-lg">
+                                <p className="mb-2">
+                                  <span className="font-semibold">Maximum Capacity:</span> <span className="text-[#bf840d] font-bold">Up to {hall.max_capacity} guests</span>
+                                </p>
+                                <p>
+                                  <span className="font-semibold">Entry Points:</span> <span>{hall.guest_entry_point}</span>
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         </TabsContent>
+                        
+                        <TabsContent value="seating" className="mt-4">
+                          {hall.seating && (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+                              <div className="flex items-center">
+                                <SeatingIcon style="Theatre" className="w-6 h-6 mr-2 text-[#bf840d]" />
+                                <span>Theatre: {hall.seating.theatre}</span>
+                              </div>
+                              <div className="flex items-center">
+                                <SeatingIcon style="Ushaped" className="w-6 h-6 mr-2 text-[#bf840d]" />
+                                <span>U-shaped: {hall.seating.ushaped}</span>
+                              </div>
+                              <div className="flex items-center">
+                                <SeatingIcon style="Boardroom" className="w-6 h-6 mr-2 text-[#bf840d]" />
+                                <span>Boardroom: {hall.seating.boardroom}</span>
+                              </div>
+                              <div className="flex items-center">
+                                <SeatingIcon style="Classroom" className="w-6 h-6 mr-2 text-[#bf840d]" />
+                                <span>Classroom: {hall.seating.classroom}</span>
+                              </div>
+                              <div className="flex items-center">
+                                <SeatingIcon style="Reception" className="w-6 h-6 mr-2 text-[#bf840d]" />
+                                <span>Reception: {hall.seating.reception}</span>
+                              </div>
+                            </div>
+                          )}
+                        </TabsContent>
+                        
                         <TabsContent value="amenities" className="mt-4">
-                          <ul className="grid grid-cols-2 gap-2 text-sm">
-                            {space.amenities.map((amenity, index) => (
+                          <ul className="grid grid-cols-1 gap-2 text-sm">
+                            {hall.additionalDetails.map((detail, index) => (
                               <li key={index} className="flex items-center">
                                 <Check className="w-4 h-4 mr-2 text-green-500" />
-                                <span>{amenity}</span>
+                                <span>{detail}</span>
                               </li>
                             ))}
                           </ul>
@@ -249,13 +400,14 @@ export default function EventsPage() {
 
                       <div className="mt-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
                         <div className="text-sm text-gray-600">
-                          <p>Contact: {space.contact.phone}</p>
-                          <p>Email: {space.contact.email}</p>
+                          <p>Contact: {hall.phone}</p>
+                          <p>Email: {hall.email}</p>
                         </div>
                         <div className="flex gap-4">
-                          <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white">View Details</Button>
+                          {/* <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white">View Details</Button> */}
                           <Button
                             variant="outline"
+                            //  className="bg-[#bf840d] hover:bg-[#8B5E04] text-white"
                             className="border-[#bf840d] text-[#bf840d] hover:bg-[#bf840d] hover:text-white"
                           >
                             Request Quote
@@ -267,6 +419,12 @@ export default function EventsPage() {
                 </div>
               ))}
             </div>
+            
+            {halls.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-500 text-lg">No halls available at the moment.</p>
+              </div>
+            )}
           </div>
         </section>
       </main>
