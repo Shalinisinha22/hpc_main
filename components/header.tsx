@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Menu, X, ChevronDown, User } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -25,6 +25,7 @@ import { authService } from "@/services/auth-service"
 export default function Header() {
   const { toast } = useToast()
   const router = useRouter()
+  const pathname = usePathname()
   const { user, isAuthenticated, login, logout } = useAuth()
 
   const announcements = [
@@ -59,6 +60,32 @@ export default function Header() {
     { title: "Wellness", href: "/wellness", description: "Rejuvenating spa and fitness services" },
     { title: "Events", href: "/events", description: "Memorable gatherings and celebrations" },
   ]
+
+  // Helper function to check if a route is active
+  const isActiveRoute = (href: string) => {
+    if (href === "/") {
+      return pathname === "/"
+    }
+    return pathname.startsWith(href)
+  }
+
+  // Helper function to get navigation link classes
+  const getNavLinkClasses = (href: string) => {
+    const baseClasses = "font-medium transition"
+    const activeClasses = "text-white bg-[#bf840d] px-3 py-1 rounded-full border border-[#bf840d]"
+    const inactiveClasses = "text-[#bf840d] hover:text-[#8B5E04]"
+    
+    return `${baseClasses} ${isActiveRoute(href) ? activeClasses : inactiveClasses}`
+  }
+
+  // Helper function for mobile navigation link classes
+  const getMobileNavLinkClasses = (href: string) => {
+    const baseClasses = "py-2 font-medium transition"
+    const activeClasses = "text-white bg-[#bf840d] px-3 rounded-md"
+    const inactiveClasses = "text-[#bf840d] hover:text-[#8B5E04]"
+    
+    return `${baseClasses} ${isActiveRoute(href) ? activeClasses : inactiveClasses}`
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -288,28 +315,25 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="text-[#bf840d] hover:text-[#8B5E04] font-medium transition">
+            <Link href="/" className={getNavLinkClasses("/")}>
               Home
             </Link>
-            <Link
-              href="/rooms"
-              className="text-white font-medium transition bg-[#bf840d] hover:bg-black px-3 py-1 rounded-full border border-[#bf840d]"
-            >
+            <Link href="/rooms" className={getNavLinkClasses("/rooms")}>
               Rooms & Suites
             </Link>
-            <Link href="/dining" className="text-[#bf840d] hover:text-[#8B5E04] font-medium transition">
+            <Link href="/dining" className={getNavLinkClasses("/dining")}>
               Dining
             </Link>
-            <Link href="/offers" className="text-[#bf840d] hover:text-[#8B5E04] font-medium transition">
+            <Link href="/offers" className={getNavLinkClasses("/offers")}>
               Offers
             </Link>
-            <Link href="/wellness" className="text-[#bf840d] hover:text-[#8B5E04] font-medium transition">
+            <Link href="/wellness" className={getNavLinkClasses("/wellness")}>
               Wellness
             </Link>
-            <Link href="/events" className="text-[#bf840d] hover:text-[#8B5E04] font-medium transition">
+            <Link href="/events" className={getNavLinkClasses("/events")}>
               Events
             </Link>
-            <Link href="/gallery" className="text-[#bf840d] hover:text-[#8B5E04] font-medium transition">
+            <Link href="/gallery" className={getNavLinkClasses("/gallery")}>
               Gallery
             </Link>
           </nav>
@@ -582,49 +606,49 @@ export default function Header() {
             <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
               <Link
                 href="/"
-                className="py-2 text-[#bf840d] hover:text-[#8B5E04] font-medium transition"
+                className={getMobileNavLinkClasses("/")}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
               </Link>
               <Link
                 href="/rooms"
-                className="py-2 text-[#bf840d] hover:text-[#8B5E04] font-medium transition"
+                className={getMobileNavLinkClasses("/rooms")}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Rooms & Suites
               </Link>
               <Link
                 href="/dining"
-                className="py-2 text-[#bf840d] hover:text-[#8B5E04] font-medium transition"
+                className={getMobileNavLinkClasses("/dining")}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Dining
               </Link>
               <Link
                 href="/offers"
-                className="py-2 text-[#bf840d] hover:text-[#8B5E04] font-medium transition"
+                className={getMobileNavLinkClasses("/offers")}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Offers
               </Link>
               <Link
                 href="/wellness"
-                className="py-2 text-[#bf840d] hover:text-[#8B5E04] font-medium transition"
+                className={getMobileNavLinkClasses("/wellness")}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Wellness
               </Link>
               <Link
                 href="/events"
-                className="py-2 text-[#bf840d] hover:text-[#8B5E04] font-medium transition"
+                className={getMobileNavLinkClasses("/events")}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Events
               </Link>
               <Link
                 href="/gallery"
-                className="py-2 text-[#bf840d] hover:text-[#8B5E04] font-medium transition"
+                className={getMobileNavLinkClasses("/gallery")}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Gallery

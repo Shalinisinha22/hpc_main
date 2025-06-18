@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
-import { Check, CreditCard, Calendar, Users, Info, Tag, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react"
+import { Check, CreditCard, Calendar, Users, Info, Tag, ArrowRight, ArrowLeft, CheckCircle2, Printer, Share2 } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { api, useAuth } from '@/utils/auth'
@@ -75,6 +75,154 @@ export default function BookingPage() {
 
   // Calculate nights
   const nights = calculateNights(checkInDate, checkOutDate)
+
+  // Print receipt function
+  const handlePrintReceipt = () => {
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Booking Receipt - ${bookingId}</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          .header { text-align: center; margin-bottom: 30px; }
+          .booking-details { margin-bottom: 20px; }
+          .section { margin-bottom: 15px; }
+          .label { font-weight: bold; color: #92400e; }
+          .value { margin-left: 10px; }
+          .price-section { border-top: 2px solid #92400e; padding-top: 15px; margin-top: 20px; }
+          .total { font-size: 18px; font-weight: bold; }
+          .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>Hotel Booking Receipt</h1>
+          <h2>Booking Confirmed!</h2>
+        </div>
+        
+        <div class="booking-details">
+          <div class="section">
+            <span class="label">Booking ID:</span>
+            <span class="value">${bookingId}</span>
+          </div>
+          
+          <div class="section">
+            <span class="label">Room:</span>
+            <span class="value">${room.room_title}</span>
+          </div>
+          
+          <div class="section">
+            <span class="label">Guest Name:</span>
+            <span class="value">${name}</span>
+          </div>
+          
+          <div class="section">
+            <span class="label">Email:</span>
+            <span class="value">${email}</span>
+          </div>
+          
+          <div class="section">
+            <span class="label">Phone:</span>
+            <span class="value">${phone}</span>
+          </div>
+          
+          <div class="section">
+            <span class="label">Check-in Date:</span>
+            <span class="value">${new Date(checkInDate).toLocaleDateString()}</span>
+          </div>
+          
+          <div class="section">
+            <span class="label">Check-out Date:</span>
+            <span class="value">${new Date(checkOutDate).toLocaleDateString()}</span>
+          </div>
+          
+          <div class="section">
+            <span class="label">Duration:</span>
+            <span class="value">${nights} ${nights === 1 ? 'night' : 'nights'}</span>
+          </div>
+          
+          <div class="section">
+            <span class="label">Guests:</span>
+            <span class="value">${adults} ${Number(adults) === 1 ? 'Adult' : 'Adults'}${children !== "0" ? `, ${children} ${Number(children) === 1 ? 'Child' : 'Children'}` : ''}</span>
+          </div>
+          
+          <div class="section">
+            <span class="label">Rooms:</span>
+            <span class="value">${noOfRooms} ${Number(noOfRooms) === 1 ? 'Room' : 'Rooms'}</span>
+          </div>
+          
+          <div class="section">
+            <span class="label">Payment Status:</span>
+            <span class="value">${paymentMethod === 'pay-later' ? 'Pay at Hotel' : 'Paid'}</span>
+          </div>
+        </div>
+        
+        <div class="price-section">
+          <div class="section">
+            <span class="label">Room Rate (${nights} nights):</span>
+            <span class="value">₹${basePrice.toLocaleString('en-IN')}</span>
+          </div>
+          
+          <div class="section">
+            <span class="label">Taxes & Fees (${gstRate * 100}%):</span>
+            <span class="value">₹${taxesAndFees.toLocaleString('en-IN')}</span>
+          </div>
+          
+          ${appliedCoupon ? `
+          <div class="section">
+            <span class="label">Discount (${appliedCoupon.discount}%):</span>
+            <span class="value">-₹${discountAmount.toLocaleString('en-IN')}</span>
+          </div>
+          ` : ''}
+          
+          <div class="section total">
+            <span class="label">Total Amount:</span>
+            <span class="value">₹${totalPrice.toLocaleString('en-IN')}</span>
+          </div>
+        </div>
+        
+        <div class="footer">
+          <p>Thank you for choosing our hotel!</p>
+          <p>For any queries, please contact us with your booking ID.</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }
+  };
+
+  // WhatsApp share function
+  const handleWhatsAppShare = () => {
+    const message = `🏨 *Hotel Booking Confirmed!* 🎉
+
+📋 *Booking Details:*
+• Booking ID: ${bookingId}
+• Room: ${room.room_title}
+• Guest: ${name}
+• Check-in: ${new Date(checkInDate).toLocaleDateString()}
+• Check-out: ${new Date(checkOutDate).toLocaleDateString()}
+• Duration: ${nights} ${nights === 1 ? 'night' : 'nights'}
+• Guests: ${adults} ${Number(adults) === 1 ? 'Adult' : 'Adults'}${children !== "0" ? `, ${children} ${Number(children) === 1 ? 'Child' : 'Children'}` : ''}
+• Rooms: ${noOfRooms} ${Number(noOfRooms) === 1 ? 'Room' : 'Rooms'}
+
+💰 *Total Amount: ₹${totalPrice.toLocaleString('en-IN')}*
+💳 *Payment Status: ${paymentMethod === 'pay-later' ? 'Pay at Hotel' : 'Paid'}*
+
+Thank you for your booking! 🙏`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+  };
 
   // Calculate prices
   const basePrice = (room?.pricePerNight || 0) * nights * Number(noOfRooms)
@@ -270,11 +418,12 @@ export default function BookingPage() {
                       // const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/bookings`,bookingData)
       
       
-      console.log(response.data)
+      console.log(response.data?.booking?.bookingId,"response")
 
       
       if (response.data) {
-        setBookingId(response.data?.bookingId || '')
+        // setBookingId(response.data?.bookingId || '')
+        setBookingId((prev)=>prev=response.data?.booking?.bookingId)
         setBookingComplete(true)
         toast({
           title: "Booking Confirmed!",
@@ -485,28 +634,41 @@ export default function BookingPage() {
                 </div>
               </div>
 
-              <div className="flex gap-4 justify-center">
-                <Button
-                  className="bg-amber-600 hover:bg-amber-700 text-white"
-                  onClick={() => (window.location.href = "/")}
-                >
-                  Return to Home
-                </Button>
-
-        
-                     {localStorage.getItem('hpcUser') &&
-                 <Button
-                  variant="outline"
-                  className="border-amber-600 text-amber-600 hover:bg-amber-50"
-                  onClick={() => (window.location.href = "/my-bookings")}
-                >
-                  View My Bookings
-                </Button>
-
-
-                     }  
-        
-             
+              <div className="flex flex-wrap gap-3 justify-center">
+              <Button
+              className="bg-amber-600 hover:bg-amber-700 text-white"
+              onClick={() => (window.location.href = "/")}
+              >
+              Return to Home
+              </Button>
+              
+              {localStorage.getItem('hpcUser') && (
+              <Button
+              variant="outline"
+              className="border-amber-600 text-amber-600 hover:bg-amber-50"
+              onClick={() => (window.location.href = "/my-bookings")}
+              >
+              View My Bookings
+              </Button>
+              )}
+              
+              <Button
+              variant="outline"
+              className="border-green-600 text-green-600 hover:bg-green-50 flex items-center gap-2"
+              onClick={handlePrintReceipt}
+              >
+              <Printer className="w-4 h-4" />
+              Print Receipt
+              </Button>
+              
+              <Button
+              variant="outline"
+              className="border-blue-600 text-blue-600 hover:bg-blue-50 flex items-center gap-2"
+              onClick={handleWhatsAppShare}
+              >
+              <Share2 className="w-4 h-4" />
+              Share on WhatsApp
+              </Button>
               </div>
             </div>
           </div>
