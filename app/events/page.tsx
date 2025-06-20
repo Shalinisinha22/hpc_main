@@ -10,6 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Check } from "lucide-react"
 import { AutoScrollImageCarousel } from "@/components/auto-scroll-image-carousel"
 import { SeatingIcon } from "@/components/seating-icon"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select } from "@/components/ui/select"
+import { X } from "lucide-react"
+import { toast } from "sonner"
 
 interface Hall {
   _id: string
@@ -44,163 +49,25 @@ interface Hall {
   __v: number
 }
 
-const eventSpaces = [
-  {
-    name: "Diamond Hall",
-    description:
-      "Our flagship venue, specially designed for business conferences, grand weddings, and prestigious events. Features state-of-the-art audiovisual equipment and elegant décor.",
-    images: [
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f18ac94e9591b198432d3a6068631b86.jpg-EeR8HFqT7XC0QriR0jGnlcxZ1zeDW1.jpeg",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93734625.jpg-p0c5fglcXNx8L5OMqfBPmtUn5rwrMw.jpeg",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/a36e56114f70852a3309d5b6792fd8ff-tozsIAyQowOKmgCKBDhSZruCFdu6qq.webp",
-    ],
-    capacity: "Up to 500 guests",
-    details: {
-      dimension: "80 ft x 40 ft",
-      area: "3,200 Sq.ft.",
-      height: "18 ft",
-      entryPoints: 3,
-      seating: {
-        theatre: 500,
-        classroom: 300,
-        ushaped: 120,
-        boardroom: 150,
-        reception: 600,
-        circular: 400,
-      },
-    },
-    amenities: [
-      "State-of-the-art AV equipment",
-      "Customizable LED lighting",
-      "High-speed Wi-Fi",
-      "Built-in stage",
-      "Separate entrance foyer",
-      "VIP lounge",
-      "Catering kitchen access",
-      "Complimentary parking",
-    ],
-    contact: {
-      phone: "+91 9798888243",
-      email: "events@luxehaven.com",
-    },
-  },
-  {
-    name: "Emerald Boardroom",
-    description:
-      "Premium executive meeting space with sophisticated technology and ergonomic furnishings, perfect for high-level business discussions.",
-    images: [
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93997118.jpg-eaN9O2PE6k6fzrdNPNweT0irLQn2U2.jpeg",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93734625.jpg-p0c5fglcXNx8L5OMqfBPmtUn5rwrMw.jpeg",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/a36e56114f70852a3309d5b6792fd8ff-tozsIAyQowOKmgCKBDhSZruCFdu6qq.webp",
-    ],
-    capacity: "Up to 30 guests",
-    details: {
-      dimension: "40 ft x 20 ft",
-      area: "800 Sq.ft.",
-      height: "12 ft",
-      entryPoints: 1,
-      seating: {
-        boardroom: 30,
-        ushaped: 22,
-        theatre: 40,
-        classroom: 24,
-      },
-    },
-    amenities: [
-      "4K video conferencing system",
-      "Interactive smart board",
-      "Ergonomic executive chairs",
-      "Built-in power and data ports",
-      "Soundproof walls",
-      "Adjustable lighting",
-      "Private restrooms",
-      "Executive catering service",
-    ],
-    contact: {
-      phone: "+91 9798888244",
-      email: "boardroom@luxehaven.com",
-    },
-  },
-  {
-    name: "Crystal Garden",
-    description:
-      "Stunning outdoor venue with manicured gardens and elegant pavilions, ideal for weddings and social gatherings.",
-    images: [
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f18ac94e9591b198432d3a6068631b86.jpg-EeR8HFqT7XC0QriR0jGnlcxZ1zeDW1.jpeg",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93734625.jpg-p0c5fglcXNx8L5OMqfBPmtUn5rwrMw.jpeg",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93997118.jpg-eaN9O2PE6k6fzrdNPNweT0irLQn2U2.jpeg",
-    ],
-    capacity: "Up to 300 guests",
-    details: {
-      dimension: "100 ft x 60 ft",
-      area: "6,000 Sq.ft.",
-      height: "Open air",
-      entryPoints: 4,
-      seating: {
-        reception: 300,
-        circular: 250,
-        theatre: 280,
-      },
-    },
-    amenities: [
-      "Picturesque landscaping",
-      "Covered pavilions",
-      "Outdoor lighting",
-      "Water features",
-      "Bridal suite",
-      "Outdoor power sources",
-      "Portable dance floor",
-      "Backup indoor space",
-    ],
-    contact: {
-      phone: "+91 9798888245",
-      email: "garden@luxehaven.com",
-    },
-  },
-  {
-    name: "Ruby Suites",
-    description:
-      "Versatile meeting rooms that can be combined or used separately, featuring modern amenities and natural lighting.",
-    images: [
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93734625.jpg-p0c5fglcXNx8L5OMqfBPmtUn5rwrMw.jpeg",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/a36e56114f70852a3309d5b6792fd8ff-tozsIAyQowOKmgCKBDhSZruCFdu6qq.webp",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93997118.jpg-eaN9O2PE6k6fzrdNPNweT0irLQn2U2.jpeg",
-    ],
-    capacity: "20-80 guests per suite",
-    details: {
-      dimension: "30 ft x 25 ft (per suite)",
-      area: "750 Sq.ft. (per suite)",
-      height: "10 ft",
-      entryPoints: 2,
-      seating: {
-        theatre: 80,
-        classroom: 40,
-        ushaped: 30,
-        boardroom: 36,
-        reception: 100,
-      },
-    },
-    amenities: [
-      "Modular furniture",
-      "Built-in projectors and screens",
-      "Individual climate control",
-      "Natural daylight",
-      "Blackout curtains",
-      "Breakout area",
-      "Writing walls",
-      "Refreshment station",
-    ],
-    contact: {
-      phone: "+91 9798888246",
-      email: "suites@luxehaven.com",
-    },
-  },
-]
 
 export default function EventsPage() {
   const [halls, setHalls] = useState<Hall[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedHall, setSelectedHall] = useState("")
+  const [form, setForm] = useState({
+    hall: "",
+    date: "",
+    guests: "",
+    name: "",
+    mobile: "",
+    email: "",
+    // time: "",
+    purpose: "",
+    message: ""
+  })
+  const [formError, setFormError] = useState("")
 
   useEffect(() => {
     const fetchHalls = async () => {
@@ -252,6 +119,58 @@ export default function EventsPage() {
         <Footer />
       </div>
     )
+  }
+
+  // Modal form submit handler
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    // Validate all fields
+    if (!form.name.trim() || !form.email.trim() || !form.mobile.trim() || !form.purpose.trim() || !form.date || !form.guests) {
+      setFormError("All fields are mandatory.")
+      return
+    }
+    // Email and mobile validation
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+    const mobileRegex = /^\d{10}$/
+    if (!emailRegex.test(form.email)) {
+      setFormError("Please enter a valid email address.")
+      return
+    }
+    if (!mobileRegex.test(form.mobile)) {
+      setFormError("Please enter a valid 10-digit mobile number.")
+      return
+    }
+    setFormError("")
+    try {
+      const hallObj = halls.find(h => h.hall_name === form.hall)
+      const res = await fetch("/api/v1/event-bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim().toLowerCase(),
+          mobile: form.mobile.trim(),
+          eventType: form.purpose,
+          date: form.date,
+          guests: Number(form.guests),
+          message: form.message.trim(),
+          hallId: hallObj?._id || undefined
+        })
+      })
+      if (!res.ok) throw new Error("Failed to submit request")
+      setModalOpen(false)
+      toast.success("Quote request submitted!")
+    } catch (err) {
+      setFormError("Failed to submit request. Please try again.")
+      toast.error("Failed to submit request. Please try again.")
+    }
+  }
+
+  // Only open modal when user clicks Request Quote
+  const openModal = (hallName: string) => {
+    setSelectedHall(hallName)
+    setForm(f => ({ ...f, hall: hallName }))
+    setModalOpen(true)
   }
 
   return (
@@ -404,11 +323,10 @@ export default function EventsPage() {
                           <p>Email: {hall.email}</p>
                         </div>
                         <div className="flex gap-4">
-                          {/* <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white">View Details</Button> */}
                           <Button
                             variant="outline"
-                            //  className="bg-[#bf840d] hover:bg-[#8B5E04] text-white"
                             className="border-[#bf840d] text-[#bf840d] hover:bg-[#bf840d] hover:text-white"
+                            onClick={() => openModal(hall.hall_name)}
                           >
                             Request Quote
                           </Button>
@@ -419,7 +337,136 @@ export default function EventsPage() {
                 </div>
               ))}
             </div>
-            
+            {/* Modal for Request Quote */}
+            {modalOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center">
+                <form className="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg relative z-50" onSubmit={handleSubmit}>
+                  <button
+                    type="button"
+                    onClick={() => setModalOpen(false)}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 focus:outline-none"
+                    aria-label="Close"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                  <h3 className="text-2xl font-bold mb-6 text-[#bf840d]">Request for Quote</h3>
+                  <div className="mb-4">
+                    <Label htmlFor="venue">Venue Name *</Label>
+                    <select
+                      id="venue"
+                      className="form-select w-full border rounded p-2"
+                      value={selectedHall}
+                      onChange={e => {
+                        setSelectedHall(e.target.value)
+                        setForm(f => ({ ...f, hall: e.target.value }))
+                      }}
+                      required
+                    >
+                      <option value="">Select Hall</option>
+                      {halls.map(h => (
+                        <option key={h._id} value={h.hall_name}>{h.hall_name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <Label htmlFor="date">Preferred Date *</Label>
+                    <Input
+                      id="date"
+                      type="date"
+                      value={form.date}
+                      min={new Date().toISOString().split('T')[0]}
+                      onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <Label htmlFor="guests">Number of Guests *</Label>
+                    <Input
+                      id="guests"
+                      type="number"
+                      min="1"
+                      value={form.guests}
+                      onChange={e => setForm(f => ({ ...f, guests: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <Label htmlFor="name">Full Name *</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      value={form.name}
+                      onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <Label htmlFor="mobile">Mobile *</Label>
+                    <Input
+                      id="mobile"
+                      type="tel"
+                      value={form.mobile}
+                      onChange={e => setForm(f => ({ ...f, mobile: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <Label htmlFor="email">Email Address *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={form.email}
+                      onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  {/* <div className="mb-4">
+                    <Label htmlFor="time">Time of the Event *</Label>
+                    <Input
+                      id="time"
+                      type="time"
+                      value={form.time}
+                      onChange={e => setForm(f => ({ ...f, time: e.target.value }))}
+                      required
+                    />
+                  </div> */}
+                  <div className="mb-4">
+                    <Label htmlFor="purpose">Purpose of the Event *</Label>
+                    <select
+                      id="purpose"
+                      className="form-select w-full border rounded p-2"
+                      value={form.purpose}
+                      onChange={e => setForm(f => ({ ...f, purpose: e.target.value }))}
+                      required
+                    >
+                      <option value="">Choose Purpose of the Event</option>
+                      <option value="wedding">Wedding</option>
+                      <option value="conference">Conference</option>
+                      <option value="meeting">Meeting</option>
+                      <option value="social event">Social Event</option>
+                     
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <Label htmlFor="message">Message (optional)</Label>
+                    <textarea
+                      id="message"
+                      className="form-input w-full border rounded p-2"
+                      value={form.message}
+                      onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                      maxLength={1000}
+                      rows={3}
+                      placeholder="Any special requests or details (max 1000 characters)"
+                    />
+                  </div>
+                  {formError && <div className="text-red-600 mb-2 text-sm">{formError}</div>}
+                  <div className="text-xs text-gray-500 mb-4">* All fields are mandatory.</div>
+                  <div className="flex justify-end">
+                    <Button type="submit" className="bg-[#bf840d] text-white">Submit</Button>
+                  </div>
+                </form>
+              </div>
+            )}
             {halls.length === 0 && (
               <div className="text-center py-12">
                 <p className="text-gray-500 text-lg">No halls available at the moment.</p>
