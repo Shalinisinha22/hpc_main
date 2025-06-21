@@ -3,6 +3,7 @@
 import { DialogTrigger } from "@/components/ui/dialog"
 
 import { useState, useEffect } from "react"
+import axios from "axios"
 import Image from "next/image"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
@@ -21,130 +22,6 @@ import { ChevronLeft, ChevronRight, Star, Clock, MapPin, Phone, Quote, Calendar,
 import { motion } from "framer-motion"
 import { useMediaQuery } from "@/hooks/use-mobile"
 import DiningSection from "@/components/dining-section"
-
-const restaurants = [
-  {
-    name: "Bistro",
-    description: "Multi Cuisines Restaurant",
-    image: "https://patliputracontinental.com/images/dinings/bistro_11zon%20(1).jpg",
-    cuisine: "International",
-    openingHours: "12:00 PM - 11:00 PM",
-    menu: [
-      {
-        category: "SALADS",
-        items: [
-          {
-            name: "Greek Salad",
-            description:
-              "Crunchy Mediterranean salad with ice burg lettuce, diced cucumber, bell pepper, onion, tomato, feta cheese and olive tossed in oregano flavored vinaigrette dressing",
-            price: "₹250",
-          },
-          {
-            name: "Caesar Salad",
-            description:
-              "Loads of fresh ice burg lettuce tossed in Caesar dressing served with parmesan & garlic toast",
-            price: "₹250",
-          },
-          {
-            name: "Hara Bhara Salad",
-            description: "A healthy treat of garden fresh greens & vegetables",
-            price: "₹250",
-          },
-          {
-            name: "Sprout Beans Salad",
-            description: "Sprouted green moong with lime juice, chopped ginger, onion, chili & seasoning",
-            price: "₹250",
-          },
-          {
-            name: "Waldorf Salad",
-            description: "Classically made salad with apple, walnut & celery, dressed with mayonnaise",
-            price: "₹325",
-          },
-          { name: "Caprese Salad", description: "Mozzarella, tomato with basil pesto", price: "₹350" },
-          {
-            name: "Hawaiian Veg/Chicken",
-            description: "Juliennes of vegetables/ chicken and pineapple with vegetarian mayonnaise",
-            price: "₹250",
-          },
-          {
-            name: "Tandoori Chicken Tikka Salad",
-            description:
-              "Chunks of tandoori chicken marinated with lemon and chat masala, onion, green chili, coriander and tomato served in papadum basket",
-            price: "₹350",
-          },
-          {
-            name: "Spicy Prawn Salad",
-            description: "Prawns, thai chilli sauce, fish sauce with garlic, shredded onion & capsicum",
-            price: "₹450",
-          },
-        ],
-      },
-      {
-        category: "SOUPS",
-        items: [
-          { name: "Minestrone", description: "Italian tomato vegetables pasta broth", price: "₹225" },
-          { name: "Mushroom Cappuccino", description: "Smooth & creamy soup with froth", price: "₹225" },
-          {
-            name: "Mulligatawny",
-            description: "Puree of lentils enhanced with a melange of Indian spices, garnished with rice",
-            price: "₹225",
-          },
-          {
-            name: "Sweet Corn",
-            description: "Soup prepared with chopped vegetables along with sweet corn choice of vegetable/chicken",
-            price: "₹225/250",
-          },
-          {
-            name: "Hot-N-Sour",
-            description: "Spicy thick soup with soya sauce, choice of vegetable/chicken",
-            price: "₹225/250",
-          },
-          {
-            name: "Lemon Coriander",
-            description: "Clear broth flavored with lemon grass, choice of vegetable/chicken",
-            price: "₹225/250",
-          },
-          { name: "Cream Soup - Selection", description: "Tomato/Mushroom/Spinach/Chicken", price: "₹225/250" },
-          {
-            name: "Manchow",
-            description: "A thick soup garnished with crispy noodles choice of vegetable/chicken",
-            price: "₹225/250",
-          },
-          { name: "Wanton Soup", description: "Thin soup with Vegetables/Chicken dumpling", price: "₹225/250" },
-          {
-            name: "Lung Fung Soup",
-            description: "Thick garlic flavor soup with Vegetables/Chicken",
-            price: "₹225/250",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    name: "Chao China",
-    description: "Chinese Restaurant",
-    image: "https://patliputracontinental.com/images/dinings/chao_china_11zon%20(1).jpg",
-    cuisine: "International",
-    openingHours: "7:00 PM - 11:00 PM",
-    menu: [
-      { name: "Butter Chicken", price: "₹950" },
-      { name: "Vegetable Biryani", price: "₹850" },
-      { name: "Rogan Josh", price: "₹1,100" },
-    ],
-  },
-  {
-    name: "Coca Mocha",
-    description: "Coffee Shop",
-    image: "https://patliputracontinental.com/images/dinings/coca1_11zon%20(1).jpg",
-    cuisine: "Japanese & Pan-Asian",
-    openingHours: "6:00 PM - 10:30 PM",
-    menu: [
-      { name: "Sushi Platter", price: "₹2,200" },
-      { name: "Miso Black Cod", price: "₹2,500" },
-      { name: "Peking Duck", price: "₹2,800" },
-    ],
-  },
-]
 
 const chefs = [
   {
@@ -173,9 +50,17 @@ const chefs = [
 export default function DiningPage() {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const [currentChef, setCurrentChef] = useState(0)
-  const [activeRestaurant, setActiveRestaurant] = useState(restaurants[0])
+  const [diningData, setDiningData] = useState<any[]>([])
+  const [activeRestaurant, setActiveRestaurant] = useState<any | null>(null)
   const [isThankYouOpen, setIsThankYouOpen] = useState(false)
   const [isReservationOpen, setIsReservationOpen] = useState(false)
+
+  useEffect(() => {
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/dining`).then((res) => {
+      setDiningData(res.data)
+      setActiveRestaurant(res.data[0] || null)
+    })
+  }, [])
 
   const nextChef = () => {
     setCurrentChef((prev) => (prev + 1) % chefs.length)
@@ -232,11 +117,11 @@ export default function DiningPage() {
             {isMobile ? (
               // Mobile Layout
               <div className="space-y-8">
-                {restaurants.map((restaurant, index) => (
-                  <div key={index} className="bg-gray-100 rounded-lg overflow-hidden shadow-lg">
+                {diningData.map((restaurant, index) => (
+                  <div key={restaurant._id} className="bg-gray-100 rounded-lg overflow-hidden shadow-lg">
                     <div className="relative h-48">
                       <Image
-                        src={restaurant.image || "/placeholder.svg"}
+                        src={restaurant.image?.[0]?.url || "/placeholder.svg"}
                         alt={restaurant.name}
                         fill
                         className="object-cover"
@@ -244,19 +129,19 @@ export default function DiningPage() {
                     </div>
                     <div className="p-5">
                       <h3 className="text-2xl font-semibold mb-2">{restaurant.name}</h3>
-                      <p className="text-gray-600 mb-4">{restaurant.description}</p>
+                      <p className="text-gray-600 mb-4">{restaurant.shortIntro}</p>
                       <div className="flex flex-col gap-3 mb-5">
                         <div className="flex items-center">
                           <Clock className="w-4 h-4 mr-2 text-[#bf840d]" />
-                          <span className="text-sm">{restaurant.openingHours}</span>
+                          <span className="text-sm">{restaurant.breakfastTiming || restaurant.lunchDinnerTiming}</span>
                         </div>
                         <div className="flex items-center">
                           <MapPin className="w-4 h-4 mr-2 text-[#bf840d]" />
-                          <span className="text-sm">Hotel Lobby Level</span>
+                          <span className="text-sm">{restaurant.location}</span>
                         </div>
                         <div className="flex items-center">
                           <Phone className="w-4 h-4 mr-2 text-[#bf840d]" />
-                          <span className="text-sm">+1 234 567 8900</span>
+                          <span className="text-sm">{restaurant.phone}</span>
                         </div>
                       </div>
                       <div className="flex flex-col gap-3">
@@ -272,16 +157,16 @@ export default function DiningPage() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 <div className="lg:col-span-1">
                   <ul className="space-y-4">
-                    {restaurants.map((restaurant, index) => (
-                      <li key={index}>
+                    {diningData.map((restaurant, index) => (
+                      <li key={restaurant._id}>
                         <Button
-                          variant={activeRestaurant.name === restaurant.name ? "default" : "outline"}
+                          variant={activeRestaurant && activeRestaurant._id === restaurant._id ? "default" : "outline"}
                           className="w-full text-left justify-start h-auto py-4"
                           onClick={() => setActiveRestaurant(restaurant)}
                         >
                           <div>
                             <h3 className="text-xl font-semibold">{restaurant.name}</h3>
-                            <p className="text-sm text-gray-600">{restaurant.cuisine}</p>
+                            <p className="text-sm text-gray-600">{restaurant.shortIntro}</p>
                           </div>
                         </Button>
                       </li>
@@ -289,43 +174,45 @@ export default function DiningPage() {
                   </ul>
                 </div>
                 <div className="lg:col-span-2">
-                  <motion.div
-                    key={activeRestaurant.name}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="bg-gray-100 rounded-lg overflow-hidden shadow-xl"
-                  >
-                    <Image
-                      src={activeRestaurant.image || "/placeholder.svg"}
-                      alt={activeRestaurant.name}
-                      width={800}
-                      height={400}
-                      className="w-full h-80 object-cover"
-                    />
-                    <div className="p-8">
-                      <h3 className="text-3xl font-semibold mb-4">{activeRestaurant.name}</h3>
-                      <p className="text-gray-600 mb-6">{activeRestaurant.description}</p>
-                      <div className="flex flex-wrap gap-6 mb-8">
-                        <div className="flex items-center">
-                          <Clock className="w-5 h-5 mr-2 text-[#bf840d]" />
-                          <span>{activeRestaurant.openingHours}</span>
+                  {activeRestaurant && (
+                    <motion.div
+                      key={activeRestaurant._id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                      className="bg-gray-100 rounded-lg overflow-hidden shadow-xl"
+                    >
+                      <Image
+                        src={activeRestaurant.image?.[0]?.url || "/placeholder.svg"}
+                        alt={activeRestaurant.name}
+                        width={800}
+                        height={400}
+                        className="w-full h-80 object-cover"
+                      />
+                      <div className="p-8">
+                        <h3 className="text-3xl font-semibold mb-4">{activeRestaurant.name}</h3>
+                        <p className="text-gray-600 mb-6">{activeRestaurant.shortIntro}</p>
+                        <div className="flex flex-wrap gap-6 mb-8">
+                          <div className="flex items-center">
+                            <Clock className="w-5 h-5 mr-2 text-[#bf840d]" />
+                            <span>{activeRestaurant.breakfastTiming || activeRestaurant.lunchDinnerTiming}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <MapPin className="w-5 h-5 mr-2 text-[#bf840d]" />
+                            <span>{activeRestaurant.location}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Phone className="w-5 h-5 mr-2 text-[#bf840d]" />
+                            <span>{activeRestaurant.phone}</span>
+                          </div>
                         </div>
-                        <div className="flex items-center">
-                          <MapPin className="w-5 h-5 mr-2 text-[#bf840d]" />
-                          <span>Hotel Lobby Level</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Phone className="w-5 h-5 mr-2 text-[#bf840d]" />
-                          <span>+1 234 567 8900</span>
+                        <div className="flex gap-4">
+                          <MenuDialog restaurant={activeRestaurant} />
+                          <ReservationDialog restaurant={activeRestaurant} />
                         </div>
                       </div>
-                      <div className="flex gap-4">
-                        <MenuDialog restaurant={activeRestaurant} />
-                        <ReservationDialog restaurant={activeRestaurant} />
-                      </div>
-                    </div>
-                  </motion.div>
+                    </motion.div>
+                  )}
                 </div>
               </div>
             )}
@@ -414,14 +301,14 @@ export default function DiningPage() {
         </section>
 
         {/* Testimonials Section */}
-        <TestimonialsSection isMobile={isMobile} />
+        <TestimonialsSection isMobile={isMobile} restaurantNames={diningData.map(r => r.name)} />
       </main>
       <Footer />
     </div>
   )
 }
 
-function MenuDialog({ restaurant }: { restaurant: (typeof restaurants)[0] }) {
+function MenuDialog({ restaurant }: { restaurant: any }) {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (
@@ -438,38 +325,40 @@ function MenuDialog({ restaurant }: { restaurant: (typeof restaurants)[0] }) {
           <DialogTitle>{restaurant.name} Menu</DialogTitle>
         </DialogHeader>
         <div className="py-4">
-          {Array.isArray(restaurant.menu) && restaurant.menu[0].category ? (
-            // Structured menu with categories
-            restaurant.menu.map((category, index) => (
-              <div key={index} className="mb-8">
-                <h3 className="text-2xl font-semibold mb-4 text-[#bf840d]">{category.category}</h3>
-                <div className="space-y-4">
-                  {category.items.map((item, itemIndex) => (
-                    <div key={itemIndex} className="border-b border-gray-200 pb-4">
-                      <div className="flex justify-between items-start">
+          {Array.isArray(restaurant.menu) && restaurant.menu.length > 0 ? (
+            restaurant.menu[0].category ? (
+              // Structured menu with categories
+              restaurant.menu.map((category, index) => (
+                <div key={index} className="mb-8">
+                  <h3 className="text-2xl font-semibold mb-4 text-[#bf840d]">{category.category}</h3>
+                  <div className="space-y-4">
+                    {category.items.map((item, itemIndex) => (
+                      <div key={itemIndex} className="border-b border-gray-200 pb-4">
                         <div className={isMobile ? "w-3/4" : ""}>
                           <h4 className="text-lg font-medium">{item.name}</h4>
                           <p className="text-sm text-gray-600">{item.description}</p>
                         </div>
                         <span className="text-[#bf840d] font-semibold">{item.price}</span>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))
-          ) : (
-            // Simple menu structure
-            <div className="space-y-4">
-              {restaurant.menu.map((item, index) => (
-                <div key={index} className="border-b border-gray-200 pb-4">
-                  <div className="flex justify-between items-start">
-                    <h4 className="text-lg font-medium">{item.name}</h4>
-                    <span className="text-[#bf840d] font-semibold">{item.price}</span>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
+              ))
+            ) : (
+              // Simple menu structure
+              <div className="space-y-4">
+                {restaurant.menu.map((item, index) => (
+                  <div key={index} className="border-b border-gray-200 pb-4">
+                    <div className="flex justify-between items-start">
+                      <h4 className="text-lg font-medium">{item.name}</h4>
+                      <span className="text-[#bf840d] font-semibold">{item.price}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          ) : (
+            <div className="text-gray-500 italic">Menu not available.</div>
           )}
         </div>
       </DialogContent>
@@ -477,11 +366,49 @@ function MenuDialog({ restaurant }: { restaurant: (typeof restaurants)[0] }) {
   )
 }
 
-function ReservationDialog({ restaurant }: { restaurant: (typeof restaurants)[0] }) {
+function ReservationDialog({ restaurant }: { restaurant: any }) {
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const [date, setDate] = useState<Date>()
+  const [name, setName] = useState("")
+  const [phone, setPhone] = useState("")
+  const [date, setDate] = useState("")
+  const [time, setTime] = useState("")
+  const [guests, setGuests] = useState(1)
   const [isThankYouOpen, setIsThankYouOpen] = useState(false)
   const [isReservationOpen, setIsReservationOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError("")
+    try {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dining-bookings`, {
+        name,
+        phone,
+        date,
+        time,
+        guests,
+        dining: restaurant._id,
+      },{
+        headers:{
+          "Content-Type": "application/json",
+        
+        }
+      })
+      setIsThankYouOpen(true)
+      setIsReservationOpen(false)
+      setName("")
+      setPhone("")
+      setDate("")
+      setTime("")
+      setGuests(1)
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Failed to book. Please try again.")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <>
@@ -499,36 +426,38 @@ function ReservationDialog({ restaurant }: { restaurant: (typeof restaurants)[0]
             <DialogTitle>Quick Reservation</DialogTitle>
             <DialogDescription>Enter details for your reservation.</DialogDescription>
           </DialogHeader>
-          <form className="space-y-3">
+          <form className="space-y-3" onSubmit={handleSubmit}>
             <div className="space-y-1">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Your name" />
+              <Input id="name" placeholder="Your name" value={name} onChange={e => setName(e.target.value)} required />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="phone">Phone</Label>
+              <Input id="phone" placeholder="Your phone" value={phone} onChange={e => setPhone(e.target.value)} required />
             </div>
             <div className="space-y-1">
               <Label htmlFor="date">Date</Label>
-              <Input id="date" type="date" />
+              <Input id="date" type="date" value={date} onChange={e => setDate(e.target.value)} required />
             </div>
             <div className="space-y-1">
               <Label htmlFor="time">Time</Label>
-              <Input id="time" type="time" />
+              <Input id="time" type="time" value={time} onChange={e => setTime(e.target.value)} required />
             </div>
             <div className="space-y-1">
               <Label htmlFor="guests">Guests</Label>
-              <Input id="guests" type="number" min="1" max="10" placeholder="Number of guests" />
+              <Input id="guests" type="number" min="1" max="10" value={guests} onChange={e => setGuests(Number(e.target.value))} required />
             </div>
+            {error && <div className="text-red-500 text-sm">{error}</div>}
+            <DialogFooter>
+              <Button
+                type="submit"
+                className="w-full bg-[#bf840d] hover:bg-[#8B5E04] text-white"
+                disabled={loading}
+              >
+                {loading ? "Booking..." : "Confirm Reservation"}
+              </Button>
+            </DialogFooter>
           </form>
-          <DialogFooter>
-            <Button
-              type="submit"
-              className="w-full bg-[#bf840d] hover:bg-[#8B5E04] text-white"
-              onClick={() => {
-                setIsThankYouOpen(true)
-                setIsReservationOpen(false)
-              }}
-            >
-              Confirm Reservation
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -547,7 +476,7 @@ function ReservationDialog({ restaurant }: { restaurant: (typeof restaurants)[0]
   )
 }
 
-function TestimonialsSection({ isMobile }: { isMobile: boolean }) {
+function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean, restaurantNames: string[] }) {
   const diningTestimonials = [
     {
       name: "Sarah Johnson",
@@ -646,17 +575,17 @@ function TestimonialsSection({ isMobile }: { isMobile: boolean }) {
               >
                 All
               </button>
-              {restaurants.map((restaurant) => (
+              {restaurantNames.map((name) => (
                 <button
-                  key={restaurant.name}
-                  onClick={() => setActiveRestaurant(restaurant.name)}
+                  key={name}
+                  onClick={() => setActiveRestaurant(name)}
                   className={`px-3 py-1 rounded-md text-xs font-medium transition-all whitespace-nowrap ${
-                    activeRestaurant === restaurant.name
+                    activeRestaurant === name
                       ? "bg-white shadow-sm text-amber-800"
                       : "text-gray-600 hover:text-gray-900"
                   }`}
                 >
-                  {restaurant.name}
+                  {name}
                 </button>
               ))}
             </div>
@@ -791,17 +720,17 @@ function TestimonialsSection({ isMobile }: { isMobile: boolean }) {
             >
               All Restaurants
             </button>
-            {restaurants.map((restaurant) => (
+            {restaurantNames.map((name) => (
               <button
-                key={restaurant.name}
-                onClick={() => setActiveRestaurant(restaurant.name)}
+                key={name}
+                onClick={() => setActiveRestaurant(name)}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                  activeRestaurant === restaurant.name
+                  activeRestaurant === name
                     ? "bg-white shadow-sm text-amber-800"
                     : "text-gray-600 hover:text-gray-900"
                 }`}
               >
-                {restaurant.name}
+                {name}
               </button>
             ))}
           </div>
@@ -960,8 +889,8 @@ function TestimonialsSection({ isMobile }: { isMobile: boolean }) {
                   {expandedTestimonial === index
                     ? testimonial.comment
                     : testimonial.comment.length > 120
-                      ? `${testimonial.comment.substring(0, 120)}...`
-                      : testimonial.comment}
+                    ? `${testimonial.comment.substring(0, 120)}...`
+                    : testimonial.comment}
                 </p>
               </div>
 
