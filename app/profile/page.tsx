@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { CalendarDays, CreditCard, Gift, History, Home, Settings, Star, User } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import axios from "axios"
 
 export default function ProfilePage() {
   const router = useRouter()
@@ -39,6 +40,10 @@ export default function ProfilePage() {
     confirm: "",
   })
 
+  const [bookings, setBookings] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
   // Form handlers
   const handlePersonalInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPersonalInfo({
@@ -62,12 +67,36 @@ export default function ProfilePage() {
   }
 
   // Form submissions
-  const savePersonalInfo = () => {
-    // In a real app, this would be an API call
-    toast({
-      title: "Profile Updated",
-      description: "Your personal information has been updated successfully.",
-    })
+  const savePersonalInfo = async () => {
+    try {
+      const token = localStorage.getItem("hpc-Token")
+      await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/profile`,
+        {
+          name: personalInfo.name,
+          email: personalInfo.email,
+          phone: personalInfo.phone,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      toast({
+        title: "Profile Updated",
+        description: "Your personal information has been updated successfully. You will be logged out.",
+      })
+      localStorage.clear()
+
+    } catch (error: any) {
+      toast({
+        title: "Profile Update Error",
+        description: error.response?.data?.message || error.message || "Failed to update profile.",
+        variant: "destructive",
+      })
+    }
   }
 
   const savePreferences = () => {
@@ -78,7 +107,7 @@ export default function ProfilePage() {
     })
   }
 
-  const changePassword = () => {
+  const changePassword = async () => {
     if (passwords.new !== passwords.confirm) {
       toast({
         title: "Password Error",
@@ -88,26 +117,35 @@ export default function ProfilePage() {
       return
     }
 
-    if (passwords.current !== "password123") {
+    try {
+      const token = localStorage.getItem("hpc-Token")
+      await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/change-password`,
+        {
+          currentPassword: passwords.current,
+          newPassword: passwords.new,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      toast({
+        title: "Password Changed",
+        description: "Your password has been changed successfully. You will be logged out.",
+      })
+      localStorage.clear()
+      // router.push("/login")
+      setPasswords({ current: "", new: "", confirm: "" })
+    } catch (error: any) {
       toast({
         title: "Password Error",
-        description: "Current password is incorrect.",
+        description: error.response?.data?.message || error.message || "Failed to change password.",
         variant: "destructive",
       })
-      return
     }
-
-    // In a real app, this would be an API call
-    toast({
-      title: "Password Changed",
-      description: "Your password has been changed successfully.",
-    })
-
-    setPasswords({
-      current: "",
-      new: "",
-      confirm: "",
-    })
   }
 
   const bookStay = () => {
@@ -158,6 +196,53 @@ export default function ProfilePage() {
     // In a real app, this would show redemption options
   }
 
+  // Fetch bookings
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/")
+      return
+    }
+    fetchBookings()
+  }, [isAuthenticated, router])
+
+  const fetchBookings = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const token = localStorage.getItem("hpc-Token")
+      if (!token) {
+        setError("You are not logged in. Please log in again.")
+        setBookings([])
+        setLoading(false)
+        return
+      }
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/bookings/my`,{
+        headers:{
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      })
+
+      console.log(response.data[0], "profile bookings")
+      if (response.status === 200) {
+        setBookings(response.data)
+        if (response.data[0]) {
+          console.log(response.data[0].booking.checkInDate, "profile")
+        }
+      } else {
+        setError("Failed to fetch bookings")
+      }
+    } catch (err: any) {
+      if (err.response?.status === 404 && err.response?.data?.error === "No bookings found for this user") {
+        setBookings([])
+      } else {
+        setError(err.response?.data?.message || err.response?.data?.error || "Failed to fetch bookings")
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   // Redirect if not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
@@ -182,15 +267,15 @@ export default function ProfilePage() {
               </div>
               <div>
                 <h1 className="text-3xl md:text-4xl font-serif font-medium mb-2">{user.name}</h1>
-                <div className="flex flex-wrap gap-4 items-center">
-                  <Badge className="bg-white text-[#bf840d] hover:bg-white/90">{user.membershipLevel} Member</Badge>
+                {/* <div className="flex flex-wrap gap-4 items-center">
+                  <Badge className="bg-white text-[#bf840d] hover:bg-white/90">Member</Badge>
                   <p className="text-white/80">Member</p>
                   <p className="text-white/80">Member since {user.memberSince}</p>
                   <div className="flex items-center gap-1">
                     <Star className="h-5 w-5 fill-yellow-300 text-yellow-300" />
                     <span>{user.points} Points</span>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -200,7 +285,7 @@ export default function ProfilePage() {
         <section className="py-12">
           <div className="container mx-auto px-4">
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mb-8">
+              <TabsList className="grid w-full grid-cols-3 md:grid-cols-3 mb-8">
                 <TabsTrigger value="overview" className="flex items-center gap-2">
                   <Home className="h-4 w-4" />
                   <span className="hidden md:inline">Overview</span>
@@ -209,14 +294,14 @@ export default function ProfilePage() {
                   <CalendarDays className="h-4 w-4" />
                   <span className="hidden md:inline">My Stays</span>
                 </TabsTrigger>
-                <TabsTrigger value="rewards" className="flex items-center gap-2">
+                {/* <TabsTrigger value="rewards" className="flex items-center gap-2">
                   <Gift className="h-4 w-4" />
                   <span className="hidden md:inline">Rewards</span>
-                </TabsTrigger>
-                <TabsTrigger value="history" className="flex items-center gap-2">
+                </TabsTrigger> */}
+                {/* <TabsTrigger value="history" className="flex items-center gap-2">
                   <History className="h-4 w-4" />
                   <span className="hidden md:inline">History</span>
-                </TabsTrigger>
+                </TabsTrigger> */}
                 <TabsTrigger value="settings" className="flex items-center gap-2">
                   <Settings className="h-4 w-4" />
                   <span className="hidden md:inline">Settings</span>
@@ -249,11 +334,11 @@ export default function ProfilePage() {
                         </div>
                       </div>
                     </CardContent>
-                    <CardFooter>
+                    {/* <CardFooter>
                       <Button variant="outline" className="w-full">
                         Edit Information
                       </Button>
-                    </CardFooter>
+                    </CardFooter> */}
                   </Card>
 
                   {/* Upcoming Stays */}
@@ -265,34 +350,67 @@ export default function ProfilePage() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      { user?.upcomingStays && user?.upcomingStays.length != 0 ? (
+                      {loading ? (
+                        <p className="text-gray-500">Loading...</p>
+                      ) : error ? (
+                        <p className="text-red-500">{error}</p>
+                      ) : bookings.filter(
+                          stay => new Date(stay.booking.checkInDate).setHours(0,0,0,0) >= new Date().setHours(0,0,0,0)
+                        ).length > 0 ? (
                         <div className="space-y-4">
-                          {user?.upcomingStays.map((stay) => (
-                            <div key={stay.id} className="border-b pb-4 last:border-0">
-                              <div className="flex justify-between">
-                                <p className="font-medium">{stay.roomType}</p>
-                                <Badge variant="outline">{stay.guests} Guests</Badge>
-                              </div>
-                              <p className="text-sm text-gray-500">
-                                {new Date(stay.checkIn).toLocaleDateString()} -{" "}
-                                {new Date(stay.checkOut).toLocaleDateString()}
-                              </p>
-                            </div>
-                          ))}
+                          {bookings
+                            .filter(stay => new Date(stay.booking.checkInDate).setHours(0,0,0,0) >= new Date().setHours(0,0,0,0))
+                            .map((stay) => {
+                              const checkIn = new Date(stay.booking.checkInDate)
+                              const checkOut = new Date(stay.booking.checkOutDate)
+                              const numDays = Math.max(1, Math.round((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)))
+                              return (
+                                <div key={stay.booking._id} className="border-b pb-4 last:border-0">
+                                  <div className="flex justify-between items-start">
+                                    <div>
+                                      <p className="font-medium text-[#bf840d] flex items-center gap-2">
+                                        Booking ID: {stay.booking.bookingId}
+                                      </p>
+                                      <p className="font-semibold text-lg">{stay.room?.room_title || 'Room'}</p>
+                                      <div className="flex items-center gap-4 mt-1 text-xs text-gray-600">
+                                        <span className="flex items-center gap-1">
+                                          <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="10" rx="2" stroke="#bf840d" strokeWidth="1.5"/><path d="M8 7V5a4 4 0 0 1 8 0v2" stroke="#bf840d" strokeWidth="1.5"/></svg>
+                                          {stay.booking.noOfRooms || 1} Room{stay.booking.noOfRooms > 1 ? 's' : ''}
+                                        </span>
+                                        <span className="flex items-center gap-1">
+                                          <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="#bf840d" strokeWidth="1.5"/><path d="M4 20v-1a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v1" stroke="#bf840d" strokeWidth="1.5"/></svg>
+                                          {stay.booking.noOfGuests?.adults || 1} Guest{stay.booking.noOfGuests?.adults > 1 ? 's' : ''}
+                                        </span>
+                                      </div>
+                                      <p className="text-sm text-gray-500 mt-1">
+                                        {checkIn.toLocaleDateString()} - {checkOut.toLocaleDateString()}
+                                      </p>
+                                    </div>
+                                    {stay.booking.paymentStatus && (
+                                      <Badge className={`capitalize px-3 py-1 text-xs font-semibold border-0 mt-1 ${stay.booking.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{stay.booking.paymentStatus}</Badge>
+                                    )}
+                                  </div>
+                                  <div className="mt-3 text-sm text-gray-700 flex flex-wrap gap-x-6 gap-y-1 font-medium items-center">
+                                    <div><span className="text-gray-500 font-normal">Total Price:</span> ₹{stay.booking.totalPrice}</div>
+                                    <span className="hidden md:inline-block text-gray-300">|</span>
+                                    <div><span className="text-gray-500 font-normal">No. of Days:</span> {numDays}</div>
+                                  </div>
+                                </div>
+                              )
+                            })}
                         </div>
                       ) : (
-                        <p className="text-gray-500">No upcoming stays</p>
+                        <>
+                        
+                        </>
+                     
                       )}
                     </CardContent>
-                    <CardFooter>
-                      <Button variant="outline" className="w-full">
-                        Book a Stay
-                      </Button>
-                    </CardFooter>
+                   
                   </Card>
 
                   {/* Preferences */}
-                  <Card>
+                  {/* <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Settings className="h-5 w-5 text-[#bf840d]" />
@@ -320,7 +438,7 @@ export default function ProfilePage() {
                         Update Preferences
                       </Button>
                     </CardFooter>
-                  </Card>
+                  </Card> */}
                 </div>
               </TabsContent>
 
@@ -334,63 +452,101 @@ export default function ProfilePage() {
                     <div className="space-y-8">
                       <div>
                         <h3 className="text-lg font-medium mb-4">Upcoming Stays</h3>
-                        {user?.upcomingStays &&  user?.upcomingStays.length > 0 ? (
+                        {loading ? (
+                          <p className="text-gray-500">Loading...</p>
+                        ) : error ? (
+                          <p className="text-red-500">{error}</p>
+                        ) : bookings.filter(
+                            stay => new Date(stay.booking.checkInDate).setHours(0,0,0,0) >= new Date().setHours(0,0,0,0)
+                          ).length > 0 ? (
                           <div className="space-y-4">
-                            {user.upcomingStays.map((stay) => (
-                              <div key={stay.id} className="border rounded-lg p-4">
-                                <div className="flex justify-between">
-                                  <p className="font-medium">{stay.roomType}</p>
-                                  <Badge variant="outline">{stay.guests} Guests</Badge>
-                                </div>
-                                <p className="text-sm text-gray-500">
-                                  {new Date(stay.checkIn).toLocaleDateString()} -{" "}
-                                  {new Date(stay.checkOut).toLocaleDateString()}
-                                </p>
-                                <div className="flex gap-2 mt-4">
-                                  <Button variant="outline" size="sm" onClick={() => modifyStay(stay.id)}>
-                                    Modify
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="text-red-500 border-red-500 hover:bg-red-50"
-                                    onClick={() => cancelStay(stay.id)}
-                                  >
-                                    Cancel
-                                  </Button>
-                                </div>
-                              </div>
-                            ))}
+                            {bookings
+                              .filter(stay => new Date(stay.booking.checkInDate).setHours(0,0,0,0) >= new Date().setHours(0,0,0,0))
+                              .map((stay) => {
+                                const checkIn = new Date(stay.booking.checkInDate)
+                                const checkOut = new Date(stay.booking.checkOutDate)
+                                const numDays = Math.max(1, Math.round((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)))
+                                return (
+                                  <div key={stay.booking._id} className="border rounded-lg p-4 bg-gray-50">
+                                    <div className="flex justify-between items-center">
+                                      <div>
+                                        <p className="font-medium text-[#bf840d]">Booking ID: {stay.booking.bookingId}</p>
+                                        <p className="font-semibold text-lg">{stay.room?.room_title || 'Room'}</p>
+                                      </div>
+                                      <div className="flex gap-2 items-center">
+                                        <Badge variant="outline">{stay.booking.noOfGuests?.adults || 1} Guests</Badge>
+                                        {stay.booking.paymentStatus && (
+                                          <Badge className={`capitalize px-3 py-1 text-xs font-semibold border-0 ${stay.booking.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{stay.booking.paymentStatus}</Badge>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <p className="text-sm text-gray-500">
+                                      {checkIn.toLocaleDateString()} - {checkOut.toLocaleDateString()}
+                                    </p>
+                                    <div className="mt-2 text-sm text-gray-700 flex flex-wrap gap-x-6 gap-y-1">
+                                      <div><strong>Total Price:</strong> ₹{stay.booking.totalPrice}</div>
+                                      <div><strong>No. of Rooms:</strong> {stay.booking.noOfRooms}</div>
+                                      <div><strong>No. of Days:</strong> {numDays}</div>
+
+                                    </div>
+                                  </div>
+                                )
+                              })}
                           </div>
                         ) : (
                           <p className="text-gray-500">No upcoming stays</p>
                         )}
                       </div>
 
+                      {/* Past Stays */}
                       <div>
                         <h3 className="text-lg font-medium mb-4">Past Stays</h3>
-                        {user.pastStays==[] && user?.pastStays.length > 0 ? (
+                        {loading ? (
+                          <p className="text-gray-500">Loading...</p>
+                        ) : error ? (
+                          <p className="text-red-500">{error}</p>
+                        ) : bookings.filter(
+                            stay => new Date(stay.booking.checkOutDate).setHours(0,0,0,0) < new Date().setHours(0,0,0,0)
+                          ).length > 0 ? (
                           <div className="space-y-4">
-                            {user.pastStays.map((stay) => (
-                              <div key={stay.id} className="border rounded-lg p-4 bg-gray-50">
-                                <div className="flex justify-between">
-                                  <p className="font-medium">{stay.roomType}</p>
-                                  <Badge variant="outline">{stay.guests} Guests</Badge>
-                                </div>
-                                <p className="text-sm text-gray-500">
-                                  {new Date(stay.checkIn).toLocaleDateString()} -{" "}
-                                  {new Date(stay.checkOut).toLocaleDateString()}
-                                </p>
-                                <div className="flex gap-2 mt-4">
-                                  <Button variant="outline" size="sm" onClick={() => leaveReview(stay.id)}>
-                                    Leave Review
-                                  </Button>
-                                  <Button variant="outline" size="sm" onClick={() => bookAgain(stay.id)}>
-                                    Book Again
-                                  </Button>
-                                </div>
-                              </div>
-                            ))}
+                            {bookings
+                              .filter(stay => new Date(stay.booking.checkOutDate).setHours(0,0,0,0) < new Date().setHours(0,0,0,0))
+                              .map((stay) => {
+                                const checkIn = new Date(stay.booking.checkInDate)
+                                const checkOut = new Date(stay.booking.checkOutDate)
+                                const numDays = Math.max(1, Math.round((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)))
+                                return (
+                                  <div key={stay.booking._id} className="border rounded-lg p-4 bg-gray-50">
+                                    <div className="flex justify-between items-center">
+                                      <div>
+                                        <p className="font-medium text-[#bf840d]">Booking ID: {stay.booking.bookingId}</p>
+                                        <p className="font-semibold text-lg">{stay.room?.room_title || 'Room'}</p>
+                                      </div>
+                                      <div className="flex gap-2 items-center">
+                                        <Badge variant="outline">{stay.booking.noOfGuests?.adults || 1} Guests</Badge>
+                                        {stay.booking.paymentStatus && (
+                                          <Badge className={`capitalize px-3 py-1 text-xs font-semibold border-0 ${stay.booking.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{stay.booking.paymentStatus}</Badge>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <p className="text-sm text-gray-500">
+                                      {checkIn.toLocaleDateString()} - {checkOut.toLocaleDateString()}
+                                    </p>
+                                    <div className="mt-2 text-sm text-gray-700 flex flex-wrap gap-x-6 gap-y-1">
+ <div><strong>Total Price:</strong> ₹{stay.booking.totalPrice}</div>                                      <div><strong>No. of Rooms:</strong> {stay.booking.noOfRooms}</div>
+                                      <div><strong>No. of Days:</strong> {numDays}</div>
+                                    </div>
+                                    <div className="flex gap-2 mt-4">
+                                      <Button variant="outline" size="sm" onClick={() => leaveReview(stay.booking._id)}>
+                                        Leave Review
+                                      </Button>
+                                      <Button variant="outline" size="sm" onClick={() => bookAgain(stay.booking._id)}>
+                                        Book Again
+                                      </Button>
+                                    </div>
+                                  </div>
+                                )
+                              })}
                           </div>
                         ) : (
                           <p className="text-gray-500">No past stays</p>
@@ -412,16 +568,16 @@ export default function ProfilePage() {
                       <div className="bg-gradient-to-r from-amber-700 to-amber-500 rounded-lg p-6 text-white">
                         <div className="flex justify-between items-center mb-4">
                           <div>
-                            <h3 className="text-xl font-bold">{user?.membershipLevel} Membership</h3>
-                            <p className="text-white/80">Member since {user.memberSince}</p>
+                            <h3 className="text-xl font-bold">Member</h3>
+                            <p className="text-white/80">Welcome to our loyalty program</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-2xl font-bold">{user?.points}</p>
+                            <p className="text-2xl font-bold">—</p>
                             <p className="text-white/80">Points</p>
                           </div>
                         </div>
                         <div className="mt-4">
-                          <Button className="bg-white text-amber-700 hover:bg-white/90" onClick={redeemPoints}>
+                          <Button className="bg-white text-amber-700 hover:bg-white/90" disabled>
                             Redeem Points
                           </Button>
                         </div>
@@ -466,29 +622,34 @@ export default function ProfilePage() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {user?.pastStays && user?.pastStays.map((stay, index) => (
-                        <div key={index} className="flex items-start gap-4 border-b pb-4 last:border-0">
-                          <div className="bg-gray-100 p-2 rounded-full">
-                            <CalendarDays className="h-5 w-5 text-[#bf840d]" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex justify-between">
-                              <p className="font-medium">Stay at {stay?.roomType}</p>
-                              <p className="text-sm text-gray-500">
-                                {new Date(stay.checkIn).toLocaleDateString()} -{" "}
-                                {new Date(stay.checkOut).toLocaleDateString()}
-                              </p>
+                      {bookings.filter(stay => new Date(stay.checkOutDate).setHours(0,0,0,0) < new Date().setHours(0,0,0,0)).length > 0 ? (
+                        bookings
+                          .filter(stay => new Date(stay.checkOutDate).setHours(0,0,0,0) < new Date().setHours(0,0,0,0))
+                          .map((stay, index) => (
+                            <div key={stay._id || index} className="flex items-start gap-4 border-b pb-4 last:border-0">
+                              <div className="bg-gray-100 p-2 rounded-full">
+                                <CalendarDays className="h-5 w-5 text-[#bf840d]" />
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex justify-between">
+                                  <p className="font-medium">Stay at {stay.room?.room_title || 'Room'}</p>
+                                  <p className="text-sm text-gray-500">
+                                    {new Date(stay.checkInDate).toLocaleDateString()} - {new Date(stay.checkOutDate).toLocaleDateString()}
+                                  </p>
+                                </div>
+                                <p className="text-sm text-gray-500">
+                                  {Math.floor(
+                                    (new Date(stay.checkOutDate).getTime() - new Date(stay.checkInDate).getTime()) /
+                                      (1000 * 60 * 60 * 24),
+                                  )}{" "}
+                                  nights, {stay.noOfGuests?.adults || 1} guests
+                                </p>
+                              </div>
                             </div>
-                            <p className="text-sm text-gray-500">
-                              {Math.floor(
-                                (new Date(stay.checkOut).getTime() - new Date(stay.checkIn).getTime()) /
-                                  (1000 * 60 * 60 * 24),
-                              )}{" "}
-                              nights, {stay.guests} guests
-                            </p>
-                          </div>
-                        </div>
-                      ))}
+                          ))
+                      ) : (
+                        <p className="text-gray-500">No activity history</p>
+                      )}
                       <div className="flex items-start gap-4 border-b pb-4">
                         <div className="bg-gray-100 p-2 rounded-full">
                           <Gift className="h-5 w-5 text-[#bf840d]" />
@@ -565,7 +726,7 @@ export default function ProfilePage() {
                         </Button>
                       </div>
 
-                      <div className="border-t pt-6">
+                      {/* <div className="border-t pt-6">
                         <h3 className="text-lg font-medium mb-4">Preferences</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
@@ -611,7 +772,7 @@ export default function ProfilePage() {
                         <Button className="mt-4 bg-[#bf840d] hover:bg-[#a06f0b] text-white" onClick={savePreferences}>
                           Save Preferences
                         </Button>
-                      </div>
+                      </div> */}
 
                       <div className="border-t pt-6">
                         <h3 className="text-lg font-medium mb-4">Password & Security</h3>

@@ -16,6 +16,8 @@ import {
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { X } from "lucide-react"
+import { toast } from "sonner"
 
 interface Hall {
   _id: string
@@ -55,6 +57,19 @@ export default function MeetingsEventsSection() {
   const [halls, setHalls] = useState<Hall[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedHall, setSelectedHall] = useState("")
+  const [form, setForm] = useState({
+    hall: "",
+    date: "",
+    guests: "",
+    name: "",
+    mobile: "",
+    email: "",
+    purpose: "",
+    message: ""
+  })
+  const [formError, setFormError] = useState("")
 
   useEffect(() => {
     const fetchHalls = async () => {
@@ -71,6 +86,59 @@ export default function MeetingsEventsSection() {
 
     fetchHalls()
   }, [])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!form.name.trim() || !form.email.trim() || !form.mobile.trim() || !form.purpose.trim() || !form.date || !form.guests) {
+      setFormError("All fields are mandatory.")
+      toast.error("All fields are mandatory.")
+      return
+    }
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+    const mobileRegex = /^\d{10}$/
+    if (!emailRegex.test(form.email)) {
+      setFormError("Please enter a valid email address.")
+      toast.error("Please enter a valid email address.")
+      return
+    }
+    if (!mobileRegex.test(form.mobile)) {
+      setFormError("Please enter a valid 10-digit mobile number.")
+      toast.error("Please enter a valid 10-digit mobile number.")
+      return
+    }
+    setFormError("")
+    try {
+      const hallObj = halls.find(h => h.hall_name === form.hall)
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event-bookings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("hpc-token") || ''}`
+        },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim().toLowerCase(),
+          mobile: form.mobile.trim(),
+          eventType: form.purpose,
+          date: form.date,
+          guests: Number(form.guests),
+          message: form.message.trim(),
+          hallId: hallObj?._id || undefined
+        })
+      })
+      if (!res.ok) throw new Error("Failed to submit request")
+      toast.success("Quote request submitted!")
+      setModalOpen(false)
+    } catch (err) {
+      setFormError("Failed to submit request. Please try again.")
+      toast.error("Failed to submit request. Please try again.")
+    }
+  }
+
+  const openModal = (hallName: string) => {
+    setSelectedHall(hallName)
+    setForm(f => ({ ...f, hall: hallName }))
+    setModalOpen(true)
+  }
 
   return (
     <section className="py-16 bg-white">
@@ -106,27 +174,23 @@ export default function MeetingsEventsSection() {
                   <h3 className="text-xl font-serif mb-2 text-[#bf840d]">{hall.hall_name}</h3>
                   <p className="text-gray-600 text-sm mb-2">Up to {hall.max_capacity} guests</p>
                   <p className="text-gray-600 text-sm">{hall.short_intro}</p>
-                  {/* {hall.status === 'available' && (
-                    <div className="mt-2">
-                      <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                        Available
-                      </span>
-                    </div>
-                  )} */}
+                  <Button className="mt-4 bg-[#bf840d] text-white" onClick={() => openModal(hall.hall_name)}>
+                    Request Quote
+                  </Button>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        <div className="text-center mb-12">
+        {/* <div className="text-center mb-12">
           <Button
             className="bg-[#bf840d] hover:bg-[#a06f0b] text-white px-8 py-3 text-lg"
             onClick={() => setIsDialogOpen(true)}
           >
             Request a Proposal
           </Button>
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="text-center">
@@ -204,6 +268,129 @@ export default function MeetingsEventsSection() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center mt-10">
+          <form className="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg relative z-50" onSubmit={handleSubmit}>
+            <button
+              type="button"
+              onClick={() => setModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 focus:outline-none"
+              aria-label="Close"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <h3 className="text-2xl font-bold mb-6 text-[#bf840d]">Request for Quote</h3>
+            <div className="mb-4">
+              <Label htmlFor="venue">Venue Name *</Label>
+              <select
+                id="venue"
+                className="form-select w-full border rounded p-2"
+                value={selectedHall}
+                onChange={e => {
+                  setSelectedHall(e.target.value)
+                  setForm(f => ({ ...f, hall: e.target.value }))
+                }}
+                required
+              >
+                <option value="">Select Hall</option>
+                {halls.map(h => (
+                  <option key={h._id} value={h.hall_name}>{h.hall_name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="date">Preferred Date *</Label>
+              <Input
+                id="date"
+                type="date"
+                value={form.date}
+                min={new Date().toISOString().split('T')[0]}
+                onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="guests">Number of Guests *</Label>
+              <Input
+                id="guests"
+                type="number"
+                min="1"
+                value={form.guests}
+                onChange={e => setForm(f => ({ ...f, guests: e.target.value }))}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="name">Full Name *</Label>
+              <Input
+                id="name"
+                type="text"
+                value={form.name}
+                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="mobile">Mobile *</Label>
+              <Input
+                id="mobile"
+                type="tel"
+                value={form.mobile}
+                onChange={e => setForm(f => ({ ...f, mobile: e.target.value }))}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="email">Email Address *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={form.email}
+                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="purpose">Purpose of the Event *</Label>
+              <select
+                id="purpose"
+                className="form-select w-full border rounded p-2"
+                value={form.purpose}
+                onChange={e => setForm(f => ({ ...f, purpose: e.target.value }))}
+                required
+              >
+                <option value="">Choose Purpose of the Event</option>
+                <option value="wedding">Wedding</option>
+                <option value="conference">Conference</option>
+                <option value="meeting">Meeting</option>
+                <option value="social event">Social Event</option>
+              </select>
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="message">Message (optional)</Label>
+              <textarea
+                id="message"
+                className="form-input w-full border rounded p-2"
+                value={form.message}
+                onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                maxLength={1000}
+                rows={3}
+                placeholder="Any special requests or details (max 1000 characters)"
+              />
+            </div>
+            {formError && <div className="text-red-600 mb-2 text-sm">{formError}</div>}
+            <div className="text-xs text-gray-500 mb-4">* All fields are mandatory.</div>
+            <div className="flex justify-end">
+              <Button type="submit" className="bg-[#bf840d] text-white">Submit</Button>
+            </div>
+          </form>
+        </div>
+      )}
+      {halls.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500 text-lg">No halls available at the moment.</p>
+        </div>
+      )}
     </section>
   )
 }

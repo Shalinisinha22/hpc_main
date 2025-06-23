@@ -1,95 +1,67 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
+import axios from "axios"
 
-const galleryImages = [
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93734625.jpg-mOf4hEhWwtnasulhIfvqGLU9ujOt1i.jpeg",
-    alt: "Spacious conference room with modern lighting and classroom-style setup",
-    title: "Conference Facility",
-    width: 2070,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/coca1_11zon%20%281%29.jpg-TudrTtXkPmDRD6i4Mueiy4sSJ2xQTz.jpeg",
-    alt: "Modern café with stylish yellow furniture",
-    title: "Coca Mocha Café",
-    width: 2070,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/chao_china_11zon%20%281%29.jpg-A1pCdF8HvXZKhZxPW1EyDpDQDqViVq.jpeg",
-    alt: "Elegant Chinese restaurant with traditional patterns",
-    title: "Chinese Restaurant",
-    width: 2070,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/6ddf6236a969b6ab4622f54dc0f776fd-Ja6DWW8hxwy6FKwYdOq4G8d4dPVH8x.webp",
-    alt: "Luxurious suite with romantic setup",
-    title: "Luxury Suite",
-    width: 2070,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Tower_Suite.jfif-dXmaKDaeOuUr3tXNvgsjQY0mNZ8yct.jpeg",
-    alt: "Unique circular suite with dramatic decor",
-    title: "Tower Suite",
-    width: 2071,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93997118.jpg-BVGoMR9L9pmmqmvMnxAVlmXiSGznK7.jpeg",
-    alt: "Modern boardroom with oval table",
-    title: "Executive Boardroom",
-    width: 2070,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bistro_11zon%20%281%29%20%281%29.jpg-XifAUDnZyiiCqM6o179OEr9mLpnjiU.jpeg",
-    alt: "Contemporary restaurant with elegant table settings",
-    title: "Bistro Restaurant",
-    width: 2025,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Presidential_Suite.jpg-Dlc4cAxTEY3VzGCoktcHeJINuoljgP.jpeg",
-    alt: "Presidential suite with luxury amenities",
-    title: "Presidential Suite",
-    width: 2070,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/a36e56114f70852a3309d5b6792fd8ff-8OFLjuLKx40Ou9q4WiJEsQtgouqoDQ.webp",
-    alt: "Large conference setup with professional lighting",
-    title: "Grand Conference Hall",
-    width: 2070,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1292195_17011015510050228858-sqzb1LNaG3yR5TIZMyEUr0fdnC9PCF.webp",
-    alt: "Spacious twin bedroom with modern amenities",
-    title: "Deluxe Twin Room",
-    width: 2070,
-    height: 1380,
-  },
-]
+type GalleryImage = {
+  url: string
+  name?: string
+  ext?: string
+  _id?: string
+  room_name?: string
+  hall_name?: string
+  dining_name?: string
+}
 
 export default function GalleryPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [roomImages, setRoomImages] = useState<GalleryImage[]>([])
+  const [hallImages, setHallImages] = useState<GalleryImage[]>([])
+  const [diningImages, setDiningImages] = useState<GalleryImage[]>([])
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalImages, setModalImages] = useState<GalleryImage[]>([])
 
-  const handlePrevious = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? galleryImages.length - 1 : prevIndex - 1))
+  useEffect(() => {
+    async function fetchImages() {
+      try {
+        const [roomsRes, hallsRes, diningRes] = await Promise.all([
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/rooms/roomImages`),
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/halls/hallImages`),
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/dining/diningImages`),
+        ])
+        // Attach room_name/hall_name/dining_name to each image
+        setRoomImages(roomsRes.data.flatMap((item: any) => (item.images || []).map((img: any) => ({ ...img, room_name: item.room_name }))
+        ))
+        setHallImages(hallsRes.data.flatMap((item: any) => (item.images || []).map((img: any) => ({ ...img, hall_name: item.hall_name }))
+        ))
+        setDiningImages(diningRes.data.flatMap((item: any) => (item.images || []).map((img: any) => ({ ...img, dining_name: item.dining_name }))
+        ))
+      } catch (e) {
+        // handle error
+      }
+    }
+    fetchImages()
+  }, [])
+
+  const openModal = (images: GalleryImage[], idx: number) => {
+    setModalImages(images)
+    setCurrentImageIndex(idx)
+    setModalOpen(true)
   }
 
-  const handleNext = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex === galleryImages.length - 1 ? 0 : prevIndex + 1))
+  const closeModal = () => setModalOpen(false)
+
+  const handlePrevModal = () => {
+    setCurrentImageIndex((prev) => (prev === 0 ? modalImages.length - 1 : prev - 1))
+  }
+  const handleNextModal = () => {
+    setCurrentImageIndex((prev) => (prev === modalImages.length - 1 ? 0 : prev + 1))
   }
 
   return (
@@ -111,72 +83,119 @@ export default function GalleryPage() {
           </div>
         </section>
 
-        {/* Gallery Section */}
+        {/* Rooms & Suites Gallery */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {galleryImages.map((image, index) => (
-                <Dialog key={index}>
-                  <DialogTrigger asChild>
-                    <div
-                      className="relative aspect-[3/2] cursor-pointer overflow-hidden rounded-lg group"
-                      onClick={() => setCurrentImageIndex(index)}
-                    >
-                      <Image
-                        src={image.src || "/placeholder.svg"}
-                        alt={image.alt}
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-end justify-start p-4">
-                        <h3 className="text-black text-lg font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white px-3 py-1 rounded shadow">
-                          {image.title}
-                        </h3>
-                      </div>
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 bg-black border-none">
-                    <div className="relative w-full h-[80vh]">
-                      <Image
-                        src={galleryImages[currentImageIndex].src || "/placeholder.svg"}
-                        alt={galleryImages[currentImageIndex].alt}
-                        fill
-                        className="object-contain"
-                      />
-                      <div className="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white p-2 rounded">
-                        <h3 className="text-lg font-semibold">{galleryImages[currentImageIndex].title}</h3>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 text-white bg-black/50 hover:bg-black/70"
-                        onClick={() => document.querySelector('[data-state="open"]')?.closest("button")?.click()}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute left-2 top-1/2 -translate-y-1/2 text-white bg-black/50 hover:bg-black/70"
-                        onClick={handlePrevious}
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-white bg-black/50 hover:bg-black/70"
-                        onClick={handleNext}
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+            <h2 className="text-3xl font-bold mb-8">Rooms & Suites</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {roomImages.map((img, idx) => (
+                <div
+                  key={img._id || idx}
+                  className="relative aspect-[3/2] overflow-hidden rounded-xl shadow-lg cursor-pointer group bg-gray-100"
+                  onClick={() => openModal(roomImages, idx)}
+                >
+                  <Image src={img.url || "/placeholder.svg"} alt={img.room_name || img.name || "Room image"} fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-end justify-start p-4">
+                    <span className="text-white text-lg font-semibold transition-opacity duration-300 bg-black/60 px-3 py-1 rounded shadow">
+                      {img.room_name || img.name || "Room"}
+                    </span>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
         </section>
+
+        {/* Meeting & Events Gallery */}
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-8">Meeting & Events</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {hallImages.map((img, idx) => (
+                <div
+                  key={img._id || idx}
+                  className="relative aspect-[3/2] overflow-hidden rounded-xl shadow-lg cursor-pointer group bg-gray-100"
+                  onClick={() => openModal(hallImages, idx)}
+                >
+                  <Image src={img.url || "/placeholder.svg"} alt={img.hall_name || img.name || "Hall image"} fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-end justify-start p-4">
+                    <span className="text-white text-lg font-semibold transition-opacity duration-300 bg-black/60 px-3 py-1 rounded shadow">
+                      {img.hall_name || img.name || "Hall"}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Dining Gallery */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-8">Dining</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {diningImages.map((img, idx) => (
+                <div
+                  key={img._id || idx}
+                  className="relative aspect-[3/2] overflow-hidden rounded-xl shadow-lg cursor-pointer group bg-gray-100"
+                  onClick={() => openModal(diningImages, idx)}
+                >
+                  <Image src={img.url || "/placeholder.svg"} alt={img.dining_name || img.name || "Dining image"} fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-end justify-start p-4">
+                    <span className="text-white text-lg font-semibold transition-opacity duration-300 bg-black/60 px-3 py-1 rounded shadow">
+                      {img.dining_name || img.name || "Dining"}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Modal for image preview */}
+        <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+          <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 bg-black border-none flex items-center justify-center">
+            {modalImages.length > 0 && (
+              <div className="relative w-full h-[80vh] flex items-center justify-center">
+                <Image
+                  src={modalImages[currentImageIndex]?.url || "/placeholder.svg"}
+                  alt={modalImages[currentImageIndex]?.dining_name || modalImages[currentImageIndex]?.room_name || modalImages[currentImageIndex]?.hall_name || modalImages[currentImageIndex]?.name || "Gallery image"}
+                  fill
+                  className="object-contain"
+                />
+                <div className="absolute bottom-4 left-4 bg-black bg-opacity-60 text-white p-3 rounded">
+                  <h3 className="text-lg font-semibold">
+                    {modalImages[currentImageIndex]?.dining_name || modalImages[currentImageIndex]?.room_name || modalImages[currentImageIndex]?.hall_name || modalImages[currentImageIndex]?.name}
+                  </h3>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-2 right-2 text-white bg-black/50 hover:bg-black/70"
+                  onClick={closeModal}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 text-white bg-black/50 hover:bg-black/70"
+                  onClick={handlePrevModal}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-white bg-black/50 hover:bg-black/70"
+                  onClick={handleNextModal}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </main>
       <Footer />
     </div>

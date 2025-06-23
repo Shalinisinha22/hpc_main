@@ -74,22 +74,6 @@ export default function RoomsPage() {
     filterRooms()
   }, [priceRange, selectedView, selectedBedType])
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-red-500">{error}</div>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen flex flex-col bg-amber-50">
       <Header />
@@ -117,6 +101,18 @@ export default function RoomsPage() {
             </Button>
           </div>
         </div>
+
+        {/* Loader and Error after Hero Section */}
+        {isLoading && (
+          <div className="flex justify-center items-center min-h-[40vh]">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        )}
+        {error && !isLoading && (
+          <div className="flex justify-center items-center min-h-[40vh]">
+            <div className="text-red-500">{error}</div>
+          </div>
+        )}
 
         {/* Filter Section */}
         <Dialog open={isFilterVisible} onOpenChange={setIsFilterVisible}>
@@ -208,7 +204,7 @@ export default function RoomsPage() {
           </div>
         ) : (
           <section className="py-16">
-            {console.log("Filtered Rooms:", filteredRooms, rooms)}
+          
             <div className="container mx-auto px-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredRooms.map((room) => (
@@ -261,14 +257,15 @@ function RoomCard({ room }: { room: Room }) {
 console.log(room.amenities)
 
   const additionalInfo = parseJsonSafely(room.additionalDetails[0]);
-  console.log('Parsed additional info:', additionalInfo);
+  console.log('Parsed additional info:', additionalInfo,room);
+
 
   const nextImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % room.images.length)
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % room.roomImage.length)
   }
 
   const prevImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + room.images.length) % room.images.length)
+    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + room.roomImage.length) % room.roomImage.length)
   }
 
   return (
@@ -282,46 +279,45 @@ console.log(room.amenities)
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         <div className="absolute bottom-4 left-4 text-white">
-          <h2 className="text-2xl font-serif">{room.room_title}</h2>
-          <p className="text-sm opacity-80">{room.status}</p>
+          <h2 className="text-lg md:text-2xl font-serif line-clamp-1 max-w-[80vw] md:max-w-none">{room.room_title}</h2>
+          <p className="text-xs md:text-sm opacity-80">{room.status}</p>
         </div>
         {room.roomImage.length > 1 && (
           <>
             <button onClick={prevImage} className="absolute top-1/2 left-2">
-              <ArrowLeft className="w-6 h-6 text-white" />
+              <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 text-white" />
             </button>
             <button onClick={nextImage} className="absolute top-1/2 right-2">
-              <ArrowRight className="w-6 h-6 text-white" />
+              <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white" />
             </button>
           </>
         )}
       </div>
-      <CardContent className="p-6">
+      <CardContent className="p-4 md:p-6">
         <Tabs defaultValue="details">
-          <TabsList className="w-full">
+          <TabsList className="w-full hidden md:flex">
             <TabsTrigger value="details">Details</TabsTrigger>
             <TabsTrigger value="amenities">Amenities</TabsTrigger>
             <TabsTrigger value="additional">Additional</TabsTrigger>
           </TabsList>
-          <TabsContent value="details" className="mt-4">
-            <p className="text-gray-600 mb-4">{room.desc}</p>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="flex items-center gap-2">
-                      <Hotel className="w-4 h-4 text-amber-600" />
-               
+          <TabsContent value="details" className="mt-2 md:mt-4">
+            <p className="text-gray-600 mb-2 md:mb-4 text-xs md:text-base line-clamp-2 md:line-clamp-none">{room.desc}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-1 md:gap-2 text-xs md:text-sm">
+              <div className="flex items-center gap-1 md:gap-2">
+                <Hotel className="w-4 h-4 text-amber-600" />
                 <span>{room.roomSize} sq ft</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 md:gap-2">
                 <Users className="w-4 h-4 text-amber-600" />
                 <span>{room.max_person} Adults, {room.max_children} Children</span>
               </div>
-              <div className="flex items-center gap-2">
-           <BedDouble className="w-4 h-4 text-amber-600" />
+              <div className="flex items-center gap-1 md:gap-2">
+                <BedDouble className="w-4 h-4 text-amber-600" />
                 <span>{room.bedType}</span>
               </div>
             </div>
           </TabsContent>
-          <TabsContent value="amenities" className="mt-4">
+          <TabsContent value="amenities" className="mt-2 md:mt-4 hidden md:block">
             <ul className="grid grid-cols-2 gap-2 text-sm">
               {(room.amenities || []).slice(0, showAllAmenities ? undefined : 6).map((amenity: string, index: number) => (
                 <li key={index} className="flex items-center gap-2">
@@ -340,7 +336,7 @@ console.log(room.amenities)
               </Button>
             )}
           </TabsContent>
-          <TabsContent value="additional" className="mt-4">
+          <TabsContent value="additional" className="mt-2 md:mt-4 hidden md:block">
             <ul className="space-y-2 text-sm">
               {(additionalInfo || []).map((info: string, index: number) => (
                 <li key={index} className="flex items-center gap-2">
@@ -351,18 +347,19 @@ console.log(room.amenities)
             </ul>
           </TabsContent>
         </Tabs>
-        <div className="mt-6 flex items-center justify-between">
+        <div className="mt-4 md:mt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-0">
           <div>
-            <span className="text-2xl font-bold text-amber-600">₹{room?.pricePerNight.toLocaleString()}</span>
-            <span className="text-gray-600">/night</span>
+            <span className="text-lg md:text-2xl font-bold text-amber-600">₹{room?.pricePerNight.toLocaleString()}</span>
+            <span className="text-gray-600 text-xs md:text-base">/night</span>
           </div>
           <Button
-            className="bg-amber-600 hover:bg-amber-700"
+            className="bg-amber-600 hover:bg-amber-700 w-full md:w-auto"
             onClick={() => {
               window.location.href = `/booking?roomId=${room._id}`
             }}
+            disabled={room.status?.toLowerCase() === "unavailable"}
           >
-            Book Now
+            {room.status?.toLowerCase() === "unavailable" ? "Unavailable" : "Book Now"}
           </Button>
         </div>
       </CardContent>

@@ -209,7 +209,7 @@ function RoomCard({
 
   return (
     <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow">
-      <div className="relative h-48">
+      <div className="relative h-40 sm:h-48 md:h-56">
         {room.roomImage.map((image, index) => (
           <Image
             key={index}
@@ -221,10 +221,10 @@ function RoomCard({
             }`}
           /> 
         ))}
-        <div className="absolute top-4 right-4 bg-amber-800 text-white px-3 py-1 rounded-full text-sm font-medium">
+        <div className="absolute top-2 right-2 bg-amber-800 text-white px-2 py-1 rounded-full text-xs md:text-sm font-medium">
           ₹{room.pricePerNight.toLocaleString('en-IN')}/night
         </div>
-        <div className="absolute bottom-4 right-4 flex space-x-2">
+        <div className="absolute bottom-2 right-2 flex space-x-2">
           <Button
             size="icon"
             variant="secondary"
@@ -245,15 +245,12 @@ function RoomCard({
           </Button>
         </div>
       </div>
-      <CardContent className="p-4">
-        <div className="mb-2">
-          <h3 className="text-lg font-medium text-amber-900">{room.room_title}</h3>
-          <p className="text-xs text-amber-800/70">{room.desc}</p>
+      <CardContent className="p-3 md:p-4">
+        <div className="mb-1 md:mb-2">
+          <h3 className="text-base md:text-lg font-medium text-amber-900 line-clamp-1">{room.room_title}</h3>
+          <p className="text-xs text-amber-800/70 line-clamp-2 md:line-clamp-none">{room.desc}</p>
         </div>
-
-
-
-        <div className="grid grid-cols-2 gap-2 mb-3 text-sm ">
+        <div className="grid grid-cols-2 gap-1 md:gap-2 mb-2 md:mb-3 text-xs md:text-sm ">
           <div className="flex items-center text-amber-700 ">
             <BedDouble className="w-4 h-4 mr-1" />
             {room.roomSize} sq ft
@@ -263,11 +260,10 @@ function RoomCard({
             {room.max_person} Adults, {room.max_children} Children
           </div>
         </div>
-
-
+        {/* Amenities - show only 2 on mobile, 6 on desktop */}
         <div className="space-y-2 space-x-2">
-          <div className="grid grid-cols-2 gap-2 mb-2">
-            {(room.amenities).slice(0, showAllAmenities ? undefined : 6).map((amenity: string, index: number) => (
+          <div className="grid grid-cols-2 gap-1 md:gap-2 mb-1 md:mb-2">
+            {(room.amenities).slice(0, showAllAmenities ? undefined : (typeof window !== 'undefined' && window.innerWidth < 640 ? 2 : 6)).map((amenity: string, index: number) => (
               <div 
                 key={index} 
                 className="flex items-center bg-amber-50 px-2 py-1 rounded text-xs text-amber-700"
@@ -277,21 +273,20 @@ function RoomCard({
               </div>
             ))}
           </div>
-          
-          {room.amenities.length > 5 && (
+          {/* Show more/less only on desktop if more than 6 amenities */}
+          {room.amenities.length > 6 && (
             <Button
               variant="link"
               size="sm"
-              className="text-amber-600 hover:text-amber-700 p-0 h-auto mt-1"
+              className="text-amber-600 hover:text-amber-700 p-0 h-auto mt-1 hidden md:inline"
               onClick={() => setShowAllAmenities(!showAllAmenities)}
             >
-              {showAllAmenities ? "Show Less" : `+${room.amenities.length - 5} more `}
+              {showAllAmenities ? "Show Less" : `+${room.amenities.length - 6} more `}
             </Button>
           )}
         </div>
-
-        {/* Additional Details Section */}
-        <div className="mt-4 space-y-2">
+        {/* Additional Details - hidden on mobile */}
+        <div className="mt-2 md:mt-4 space-y-2 hidden md:block">
           <h4 className="text-sm font-medium text-amber-900">Additional Details</h4>
           <div className="grid grid-cols-1 gap-2">
             {room.additionalDetails.map((detail: string, index: number) => (
@@ -305,8 +300,7 @@ function RoomCard({
             ))}
           </div>
         </div>
-
-        <div className="flex items-center justify-between pt-2 border-t">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between pt-2 border-t mt-2 md:mt-4 gap-2 md:gap-0">
           <div className="text-sm">
             <span className="font-medium text-amber-900">
               ₹{(room.pricePerNight * nights * noOfRooms).toLocaleString('en-IN')}
@@ -316,7 +310,7 @@ function RoomCard({
             </span>
           </div>
           <Button
-            className="bg-amber-800 hover:bg-amber-900 text-white"
+            className="bg-amber-800 hover:bg-amber-900 text-white w-full md:w-auto"
             onClick={() => {
               window.location.href = `/booking?${new URLSearchParams({
                 roomId: room._id

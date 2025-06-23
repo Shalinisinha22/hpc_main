@@ -20,8 +20,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Check if user is already logged in
   useEffect(() => {
-    const token = localStorage.getItem("hpcToken")
-    const userData = localStorage.getItem("hpcUser")
+    const token = localStorage.getItem("hpc-Token")
+    const userData = localStorage.getItem("hpc-User")
     if (token && userData) {
       setUser(JSON.parse(userData))
       setIsAuthenticated(true)
@@ -36,8 +36,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const userData: User = { name, email, phone, role }
         
         // Save token and user data
-        localStorage.setItem("hpcToken", token)
-        localStorage.setItem("hpcUser", JSON.stringify(userData))
+        localStorage.setItem("hpc-Token", token)
+        localStorage.setItem("hpc-User", JSON.stringify(userData))
         
         setUser(userData)
         setIsAuthenticated(true)
@@ -53,15 +53,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setUser(null)
     setIsAuthenticated(false)
-    localStorage.removeItem("hpcToken")
-    localStorage.removeItem("hpcUser")
+    localStorage.removeItem("hpc-Token")
+    localStorage.removeItem("hpc-User")
   }
 
   const handleTokenExpiration = () => {
     setUser(null)
     setIsAuthenticated(false)
-    localStorage.removeItem("hpcToken")
-    localStorage.removeItem("hpcUser")
+    localStorage.removeItem("hpc-Token")
+    localStorage.removeItem("hpc-User")
     // You can add toast notification here if needed
     console.warn("Your session has expired. Please log in again.")
   }

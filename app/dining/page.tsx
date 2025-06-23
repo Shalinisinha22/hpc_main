@@ -393,6 +393,7 @@ function ReservationDialog({ restaurant }: { restaurant: any }) {
       },{
         headers:{
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("hpc-token") || ''}` // Ensure you have the correct API key set
         
         }
       })

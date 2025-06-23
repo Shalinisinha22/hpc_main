@@ -363,9 +363,9 @@ export default function Header() {
                         My Bookings
                       </Button>
                     </Link>
-                    <Button variant="outline" className="w-full justify-start">
+                    {/* <Button variant="outline" className="w-full justify-start">
                       Preferences
-                    </Button>
+                    </Button> */}
                     <Button
                       className="w-full bg-zinc-900 hover:bg-zinc-700 mt-2"
                       onClick={() => {

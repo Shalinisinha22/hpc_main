@@ -30,7 +30,7 @@ export function AutoScrollImageCarousel({ images, name }: AutoScrollImageCarouse
   }
 
   return (
-    <div className="relative h-full min-h-[400px]">
+    <div className="relative h-full min-h-[200px]">
       {images.map((src, index) => (
         <Image
           key={src}
