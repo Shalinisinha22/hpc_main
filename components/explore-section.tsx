@@ -2,39 +2,61 @@
 
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
-import { Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
+// Add coordinates for Hotel Patliputra and each site
+const HOTEL_COORDS = { lat: 25.6154, lng: 85.1415 } // Hotel Patliputra, Patna, Bihar
 const exploreImages = [
   {
     url: "https://cdn.getyourguide.com/img/tour/d3ece1033c08c32e0053fe0e52dd497d5c663170ee12ae0a9b781de3519dbefb.jpg/145.jpg",
     caption: "Mahabodhi Temple, Bodh Gaya",
+    coords: { lat: 24.6951, lng: 84.9914 },
   },
   {
     url: "https://upload.wikimedia.org/wikipedia/commons/d/dd/Temple_No.-_3%2C_Nalanda_Archaeological_Site.jpg",
     caption: "Nalanda University Ruins",
+    coords: { lat: 25.1357, lng: 85.4436 },
   },
   {
     url: "https://cloudfront-ap-southeast-2.images.arcpublishing.com/nzme/LZI5P4XGXBENJILAROAWWMFRSI.jpg",
     caption: "Great Buddha Statue, Bodh Gaya",
+    coords: { lat: 24.6959, lng: 84.9916 },
   },
   {
     url: "https://s7ap1.scene7.com/is/image/incredibleindia/gol-ghar-patna-bihar-3-attr-hero?qlt=82&ts=1726740434905",
     caption: "Golghar, Patna",
+    coords: { lat: 25.6121, lng: 85.1376 },
   },
   {
     url: "https://tourism.bihar.gov.in/content/dam/bihar-tourism/images/category_a/patna/takht_sri_harmandir_sahib/gurudwara_sri_harmandir_sahib__36.jpg/jcr:content/renditions/cq5dam.web.480.480.jpeg",
     caption: "Takht Sri Patna Sahib",
+    coords: { lat: 25.6207, lng: 85.2307 },
   },
   {
     url: "https://upload.wikimedia.org/wikipedia/commons/2/27/%22_Tomb_of_Sher_Shah_Suri_%22.jpg",
     caption: "Sher Shah Suri Tomb, Sasaram",
+    coords: { lat: 24.9506, lng: 84.0287 },
   },
   {
     url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Vikramshila_2012-08-10-17.14.08.jpg/800px-Vikramshila_2012-08-10-17.14.08.jpg",
     caption: "Ruins of Vikramshila University",
+    coords: { lat: 25.3956, lng: 87.0173 },
   },
 ]
+
+// Haversine formula to calculate distance in km
+function getDistanceKm(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const toRad = (x: number) => (x * Math.PI) / 180
+  const R = 6371 // Radius of Earth in km
+  const dLat = toRad(lat2 - lat1)
+  const dLng = toRad(lng2 - lng1)
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLng / 2) * Math.sin(dLng / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return Math.round(R * c)
+}
 
 export default function ExploreSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -92,18 +114,24 @@ export default function ExploreSection() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                     <p className="text-lg font-medium">{image.caption}</p>
+                    <p className="text-xs text-amber-200 mt-1">
+                      {image.coords ? `${getDistanceKm(HOTEL_COORDS.lat, HOTEL_COORDS.lng, image.coords.lat, image.coords.lng)} km from hotel` : ""}
+                    </p>
                   </div>
                   <Button
                     size="icon"
                     variant="ghost"
                     className="absolute top-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() =>
-                      window.open(
-                        `https://twitter.com/intent/tweet?text=Exploring ${image.caption} in Bihar! %23LuxeHavenBihar`,
-                      )
-                    }
+                    onClick={() => {
+                      if (image.coords) {
+                        const hotel = `${HOTEL_COORDS.lat},${HOTEL_COORDS.lng}`;
+                        const dest = `${image.coords.lat},${image.coords.lng}`;
+                        window.open(`https://www.google.com/maps/dir/?api=1&origin=${hotel}&destination=${dest}&travelmode=driving`, '_blank');
+                      }
+                    }}
+                    aria-label="Show directions on map"
                   >
-                    <Share2 className="h-5 w-5" />
+                    <img src="/google-maps.png" alt="Google Maps" className="h-6 w-6" />
                   </Button>
                 </div>
               </div>
