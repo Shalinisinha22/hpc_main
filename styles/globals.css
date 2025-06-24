@@ -92,3 +92,28 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Hide horizontal scrollbar for all elements */
+::-webkit-scrollbar:horizontal {
+  display: none;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) var(--background);
+}
+
+/* Hide horizontal scrollbar for specific class (explore-section-gallery) */
+.explore-section-gallery {
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+}
+.explore-section-gallery::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Optional: Prevent accidental scrollbars on body */
+body {
+  overflow-x: hidden;
+}

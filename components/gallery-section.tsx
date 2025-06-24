@@ -1,72 +1,77 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
+import axios from "axios"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
 
-const galleryImages = [
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93734625.jpg-mOf4hEhWwtnasulhIfvqGLU9ujOt1i.jpeg",
-    alt: "Spacious conference room with modern lighting and classroom-style setup",
-    title: "Conference Facility",
-    width: 2070,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/coca1_11zon%20%281%29.jpg-TudrTtXkPmDRD6i4Mueiy4sSJ2xQTz.jpeg",
-    alt: "Modern café with stylish yellow furniture",
-    title: "Coca Mocha Café",
-    width: 2070,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/chao_china_11zon%20%281%29.jpg-A1pCdF8HvXZKhZxPW1EyDpDQDqViVq.jpeg",
-    alt: "Elegant Chinese restaurant with traditional patterns",
-    title: "Chinese Restaurant",
-    width: 2070,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/6ddf6236a969b6ab4622f54dc0f776fd-Ja6DWW8hxwy6FKwYdOq4G8d4dPVH8x.webp",
-    alt: "Luxurious suite with romantic setup",
-    title: "Luxury Suite",
-    width: 2070,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Tower_Suite.jfif-dXmaKDaeOuUr3tXNvgsjQY0mNZ8yct.jpeg",
-    alt: "Unique circular suite with dramatic decor",
-    title: "Tower Suite",
-    width: 2071,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/93997118.jpg-BVGoMR9L9pmmqmvMnxAVlmXiSGznK7.jpeg",
-    alt: "Modern boardroom with oval table",
-    title: "Executive Boardroom",
-    width: 2070,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bistro_11zon%20%281%29%20%281%29.jpg-XifAUDnZyiiCqM6o179OEr9mLpnjiU.jpeg",
-    alt: "Contemporary restaurant with elegant table settings",
-    title: "Bistro Restaurant",
-    width: 2025,
-    height: 1380,
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Presidential_Suite.jpg-Dlc4cAxTEY3VzGCoktcHeJINuoljgP.jpeg",
-    alt: "Presidential suite with luxury amenities",
-    title: "Presidential Suite",
-    width: 2070,
-    height: 1380,
-  },
-]
+interface GalleryImage {
+  src: string
+  alt: string
+  title: string
+  width: number
+  height: number
+}
 
 export default function GallerySection() {
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+  useEffect(() => {
+    async function fetchImages() {
+      try {
+        const [roomsRes, hallsRes, diningRes] = await Promise.all([
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/rooms/roomImages`),
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/halls/hallImages`),
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/dining/diningImages`),
+        ])
+        const roomImages = roomsRes.data.flatMap((item: any) =>
+          (item.images || []).map((img: any) => ({
+            src: img.url || "/placeholder.svg",
+            alt: img.alt || item.room_name || "Room Image",
+            title: item.room_name || "Room",
+            width: img.width || 2070,
+            height: img.height || 1380,
+            type: 'room',
+          }))
+        )
+        const hallImages = hallsRes.data.flatMap((item: any) =>
+          (item.images || []).map((img: any) => ({
+            src: img.url || "/placeholder.svg",
+            alt: img.alt || item.hall_name || "Hall Image",
+            title: item.hall_name || "Hall",
+            width: img.width || 2070,
+            height: img.height || 1380,
+            type: 'hall',
+          }))
+        )
+        const diningImages = diningRes.data.flatMap((item: any) =>
+          (item.images || []).map((img: any) => ({
+            src: img.url || "/placeholder.svg",
+            alt: img.alt || item.dining_name || "Dining Image",
+            title: item.dining_name || "Dining",
+            width: img.width || 2070,
+            height: img.height || 1380,
+            type: 'dining',
+          }))
+        )
+        // Interleave images for a mixed gallery
+        const maxLen = Math.max(roomImages.length, hallImages.length, diningImages.length)
+        const mixed: any[] = []
+        for (let i = 0; i < maxLen; i++) {
+          if (roomImages[i]) mixed.push(roomImages[i])
+          if (hallImages[i]) mixed.push(hallImages[i])
+          if (diningImages[i]) mixed.push(diningImages[i])
+        }
+        setGalleryImages(mixed.slice(0, 8))
+      } catch (e) {
+        // handle error (optional: set error state)
+      }
+    }
+    fetchImages()
+  }, [])
 
   const handlePrevious = () => {
     setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? galleryImages.length - 1 : prevIndex - 1))
@@ -89,7 +94,7 @@ export default function GallerySection() {
                   onClick={() => setCurrentImageIndex(index)}
                 >
                   <Image
-                    src={image.src || "/placeholder.svg"}
+                    src={image.src}
                     alt={image.alt}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-110"
@@ -104,13 +109,13 @@ export default function GallerySection() {
               <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 bg-black border-none">
                 <div className="relative w-full h-[80vh]">
                   <Image
-                    src={galleryImages[currentImageIndex].src || "/placeholder.svg"}
-                    alt={galleryImages[currentImageIndex].title}
+                    src={galleryImages[currentImageIndex]?.src || "/placeholder.svg"}
+                    alt={galleryImages[currentImageIndex]?.title || ""}
                     fill
                     className="object-contain"
                   />
                   <div className="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white p-2 rounded">
-                    <h3 className="text-lg font-semibold">{galleryImages[currentImageIndex].title}</h3>
+                    <h3 className="text-lg font-semibold">{galleryImages[currentImageIndex]?.title}</h3>
                   </div>
                   <Button
                     variant="ghost"
