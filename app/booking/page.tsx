@@ -61,7 +61,7 @@ export default function BookingPage() {
   const [email, setEmail] = useState("")
   const [phone, setPhone] = useState("")
   const [specialRequests, setSpecialRequests] = useState("")
-  const [paymentMethod, setPaymentMethod] = useState("credit-card")
+  const [paymentMethod, setPaymentMethod] = useState("pay-later")
   const [couponCode, setCouponCode] = useState("")
   const [appliedCoupon, setAppliedCoupon] = useState<(typeof VALID_COUPONS)[0] | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -236,7 +236,7 @@ Thank you for your booking! 🙏`;
 
 
   useEffect(() => {
-  const userData = localStorage.getItem('hpcUser')
+  const userData = localStorage.getItem('hpc-User')
   if (userData) {
     const user = JSON.parse(userData)
     setName(user.name || '')
@@ -378,15 +378,12 @@ Thank you for your booking! 🙏`;
   //       variant: "destructive",
   //     })
   //   } finally {
-  //     setIsProcessing(false)
-  //   }
-  // }
 
   const handleCompleteBooking = async () => {
-    if (!roomId) {
+    if (!roomId || !checkInDate || !checkOutDate || !name || !email || !phone) {
       toast({
-        title: "Error",
-        description: "Room information is missing.",
+        title: "Missing Information",
+        description: "Please fill in all required fields before proceeding.",
         variant: "destructive",
       })
       return
@@ -408,27 +405,63 @@ Thank you for your booking! 🙏`;
         phone,
         specialRequest: specialRequests,
         totalPrice: totalPrice,
-        paymentStatus: paymentMethod === 'pay-later' ? 'pending' : 'confirmed',
-        isGuest: !localStorage.getItem('hpcUser'),
-        token:localStorage.getItem("hpcToken") || ''
+        paymentMethod,
+        paymentStatus: paymentMethod === 'pay-later' ? 'pending' : 'pending',
+        isGuest: !localStorage.getItem('hpc-User'),
+        token: localStorage.getItem("hpc-Token") || ''
       }
 
-      const response = await api.post('/bookings', bookingData);
+      const response = await api.post(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, bookingData,{
+        headers:{
+          "Content-Type": "application/json",
 
-                      // const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/bookings`,bookingData)
-      
-      
-      console.log(response.data?.booking?.bookingId,"response")
+          "authorization": `Bearer ${localStorage.getItem("hpc-Token") || ''}`
+        }
+      });
+ 
 
-      
+
       if (response.data) {
-        // setBookingId(response.data?.bookingId || '')
-        setBookingId((prev)=>prev=response.data?.booking?.bookingId)
-        setBookingComplete(true)
-        toast({
-          title: "Booking Confirmed!",
-          description: "Your payment was successful. Check your email for booking details.",
-        })
+        setBookingId(response.data.booking._id)
+        if (paymentMethod === 'ccavenue') {
+          if (response.data.payment && response.data.payment.url) {
+            sessionStorage.setItem('pendingBookingId', response.data.booking.bookingId);
+
+            const { url, parameters } = response.data.payment;
+
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = url;
+            form.style.display = "none";
+
+            Object.keys(parameters).forEach((key) => {
+              const input = document.createElement("input");
+              input.name = key;
+              input.value = parameters[key];
+              form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+
+            return;
+          } else {
+            toast({
+              title: "Payment Error",
+              description: "Could not initiate payment. Please try again.",
+              variant: "destructive",
+            });
+            return;
+          }
+        } else {
+          setBookingComplete(true)
+          toast({
+            title: "Booking Confirmed!",
+            description: "Your booking has been successfully created. Please pay at the hotel.",
+          })
+        }
+      } else {
+        throw new Error('Failed to create booking');
       }
     } catch (error: any) {
       console.error('Booking error:', error)
@@ -441,6 +474,25 @@ Thank you for your booking! 🙏`;
       setIsProcessing(false)
     }
   }
+
+  // Listen for payment cancel/success on mount
+useEffect(() => {
+  if (typeof window !== 'undefined') {
+    const urlParams = new URLSearchParams(window.location.search)
+    const paymentStatus = urlParams.get('payment')
+    const bookingIdParam = urlParams.get('bookingId')
+    if (paymentStatus === 'cancel' && bookingIdParam) {
+      // Stay on page, show toast, do not redirect
+      toast({
+        title: 'Payment Cancelled',
+        description: 'Your payment was cancelled. You can try again or choose another payment method.',
+        variant: 'destructive',
+      })
+      sessionStorage.removeItem('pendingBookingId')
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
+  }
+}, [toast])
 
   // Fetch room details
   useEffect(() => {
@@ -455,7 +507,7 @@ Thank you for your booking! 🙏`;
       }
 
       try {
-        const response = await api.get(`/rooms/${roomId}`);
+        const response = await api.get(`${process.env.NEXT_PUBLIC_API_URL}/rooms/${roomId}`);
 
         console.log(response)
         if (response.status==200) {
@@ -477,6 +529,8 @@ Thank you for your booking! 🙏`;
 
     fetchRoomDetails()
   }, [roomId, toast])
+
+
 
 
 
@@ -642,7 +696,7 @@ Thank you for your booking! 🙏`;
               Return to Home
               </Button>
               
-              {localStorage.getItem('hpcUser') && (
+              {localStorage.getItem('hpc-User') && (
               <Button
               variant="outline"
               className="border-amber-600 text-amber-600 hover:bg-amber-50"
@@ -852,7 +906,7 @@ Thank you for your booking! 🙏`;
   <div className="space-y-6">
     <h2 className="text-xl font-medium flex items-center gap-2">
       <Users className="h-5 w-5 text-amber-600" />
-   {!localStorage.getItem('hpcUser')?" Guest Information":" Your Information"}  
+   {!localStorage.getItem('hpc-User')?" Guest Information":" Your Information"}  
     </h2>
     <div>
       <Label htmlFor="name">Full Name *</Label>
@@ -906,7 +960,7 @@ Thank you for your booking! 🙏`;
       ></textarea>
     </div>
 
-    {!localStorage.getItem('hpcUser') && (
+    {!localStorage.getItem('hpc-User') && (
       <div className="flex items-center space-x-2">
         <Checkbox
           id="save-info"
@@ -931,60 +985,25 @@ Thank you for your booking! 🙏`;
                         Payment Method
                       </h2>
 
-                      <RadioGroup defaultValue="credit-card" onValueChange={setPaymentMethod}>
-                        <div className="flex items-center space-x-2 border p-4 rounded-md">
-                          <RadioGroupItem value="credit-card" id="credit-card" />
-                          <Label htmlFor="credit-card" className="flex-1">
-                            Credit Card
-                          </Label>
-                          <div className="flex gap-2">
-                            <Image src="/placeholder.svg?height=30&width=40" alt="Visa" width={40} height={30} />
-                            <Image src="/placeholder.svg?height=30&width=40" alt="Mastercard" width={40} height={30} />
-                            <Image src="/placeholder.svg?height=30&width=40" alt="Amex" width={40} height={30} />
-                          </div>
-                        </div>
+                      <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
+  <div className="flex items-center space-x-2 border p-4 rounded-md">
+    <RadioGroupItem value="ccavenue" id="ccavenue" />
+    <Label htmlFor="ccavenue" className="flex-1 flex items-center gap-2">
+      {/* Use local logo instead of remote CCAvenue logo to avoid 404 */}
+      <Image src="/cc_avenue.png" alt="CCAvenue" width={60} height={30} />
+      CCAvenue
+    </Label>
+  </div>
+  <div className="flex items-center space-x-2 border p-4 rounded-md">
+    <RadioGroupItem value="pay-later" id="pay-later" />
+    <Label htmlFor="pay-later" className="flex-1">
+      Pay at Hotel
+    </Label>
+    <Info className="h-5 w-5 text-amber-600" />
+  </div>
+</RadioGroup>
 
-                        <div className="flex items-center space-x-2 border p-4 rounded-md">
-                          <RadioGroupItem value="paypal" id="paypal" />
-                          <Label htmlFor="paypal" className="flex-1">
-                            PayPal
-                          </Label>
-                          <Image src="/placeholder.svg?height=30&width=60" alt="PayPal" width={60} height={30} />
-                        </div>
-
-                        <div className="flex items-center space-x-2 border p-4 rounded-md">
-                          <RadioGroupItem value="pay-later" id="pay-later" />
-                          <Label htmlFor="pay-later" className="flex-1">
-                            Pay at Hotel
-                          </Label>
-                          <Info className="h-5 w-5 text-amber-600" />
-                        </div>
-                      </RadioGroup>
-
-                      {paymentMethod === "credit-card" && (
-                        <div className="space-y-4 mt-4 p-4 border rounded-md">
-                          <div>
-                            <Label htmlFor="card-number">Card Number</Label>
-                            <Input id="card-number" placeholder="1234 5678 9012 3456" className="mt-1" />
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor="expiry">Expiry Date</Label>
-                              <Input id="expiry" placeholder="MM/YY" className="mt-1" />
-                            </div>
-                            <div>
-                              <Label htmlFor="cvv">CVV</Label>
-                              <Input id="cvv" placeholder="123" className="mt-1" />
-                            </div>
-                          </div>
-
-                          <div>
-                            <Label htmlFor="name-on-card">Name on Card</Label>
-                            <Input id="name-on-card" placeholder="Enter name as shown on card" className="mt-1" />
-                          </div>
-                        </div>
-                      )}
+                     
 
                       <div className="p-4 bg-amber-50 rounded-md">
                         <div className="flex items-start gap-2">

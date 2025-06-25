@@ -38,7 +38,12 @@ export default function MyBookingsPage() {
       setLoading(true)
       setError(null)
       
-      const response = await api.get('/bookings/my')
+      const response = await api.get(`${process.env.NEXT_PUBLIC_API_URL}/bookings/my`,{
+       headers:{
+          Authorization: `Bearer ${localStorage.getItem('hpc-Token')}`,
+          "Content-Type": "application/json",
+        }
+      })
       
       if (response.status === 200) {
         setBookings(response.data)
