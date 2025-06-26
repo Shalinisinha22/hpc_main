@@ -248,15 +248,15 @@ function RoomCard({
       <CardContent className="p-3 md:p-4">
         <div className="mb-1 md:mb-2">
           <h3 className="text-base md:text-lg font-medium text-amber-900 line-clamp-1">{room.room_title}</h3>
-          <p className="text-xs text-amber-800/70 line-clamp-2 md:line-clamp-none">{room.desc}</p>
+          <p className="text-xs text-gray-700 line-clamp-2 md:line-clamp-none">{room.desc}</p>
         </div>
         <div className="grid grid-cols-2 gap-1 md:gap-2 mb-2 md:mb-3 text-xs md:text-sm ">
-          <div className="flex items-center text-amber-700 ">
-            <BedDouble className="w-4 h-4 mr-1" />
+          <div className="flex items-center text-gray-700 ">
+            <BedDouble className="w-4 h-4 mr-1 text-amber-600 " />
             {room.roomSize} sq ft
           </div>
-          <div className="flex items-center text-amber-700 ">
-            <Users className="w-4 h-4 mr-1" />
+          <div className="flex items-center text-gray-700 ">
+            <Users className="w-4 h-4 mr-1 text-amber-600" />
             {room.max_person} Adults, {room.max_children} Children
           </div>
         </div>
@@ -266,7 +266,7 @@ function RoomCard({
             {(room.amenities).slice(0, showAllAmenities ? undefined : (typeof window !== 'undefined' && window.innerWidth < 640 ? 2 : 6)).map((amenity: string, index: number) => (
               <div 
                 key={index} 
-                className="flex items-center bg-amber-50 px-2 py-1 rounded text-xs text-amber-700"
+                className="flex items-center px-2 py-1 rounded text-xs text-amber-700"
               >
                 <Check className="w-4 h-4 text-amber-600 mr-1.5 shrink-0" />
                 <span className="truncate">{parseJsonSafely(amenity)}</span>
@@ -292,9 +292,9 @@ function RoomCard({
             {room.additionalDetails.map((detail: string, index: number) => (
               <div 
                 key={index} 
-                className="flex items-start gap-2 text-xs text-amber-800/70"
+                className="flex items-start gap-2 text-xs text-gray-700"
               >
-                <Star className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                <Star className="w-4 h-4  mt-0.5 text-[#bf840d] shrink-0" />
                 <span>{parseJsonSafely(detail)}</span>
               </div>
             ))}
@@ -305,7 +305,7 @@ function RoomCard({
             <span className="font-medium text-amber-900">
               ₹{(room.pricePerNight * nights * noOfRooms).toLocaleString('en-IN')}
             </span>
-            <span className="text-amber-700/70">
+            <span className="text-amber-600/80">
               {" "}/ {nights} night{nights > 1 ? "s" : ""}
             </span>
           </div>

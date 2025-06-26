@@ -1076,10 +1076,7 @@ useEffect(() => {
                       <Check className="h-4 w-4" />
                       <span>Free cancellation up to 48 hours before check-in</span>
                     </div>
-                    <div className="flex items-center gap-2 text-amber-600">
-                      <Check className="h-4 w-4" />
-                      <span>No payment needed today</span>
-                    </div>
+                    
                   </div>
                 </CardContent>
               </Card>

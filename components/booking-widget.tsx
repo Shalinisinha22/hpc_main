@@ -2,13 +2,14 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { CustomCalendar } from "@/components/ui/custom-calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import RoomResults from "./room-results"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
 export default function BookingWidget() {
   const [checkInDate, setCheckInDate] = useState<Date>()
@@ -20,6 +21,23 @@ export default function BookingWidget() {
   const [showResults, setShowResults] = useState(false)
   const [checkInOpen, setCheckInOpen] = useState(false)
   const [checkOutOpen, setCheckOutOpen] = useState(false)
+
+  // Helper functions for date formatting
+  function getTodayString() {
+    const now = new Date();
+    // Always use local midnight for today
+    now.setHours(0, 0, 0, 0);
+    // Fix: always use local date, not UTC
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  function getMaxDateString() {
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+    return maxDate.toISOString().split('T')[0];
+  }
 
   const handleCheckAvailability = () => {
     if (!checkInDate || !checkOutDate || !adults || !noOfRooms) {
@@ -52,77 +70,61 @@ export default function BookingWidget() {
     <>
       <div className="bg-white rounded-lg shadow-xl p-6 md:p-8 -mt-16 relative z-10 container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6">
-          {/* Check-in Date */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Check-in</label>
-            <Popover open={checkInOpen} onOpenChange={setCheckInOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={`w-full justify-start text-left font-normal bg-white border-amber-600 focus:ring-amber-600 shadow-sm hover:border-amber-700 ${!checkInDate ? "text-muted-foreground" : "text-amber-900"}`}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4 text-amber-600" />
-                  {checkInDate ? (
-                    <span className="font-semibold">{format(checkInDate, "EEE, MMM d, yyyy")}</span>
-                  ) : (
-                    <span className="text-gray-400">Select date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <CustomCalendar
-                  mode="single"
-                  selected={checkInDate}
-                  onSelect={handleCheckInSelect}
-                  initialFocus
-                  disabled={(date) => {
-                    const today = new Date();
-                    today.setHours(0,0,0,0);
-                    return date < today;
-                  }}
-                  className="rounded-md border shadow-md"
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-
-          {/* Check-out Date */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Check-out</label>
-            <Popover open={checkOutOpen} onOpenChange={setCheckOutOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={`w-full justify-start text-left font-normal bg-white border-amber-600 focus:ring-amber-600 shadow-sm hover:border-amber-700 ${!checkOutDate ? "text-muted-foreground" : "text-amber-900"}`}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4 text-amber-600" />
-                  {checkOutDate ? (
-                    <span className="font-semibold">{format(checkOutDate, "EEE, MMM d, yyyy")}</span>
-                  ) : (
-                    <span className="text-gray-400">Select date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <CustomCalendar
-                  mode="single"
-                  selected={checkOutDate}
-                  onSelect={handleCheckOutSelect}
-                  initialFocus
-                  disabled={(date) => {
-                    const today = new Date();
-                    today.setHours(0,0,0,0);
-                    if (checkInDate) {
-                      const minCheckOut = new Date(checkInDate);
-                      minCheckOut.setHours(0,0,0,0);
-                      return date <= minCheckOut;
+          {/* Check-in & Check-out Dates (custom input style) */}
+          <div className="col-span-1 md:col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="check-in">Check-in Date *</Label>
+                <Input
+                  id="check-in"
+                  type="date"
+                  placeholder="DD/MM/YYYY"
+                  value={checkInDate ? new Date(checkInDate.getTime() - checkInDate.getTimezoneOffset() * 60000).toISOString().split('T')[0] : ''}
+                  onChange={e => {
+                    const val = e.target.value ? new Date(e.target.value + 'T00:00:00') : undefined;
+                    // Prevent selecting a date before today
+                    const today = new Date(getTodayString() + 'T00:00:00');
+                    if (val && val < today) {
+                      setCheckInDate(undefined);
+                      return;
                     }
-                    return date <= today;
+                    setCheckInDate(val);
+                    if (checkOutDate && val && checkOutDate <= val) {
+                      setCheckOutDate(undefined);
+                    }
                   }}
-                  className="rounded-md border shadow-md"
+                  min={getTodayString()}
+                  max={getMaxDateString()}
+                  required
+                  className="mt-1"
+                  onFocus={e => (e.target.type = 'date')}
+                  onBlur={e => {
+                    if (!e.target.value) e.target.type = 'text';
+                  }}
                 />
-              </PopoverContent>
-            </Popover>
+              </div>
+              <div>
+                <Label htmlFor="check-out">Check-out Date *</Label>
+                <Input
+                  id="check-out"
+                  type="date"
+                  placeholder="DD/MM/YYYY"
+                  value={checkOutDate ? new Date(checkOutDate.getTime() - checkOutDate.getTimezoneOffset() * 60000).toISOString().split('T')[0] : ''}
+                  onChange={e => {
+                    const val = e.target.value ? new Date(e.target.value + 'T00:00:00') : undefined;
+                    setCheckOutDate(val);
+                  }}
+                  min={checkInDate ? new Date(checkInDate.getTime() - checkInDate.getTimezoneOffset() * 60000).toISOString().split('T')[0] : getTodayString()}
+                  max={getMaxDateString()}
+                  required
+                  className="mt-1"
+                  onFocus={e => (e.target.type = 'date')}
+                  onBlur={e => {
+                    if (!e.target.value) e.target.type = 'text';
+                  }}
+                />
+              </div>
+            </div>
           </div>
 
           {/* Number of Rooms */}
@@ -200,6 +202,7 @@ export default function BookingWidget() {
             adults={Number.parseInt(adults)}
             children={Number.parseInt(children)}
             noOfRooms={Number.parseInt(noOfRooms)}
+            roomType={"any"}
           />
         </div>
       )}

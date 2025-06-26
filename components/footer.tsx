@@ -17,11 +17,18 @@ export default function Footer() {
               short of extraordinary.
             </p>
             <div className="flex space-x-4">
-              {[Facebook, Twitter, Instagram, Youtube].map((Icon, index) => (
-                <Link key={index} href="#" className="text-amber-200 hover:text-white transition-colors">
-                  <Icon className="w-6 h-6" />
-                </Link>
-              ))}
+              <Link href="https://www.facebook.com/hpcpatna/" target="_blank" rel="noopener noreferrer" className="text-amber-200 hover:text-white transition-colors">
+                <Facebook className="w-6 h-6" />
+              </Link>
+              <Link href="https://x.com/hpcpatna" target="_blank" rel="noopener noreferrer" className="text-amber-200 hover:text-white transition-colors">
+                <Twitter className="w-6 h-6" />
+              </Link>
+              <Link href="https://www.instagram.com/hpcpatna/" target="_blank" rel="noopener noreferrer" className="text-amber-200 hover:text-white transition-colors">
+                <Instagram className="w-6 h-6" />
+              </Link>
+              <Link href="https://www.youtube.com/channel/UClR4U0_8xV_2m4TumSP59xw?view_as=subscriber" target="_blank" rel="noopener noreferrer" className="text-amber-200 hover:text-white transition-colors">
+                <Youtube className="w-6 h-6" />
+              </Link>
             </div>
           </div>
 
@@ -29,14 +36,24 @@ export default function Footer() {
           <div>
             <h3 className="text-2xl font-serif mb-6 text-amber-200">Quick Links</h3>
             <ul className="space-y-3">
-              {["Our Rooms", "Dining", "Wellness", "Events", "Gallery", "Offers"].map((item, index) => (
+              { [
+                { name: "Our Rooms", href: "/rooms" },
+                { name: "Dining", href: "/dining" },
+                { name: "Wellness", href: "/wellness" },
+                { name: "Events", href: "/events" },
+                { name: "Gallery", href: "/gallery" },
+                { name: "Offers", href: "/offers" },
+                // { name: "Privacy Policy", href: "/privacy-policy" },
+                // { name: "Terms & Conditions", href: "/terms-conditions" },
+        
+              ].map((item, index) => (
                 <li key={index}>
                   <Link
-                    href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                    href={item.href}
                     className="hover:text-white transition-colors flex items-center gap-2"
                   >
                     <span className="w-4 h-4 flex items-center justify-center text-xs">→</span>
-                    {item}
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -64,17 +81,20 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Newsletter */}
+          {/* Google Map */}
           <div>
-            <h3 className="text-2xl font-serif mb-6 text-amber-200">Newsletter</h3>
-            <p className="mb-4">Subscribe to our newsletter for exclusive offers and updates.</p>
-            <div className="space-y-4">
-              <Input
-                type="email"
-                placeholder="Your email address"
-                className="bg-amber-800/50 border-amber-700 text-white placeholder:text-amber-200/70 focus:border-amber-500"
-              />
-              <Button className="w-full bg-amber-600 text-white hover:bg-amber-500">Subscribe</Button>
+            <h3 className="text-2xl font-serif mb-6 text-amber-200">Find Us</h3>
+            <div className="rounded-lg overflow-hidden shadow-lg border border-amber-700">
+              <iframe
+                title="Hotel Patliputra Continental Location"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3609.370073964839!2d85.0999343150106!3d25.58523498371306!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ed584b2e2b7e2b%3A0x7e2e2e2e2e2e2e2e!2sHotel%20Patliputra%20Continental!5e0!3m2!1sen!2sin!4v1680000000000!5m2!1sen!2sin"
+                width="100%"
+                height="220"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
           </div>
         </div>
@@ -101,8 +121,11 @@ export default function Footer() {
             <Link href="/terms-conditions" className="hover:text-white transition-colors">
               Terms & Conditions
             </Link>
-            <Link href="/sitemap" className="hover:text-white transition-colors">
-              Sitemap
+            <Link href="/refund-policy" className="hover:text-white transition-colors">
+              Refund Policy
+            </Link>
+            <Link href="/banquet-policy" className="hover:text-white transition-colors">
+              Banquet Policy
             </Link>
           </div>
           <p className="text-sm text-amber-200/70">© 2025  Hotel Patliputra Continental . All rights reserved.</p>

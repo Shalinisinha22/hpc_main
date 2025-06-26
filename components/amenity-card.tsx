@@ -50,16 +50,16 @@ export function AmenityCard({ amenity }: AmenityCardProps) {
             </ul>
           </TabsContent>
           <TabsContent value="offer" className="mt-4">
-            <div className="bg-amber-100 p-4 rounded-lg">
+            <div className=" p-4 rounded-lg">
               <h4 className="font-semibold mb-2 text-amber-800">Special Offer:</h4>
               <p className="text-amber-700">{amenity.offer}</p>
             </div>
           </TabsContent>
         </Tabs>
       </CardContent>
-      <CardFooter>
+      {/* <CardFooter>
         <BookingDialog amenity={amenity.name} />
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   )
 }

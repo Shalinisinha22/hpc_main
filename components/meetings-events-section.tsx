@@ -274,6 +274,7 @@ export default function MeetingsEventsSection() {
             <form
               className="p-8"
               onSubmit={handleSubmit}
+              style={{ minHeight: '100%', overflowY: 'auto' }}
             >
               <button
                 type="button"

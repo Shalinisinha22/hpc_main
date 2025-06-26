@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { DialogTrigger } from "@/components/ui/dialog"
+import { DialogTrigger } from "@/components/ui/dialog";
 
-import { useState, useEffect } from "react"
-import axios from "axios"
-import Image from "next/image"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Image from "next/image";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -15,13 +15,23 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ChevronLeft, ChevronRight, Star, Clock, MapPin, Phone, Quote, Calendar, ThumbsUp } from "lucide-react"
-import { motion } from "framer-motion"
-import { useMediaQuery } from "@/hooks/use-mobile"
-import DiningSection from "@/components/dining-section"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Star,
+  Clock,
+  MapPin,
+  Phone,
+  Quote,
+  Calendar,
+  ThumbsUp,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { useMediaQuery } from "@/hooks/use-mobile";
+import DiningSection from "@/components/dining-section";
 
 const chefs = [
   {
@@ -45,42 +55,47 @@ const chefs = [
     restaurant: "Zen Garden",
     bio: "Trained in Tokyo's top restaurants, Chef Yuki combines traditional Japanese techniques with modern Asian flavors at Zen Garden.",
   },
-]
+];
 
 export default function DiningPage() {
-  const isMobile = useMediaQuery("(max-width: 768px)")
-  const [currentChef, setCurrentChef] = useState(0)
-  const [diningData, setDiningData] = useState<any[]>([])
-  const [activeRestaurant, setActiveRestaurant] = useState<any | null>(null)
-  const [isThankYouOpen, setIsThankYouOpen] = useState(false)
-  const [isReservationOpen, setIsReservationOpen] = useState(false)
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [currentChef, setCurrentChef] = useState(0);
+  const [diningData, setDiningData] = useState<any[]>([]);
+  const [activeRestaurant, setActiveRestaurant] = useState<any | null>(null);
+  const [isThankYouOpen, setIsThankYouOpen] = useState(false);
+  const [isReservationOpen, setIsReservationOpen] = useState(false);
 
   useEffect(() => {
     axios.get(`${process.env.NEXT_PUBLIC_API_URL}/dining`).then((res) => {
-      setDiningData(res.data)
-      setActiveRestaurant(res.data[0] || null)
-    })
-  }, [])
+      setDiningData(res.data);
+      console.log(res.data[0])
+      setActiveRestaurant(res.data[0] || null);
+    });
+  }, []);
 
   const nextChef = () => {
-    setCurrentChef((prev) => (prev + 1) % chefs.length)
-  }
+    setCurrentChef((prev) => (prev + 1) % chefs.length);
+  };
 
   const prevChef = () => {
-    setCurrentChef((prev) => (prev - 1 + chefs.length) % chefs.length)
-  }
+    setCurrentChef((prev) => (prev - 1 + chefs.length) % chefs.length);
+  };
 
   useEffect(() => {
-    const interval = setInterval(nextChef, 5000)
-    return () => clearInterval(interval)
-  }, [])
+    const interval = setInterval(nextChef, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className={`relative ${isMobile ? "h-[60vh]" : "h-[80vh]"} flex items-center justify-center`}>
+        <section
+          className={`relative ${
+            isMobile ? "h-[60vh]" : "h-[80vh]"
+          } flex items-center justify-center`}
+        >
           <Image
             src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
             alt="Luxurious dining"
@@ -94,12 +109,26 @@ export default function DiningPage() {
             transition={{ duration: 0.8 }}
             className="relative z-10 text-center text-white px-4"
           >
-            <h1 className={`${isMobile ? "text-4xl" : "text-6xl"} font-bold mb-4`}>Culinary Excellence</h1>
+            <h1
+              className={`${isMobile ? "text-4xl" : "text-6xl"} font-bold mb-4`}
+            >
+              A Taste of Perfection
+            </h1>
             <p className={`${isMobile ? "text-lg" : "text-2xl"} mb-8`}>
-              Indulge in a world of flavors at our award-winning restaurants
+              From gourmet delights to local favourites — dine where flavour
+              meets finesse.
             </p>
-            <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white text-lg px-8 py-3">
-              Explore Our Restaurants
+
+            <Button
+              className="bg-[#bf840d] hover:bg-[#8B5E04] text-white text-lg px-8 py-3"
+              onClick={() => {
+                const section = document.getElementById("rooms-list-section");
+                if (section) {
+                  section.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+            >
+              Explore Dining Options
             </Button>
           </motion.div>
         </section>
@@ -110,7 +139,11 @@ export default function DiningPage() {
         {/* Restaurants Section */}
         <section className={`py-${isMobile ? "16" : "24"} bg-white`}>
           <div className="container mx-auto px-4">
-            <h2 className={`${isMobile ? "text-3xl" : "text-4xl"} font-bold text-center mb-${isMobile ? "10" : "16"}`}>
+            <h2
+              className={`${
+                isMobile ? "text-3xl" : "text-4xl"
+              } font-bold text-center mb-${isMobile ? "10" : "16"}`}
+            >
               Our Exquisite Restaurants
             </h2>
 
@@ -118,7 +151,10 @@ export default function DiningPage() {
               // Mobile Layout
               <div className="space-y-8">
                 {diningData.map((restaurant, index) => (
-                  <div key={restaurant._id} className="bg-gray-100 rounded-lg overflow-hidden shadow-lg">
+                  <div
+                    key={restaurant._id}
+                    className="bg-gray-100 rounded-lg overflow-hidden shadow-lg"
+                  >
                     <div className="relative h-48">
                       <Image
                         src={restaurant.image?.[0]?.url || "/placeholder.svg"}
@@ -128,12 +164,19 @@ export default function DiningPage() {
                       />
                     </div>
                     <div className="p-5">
-                      <h3 className="text-2xl font-semibold mb-2">{restaurant.name}</h3>
-                      <p className="text-gray-600 mb-4">{restaurant.shortIntro}</p>
+                      <h3 className="text-2xl font-semibold mb-2">
+                        {restaurant.name}
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        {restaurant.shortIntro}
+                      </p>
                       <div className="flex flex-col gap-3 mb-5">
                         <div className="flex items-center">
                           <Clock className="w-4 h-4 mr-2 text-[#bf840d]" />
-                          <span className="text-sm">{restaurant.breakfastTiming || restaurant.lunchDinnerTiming}</span>
+                          <span className="text-sm">
+                            {restaurant.breakfastTiming ||
+                              restaurant.lunchDinnerTiming}
+                          </span>
                         </div>
                         <div className="flex items-center">
                           <MapPin className="w-4 h-4 mr-2 text-[#bf840d]" />
@@ -160,13 +203,22 @@ export default function DiningPage() {
                     {diningData.map((restaurant, index) => (
                       <li key={restaurant._id}>
                         <Button
-                          variant={activeRestaurant && activeRestaurant._id === restaurant._id ? "default" : "outline"}
+                          variant={
+                            activeRestaurant &&
+                            activeRestaurant._id === restaurant._id
+                              ? "default"
+                              : "outline"
+                          }
                           className="w-full text-left justify-start h-auto py-4"
                           onClick={() => setActiveRestaurant(restaurant)}
                         >
                           <div>
-                            <h3 className="text-xl font-semibold">{restaurant.name}</h3>
-                            <p className="text-sm text-gray-600">{restaurant.shortIntro}</p>
+                            <h3 className="text-xl font-semibold">
+                              {restaurant.name}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {restaurant.shortIntro}
+                            </p>
                           </div>
                         </Button>
                       </li>
@@ -183,19 +235,28 @@ export default function DiningPage() {
                       className="bg-gray-100 rounded-lg overflow-hidden shadow-xl"
                     >
                       <Image
-                        src={activeRestaurant.image?.[0]?.url || "/placeholder.svg"}
+                        src={
+                          activeRestaurant.image?.[0]?.url || "/placeholder.svg"
+                        }
                         alt={activeRestaurant.name}
                         width={800}
                         height={400}
                         className="w-full h-80 object-cover"
                       />
                       <div className="p-8">
-                        <h3 className="text-3xl font-semibold mb-4">{activeRestaurant.name}</h3>
-                        <p className="text-gray-600 mb-6">{activeRestaurant.shortIntro}</p>
+                        <h3 className="text-3xl font-semibold mb-4">
+                          {activeRestaurant.name}
+                        </h3>
+                        <p className="text-gray-600 mb-6">
+                          {activeRestaurant.shortIntro}
+                        </p>
                         <div className="flex flex-wrap gap-6 mb-8">
                           <div className="flex items-center">
                             <Clock className="w-5 h-5 mr-2 text-[#bf840d]" />
-                            <span>{activeRestaurant.breakfastTiming || activeRestaurant.lunchDinnerTiming}</span>
+                            <span>
+                              {activeRestaurant.breakfastTiming ||
+                                activeRestaurant.lunchDinnerTiming}
+                            </span>
                           </div>
                           <div className="flex items-center">
                             <MapPin className="w-5 h-5 mr-2 text-[#bf840d]" />
@@ -220,7 +281,7 @@ export default function DiningPage() {
         </section>
 
         {/* Chef Highlights Section */}
-        <section className={`py-${isMobile ? "16" : "24"} bg-gray-100`}>
+        {/* <section className={`py-${isMobile ? "16" : "24"} bg-gray-100`}>
           <div className="container mx-auto px-4">
             <h2 className={`${isMobile ? "text-3xl" : "text-4xl"} font-bold text-center mb-${isMobile ? "10" : "16"}`}>
               Meet Our Master Chefs
@@ -298,28 +359,37 @@ export default function DiningPage() {
               )}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Testimonials Section */}
-        <TestimonialsSection isMobile={isMobile} restaurantNames={diningData.map(r => r.name)} />
+        <TestimonialsSection
+          isMobile={isMobile}
+          restaurantNames={diningData.map((r) => r.name)}
+        />
       </main>
       <Footer />
     </div>
-  )
+  );
 }
 
 function MenuDialog({ restaurant }: { restaurant: any }) {
-  const isMobile = useMediaQuery("(max-width: 768px)")
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className={`${isMobile ? "w-full" : "w-full"} bg-[#bf840d] hover:bg-[#8B5E04] text-white`}>
+        <Button
+          className={`${
+            isMobile ? "w-full" : "w-full"
+          } bg-[#bf840d] hover:bg-[#8B5E04] text-white`}
+        >
           View Menu
         </Button>
       </DialogTrigger>
       <DialogContent
-        className={`${isMobile ? "w-[95vw] max-w-[95vw]" : "sm:max-w-[700px]"} max-h-[80vh] overflow-y-auto`}
+        className={`${
+          isMobile ? "w-[95vw] max-w-[95vw]" : "sm:max-w-[700px]"
+        } max-h-[80vh] overflow-y-auto`}
       >
         <DialogHeader>
           <DialogTitle>{restaurant.name} Menu</DialogTitle>
@@ -330,15 +400,24 @@ function MenuDialog({ restaurant }: { restaurant: any }) {
               // Structured menu with categories
               restaurant.menu.map((category, index) => (
                 <div key={index} className="mb-8">
-                  <h3 className="text-2xl font-semibold mb-4 text-[#bf840d]">{category.category}</h3>
+                  <h3 className="text-2xl font-semibold mb-4 text-[#bf840d]">
+                    {category.category}
+                  </h3>
                   <div className="space-y-4">
                     {category.items.map((item, itemIndex) => (
-                      <div key={itemIndex} className="border-b border-gray-200 pb-4">
+                      <div
+                        key={itemIndex}
+                        className="border-b border-gray-200 pb-4"
+                      >
                         <div className={isMobile ? "w-3/4" : ""}>
                           <h4 className="text-lg font-medium">{item.name}</h4>
-                          <p className="text-sm text-gray-600">{item.description}</p>
+                          <p className="text-sm text-gray-600">
+                            {item.description}
+                          </p>
                         </div>
-                        <span className="text-[#bf840d] font-semibold">{item.price}</span>
+                        <span className="text-[#bf840d] font-semibold">
+                          {item.price}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -351,7 +430,9 @@ function MenuDialog({ restaurant }: { restaurant: any }) {
                   <div key={index} className="border-b border-gray-200 pb-4">
                     <div className="flex justify-between items-start">
                       <h4 className="text-lg font-medium">{item.name}</h4>
-                      <span className="text-[#bf840d] font-semibold">{item.price}</span>
+                      <span className="text-[#bf840d] font-semibold">
+                        {item.price}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -363,53 +444,58 @@ function MenuDialog({ restaurant }: { restaurant: any }) {
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 function ReservationDialog({ restaurant }: { restaurant: any }) {
-  const isMobile = useMediaQuery("(max-width: 768px)")
-  const [name, setName] = useState("")
-  const [phone, setPhone] = useState("")
-  const [date, setDate] = useState("")
-  const [time, setTime] = useState("")
-  const [guests, setGuests] = useState(1)
-  const [isThankYouOpen, setIsThankYouOpen] = useState(false)
-  const [isReservationOpen, setIsReservationOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [guests, setGuests] = useState(1);
+  const [isThankYouOpen, setIsThankYouOpen] = useState(false);
+  const [isReservationOpen, setIsReservationOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+    e.preventDefault();
+    setLoading(true);
+    setError("");
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/dining-bookings`, {
-        name,
-        phone,
-        date,
-        time,
-        guests,
-        dining: restaurant._id,
-      },{
-        headers:{
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("hpc-token") || ''}` // Ensure you have the correct API key set
-        
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/dining-bookings`,
+        {
+          name,
+          phone,
+          date,
+          time,
+          guests,
+          dining: restaurant._id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("hpc-token") || ""}`, // Ensure you have the correct API key set
+          },
         }
-      })
-      setIsThankYouOpen(true)
-      setIsReservationOpen(false)
-      setName("")
-      setPhone("")
-      setDate("")
-      setTime("")
-      setGuests(1)
+      );
+      setIsThankYouOpen(true);
+      setIsReservationOpen(false);
+      setName("");
+      setPhone("");
+      setDate("");
+      setTime("");
+      setGuests(1);
     } catch (err: any) {
-      setError(err?.response?.data?.message || "Failed to book. Please try again.")
+      setError(
+        err?.response?.data?.message || "Failed to book. Please try again."
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -417,36 +503,76 @@ function ReservationDialog({ restaurant }: { restaurant: any }) {
         <DialogTrigger asChild>
           <Button
             onClick={() => setIsReservationOpen(true)}
-            className={`${isMobile ? "w-full" : "w-full"} bg-[#bf840d] hover:bg-[#8B5E04] text-white`}
+            className={`${
+              isMobile ? "w-full" : "w-full"
+            } bg-[#bf840d] hover:bg-[#8B5E04] text-white`}
           >
             Reserve a Table
           </Button>
         </DialogTrigger>
-        <DialogContent className={`${isMobile ? "w-[95vw] max-w-[95vw]" : "sm:max-w-[350px]"}`}>
+        <DialogContent
+          className={`${
+            isMobile ? "w-[95vw] max-w-[95vw]" : "sm:max-w-[350px]"
+          }`}
+        >
           <DialogHeader>
             <DialogTitle>Quick Reservation</DialogTitle>
-            <DialogDescription>Enter details for your reservation.</DialogDescription>
+            <DialogDescription>
+              Enter details for your reservation.
+            </DialogDescription>
           </DialogHeader>
           <form className="space-y-3" onSubmit={handleSubmit}>
             <div className="space-y-1">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Your name" value={name} onChange={e => setName(e.target.value)} required />
+              <Input
+                id="name"
+                placeholder="Your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
             </div>
             <div className="space-y-1">
               <Label htmlFor="phone">Phone</Label>
-              <Input id="phone" placeholder="Your phone" value={phone} onChange={e => setPhone(e.target.value)} required />
+              <Input
+                id="phone"
+                placeholder="Your phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
             </div>
             <div className="space-y-1">
               <Label htmlFor="date">Date</Label>
-              <Input id="date" type="date" value={date} onChange={e => setDate(e.target.value)} required />
+              <Input
+                id="date"
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+              />
             </div>
             <div className="space-y-1">
               <Label htmlFor="time">Time</Label>
-              <Input id="time" type="time" value={time} onChange={e => setTime(e.target.value)} required />
+              <Input
+                id="time"
+                type="time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                required
+              />
             </div>
             <div className="space-y-1">
               <Label htmlFor="guests">Guests</Label>
-              <Input id="guests" type="number" min="1" max="10" value={guests} onChange={e => setGuests(Number(e.target.value))} required />
+              <Input
+                id="guests"
+                type="number"
+                min="1"
+                max="10"
+                value={guests}
+                onChange={(e) => setGuests(Number(e.target.value))}
+                required
+              />
             </div>
             {error && <div className="text-red-500 text-sm">{error}</div>}
             <DialogFooter>
@@ -463,10 +589,16 @@ function ReservationDialog({ restaurant }: { restaurant: any }) {
       </Dialog>
 
       <Dialog open={isThankYouOpen} onOpenChange={setIsThankYouOpen}>
-        <DialogContent className={`${isMobile ? "w-[95vw] max-w-[95vw]" : "sm:max-w-[425px]"}`}>
+        <DialogContent
+          className={`${
+            isMobile ? "w-[95vw] max-w-[95vw]" : "sm:max-w-[425px]"
+          }`}
+        >
           <DialogHeader>
             <DialogTitle>Thank You!</DialogTitle>
-            <DialogDescription>Your reservation has been confirmed.</DialogDescription>
+            <DialogDescription>
+              Your reservation has been confirmed.
+            </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button onClick={() => setIsThankYouOpen(false)}>Close</Button>
@@ -474,10 +606,16 @@ function ReservationDialog({ restaurant }: { restaurant: any }) {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }
 
-function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean, restaurantNames: string[] }) {
+function TestimonialsSection({
+  isMobile,
+  restaurantNames,
+}: {
+  isMobile: boolean;
+  restaurantNames: string[];
+}) {
   const diningTestimonials = [
     {
       name: "Sarah Johnson",
@@ -535,22 +673,44 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
       avatar: "https://i.pravatar.cc/150?img=7",
       likes: 35,
     },
-  ]
+  ];
 
-  const [activeRestaurant, setActiveRestaurant] = useState<string | null>(null)
-  const [currentTestimonial, setCurrentTestimonial] = useState(0)
-  const [expandedTestimonial, setExpandedTestimonial] = useState<number | null>(null)
+  const [activeRestaurant, setActiveRestaurant] = useState<string | null>(null);
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [expandedTestimonial, setExpandedTestimonial] = useState<number | null>(
+    null
+  );
 
   const filteredTestimonials = activeRestaurant
     ? diningTestimonials.filter((t) => t.restaurant === activeRestaurant)
-    : diningTestimonials
+    : diningTestimonials;
 
   const handleNext = () => {
-    setCurrentTestimonial((prev) => (prev + 1) % filteredTestimonials.length)
-  }
+    setCurrentTestimonial((prev) => (prev + 1) % filteredTestimonials.length);
+  };
 
   const handlePrevious = () => {
-    setCurrentTestimonial((prev) => (prev - 1 + filteredTestimonials.length) % filteredTestimonials.length)
+    setCurrentTestimonial(
+      (prev) =>
+        (prev - 1 + filteredTestimonials.length) % filteredTestimonials.length
+    );
+  };
+
+  if (filteredTestimonials.length === 0) {
+    return (
+      <section className={isMobile ? "py-16 bg-gradient-to-b from-white to-gray-50" : "py-24 bg-gradient-to-b from-white to-gray-50"}>
+        <div className="container mx-auto px-4 text-center">
+          <span className="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium mb-3">
+            GUEST EXPERIENCES
+          </span>
+          <h2 className={isMobile ? "text-3xl font-bold mb-3" : "text-4xl md:text-5xl font-bold mb-4"}>What Our Guests Say</h2>
+          <p className={isMobile ? "text-sm text-gray-600 max-w-xs mx-auto mb-8" : "text-lg text-gray-600 max-w-2xl mx-auto mb-8"}>
+            Authentic reviews from our valued guests
+          </p>
+          <div className="py-12 text-gray-500 italic text-lg">No testimonials available for this restaurant.</div>
+        </div>
+      </section>
+    );
   }
 
   if (isMobile) {
@@ -562,7 +722,9 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
               GUEST EXPERIENCES
             </span>
             <h2 className="text-3xl font-bold mb-3">What Our Guests Say</h2>
-            <p className="text-sm text-gray-600 max-w-xs mx-auto">Authentic reviews from our valued guests</p>
+            <p className="text-sm text-gray-600 max-w-xs mx-auto">
+              Authentic reviews from our valued guests
+            </p>
           </div>
 
           {/* Restaurant Filter - Simplified for Mobile */}
@@ -571,7 +733,9 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
               <button
                 onClick={() => setActiveRestaurant(null)}
                 className={`px-3 py-1 rounded-md text-xs font-medium transition-all whitespace-nowrap ${
-                  activeRestaurant === null ? "bg-white shadow-sm text-amber-800" : "text-gray-600 hover:text-gray-900"
+                  activeRestaurant === null
+                    ? "bg-white shadow-sm text-amber-800"
+                    : "text-gray-600 hover:text-gray-900"
                 }`}
               >
                 All
@@ -604,7 +768,10 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
               >
                 <div className="relative h-48">
                   <Image
-                    src={filteredTestimonials[currentTestimonial].image || "/placeholder.svg"}
+                    src={
+                      filteredTestimonials[currentTestimonial].image ||
+                      "/placeholder.svg"
+                    }
                     alt={filteredTestimonials[currentTestimonial].dish}
                     fill
                     className="object-cover"
@@ -620,32 +787,50 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
                 </div>
                 <div className="p-4">
                   <div className="flex items-center gap-1 mb-3">
-                    {[...Array(filteredTestimonials[currentTestimonial].rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    {[
+                      ...Array(filteredTestimonials[currentTestimonial].rating),
+                    ].map((_, i) => (
+                      <Star
+                        key={i}
+                        className="w-4 h-4 fill-amber-400 text-amber-400"
+                      />
                     ))}
-                    <span className="text-gray-500 text-xs ml-2">{filteredTestimonials[currentTestimonial].date}</span>
+                    <span className="text-gray-500 text-xs ml-2">
+                      {filteredTestimonials[currentTestimonial].date}
+                    </span>
                   </div>
 
-                  <p className="text-gray-700 text-sm mb-4">"{filteredTestimonials[currentTestimonial].comment}"</p>
+                  <p className="text-gray-700 text-sm mb-4">
+                    "{filteredTestimonials[currentTestimonial].comment}"
+                  </p>
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="relative w-8 h-8 rounded-full overflow-hidden">
                         <Image
-                          src={filteredTestimonials[currentTestimonial].avatar || "/placeholder.svg"}
+                          src={
+                            filteredTestimonials[currentTestimonial].avatar ||
+                            "/placeholder.svg"
+                          }
                           alt={filteredTestimonials[currentTestimonial].name}
                           fill
                           className="object-cover"
                         />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-sm">{filteredTestimonials[currentTestimonial].name}</h4>
-                        <p className="text-xs text-gray-500">{filteredTestimonials[currentTestimonial].location}</p>
+                        <h4 className="font-semibold text-sm">
+                          {filteredTestimonials[currentTestimonial].name}
+                        </h4>
+                        <p className="text-xs text-gray-500">
+                          {filteredTestimonials[currentTestimonial].location}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
                       <ThumbsUp className="w-3 h-3 text-amber-500" />
-                      <span className="text-xs text-gray-600">{filteredTestimonials[currentTestimonial].likes}</span>
+                      <span className="text-xs text-gray-600">
+                        {filteredTestimonials[currentTestimonial].likes}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -678,7 +863,9 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
                   key={index}
                   onClick={() => setCurrentTestimonial(index)}
                   className={`w-2 h-2 rounded-full transition-all ${
-                    currentTestimonial === index ? "bg-amber-500 w-4" : "bg-gray-300 hover:bg-amber-300"
+                    currentTestimonial === index
+                      ? "bg-amber-500 w-4"
+                      : "bg-gray-300 hover:bg-amber-300"
                   }`}
                   aria-label={`Go to testimonial ${index + 1}`}
                 />
@@ -694,7 +881,7 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
           </div>
         </div>
       </section>
-    )
+    );
   }
 
   return (
@@ -704,9 +891,12 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
           <span className="inline-block px-4 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium mb-4">
             GUEST EXPERIENCES
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">What Our Guests Say</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            What Our Guests Say
+          </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Authentic reviews from our valued guests who have experienced our culinary delights
+            Authentic reviews from our valued guests who have experienced our
+            culinary delights
           </p>
         </div>
 
@@ -716,7 +906,9 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
             <button
               onClick={() => setActiveRestaurant(null)}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                activeRestaurant === null ? "bg-white shadow-sm text-amber-800" : "text-gray-600 hover:text-gray-900"
+                activeRestaurant === null
+                  ? "bg-white shadow-sm text-amber-800"
+                  : "text-gray-600 hover:text-gray-900"
               }`}
             >
               All Restaurants
@@ -758,13 +950,18 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
               <div className="grid md:grid-cols-2">
                 <div className="relative h-64 md:h-auto">
                   <Image
-                    src={filteredTestimonials[currentTestimonial].image || "/placeholder.svg"}
+                    src={
+                      filteredTestimonials[currentTestimonial].image ||
+                      "/placeholder.svg"
+                    }
                     alt={filteredTestimonials[currentTestimonial].dish}
                     fill
                     className="object-cover"
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                    <span className="text-white font-medium">{filteredTestimonials[currentTestimonial].dish}</span>
+                    <span className="text-white font-medium">
+                      {filteredTestimonials[currentTestimonial].dish}
+                    </span>
                     <span className="text-amber-300 text-sm ml-2">
                       at {filteredTestimonials[currentTestimonial].restaurant}
                     </span>
@@ -773,12 +970,25 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
                 <div className="p-8 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center gap-1 mb-4">
-                      {[...Array(filteredTestimonials[currentTestimonial].rating)].map((_, i) => (
-                        <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
-                      ))}
-                      {[...Array(5 - filteredTestimonials[currentTestimonial].rating)].map((_, i) => (
+                      {[
+                        ...Array(
+                          filteredTestimonials[currentTestimonial].rating
+                        ),
+                      ].map((_, i) => (
                         <Star
-                          key={i + filteredTestimonials[currentTestimonial].rating}
+                          key={i}
+                          className="w-5 h-5 fill-amber-400 text-amber-400"
+                        />
+                      ))}
+                      {[
+                        ...Array(
+                          5 - filteredTestimonials[currentTestimonial].rating
+                        ),
+                      ].map((_, i) => (
+                        <Star
+                          key={
+                            i + filteredTestimonials[currentTestimonial].rating
+                          }
                           className="w-5 h-5 text-gray-300"
                         />
                       ))}
@@ -799,20 +1009,29 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
                     <div className="flex items-center gap-3">
                       <div className="relative w-12 h-12 rounded-full overflow-hidden">
                         <Image
-                          src={filteredTestimonials[currentTestimonial].avatar || "/placeholder.svg"}
+                          src={
+                            filteredTestimonials[currentTestimonial].avatar ||
+                            "/placeholder.svg"
+                          }
                           alt={filteredTestimonials[currentTestimonial].name}
                           fill
                           className="object-cover"
                         />
                       </div>
                       <div>
-                        <h4 className="font-semibold">{filteredTestimonials[currentTestimonial].name}</h4>
-                        <p className="text-sm text-gray-500">{filteredTestimonials[currentTestimonial].location}</p>
+                        <h4 className="font-semibold">
+                          {filteredTestimonials[currentTestimonial].name}
+                        </h4>
+                        <p className="text-sm text-gray-500">
+                          {filteredTestimonials[currentTestimonial].location}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
                       <ThumbsUp className="w-4 h-4 text-amber-500" />
-                      <span className="text-sm text-gray-600">{filteredTestimonials[currentTestimonial].likes}</span>
+                      <span className="text-sm text-gray-600">
+                        {filteredTestimonials[currentTestimonial].likes}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -834,7 +1053,9 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
                 key={index}
                 onClick={() => setCurrentTestimonial(index)}
                 className={`w-3 h-3 rounded-full transition-all ${
-                  currentTestimonial === index ? "bg-amber-500 w-6" : "bg-gray-300 hover:bg-amber-300"
+                  currentTestimonial === index
+                    ? "bg-amber-500 w-6"
+                    : "bg-gray-300 hover:bg-amber-300"
                 }`}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
@@ -851,7 +1072,9 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={`bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all ${
-                expandedTestimonial === index ? "md:col-span-2 lg:col-span-3" : ""
+                expandedTestimonial === index
+                  ? "md:col-span-2 lg:col-span-3"
+                  : ""
               }`}
             >
               <div className="flex justify-between items-start mb-4">
@@ -874,7 +1097,10 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
                 </div>
                 <div className="flex items-center">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    <Star
+                      key={i}
+                      className="w-4 h-4 fill-amber-400 text-amber-400"
+                    />
                   ))}
                 </div>
               </div>
@@ -897,7 +1123,11 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
 
               {testimonial.comment.length > 120 && (
                 <button
-                  onClick={() => setExpandedTestimonial(expandedTestimonial === index ? null : index)}
+                  onClick={() =>
+                    setExpandedTestimonial(
+                      expandedTestimonial === index ? null : index
+                    )
+                  }
                   className="text-amber-600 hover:text-amber-800 text-sm font-medium"
                 >
                   {expandedTestimonial === index ? "Read less" : "Read more"}
@@ -909,9 +1139,11 @@ function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean,
 
         {/* Call to Action */}
         <div className="text-center mt-16">
-          <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white px-8 py-3">Share Your Experience</Button>
+          <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white px-8 py-3">
+            Share Your Experience
+          </Button>
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -30,7 +30,11 @@ export default function RoomsPage() {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/rooms`)
         setRooms(response.data)
-        setFilteredRooms(response.data)
+          const filtered = response.data.sort((a, b) => a.pricePerNight - b.pricePerNight)
+    setFilteredRooms(filtered)
+    console.log("Filtered Rooms:", filtered)
+
+ 
         setIsLoading(false)
       } catch (err) {
         setError("Failed to fetch rooms")
@@ -43,15 +47,7 @@ export default function RoomsPage() {
   }, [])
 
   const filterRooms = () => {
-    const filtered = rooms.filter(
-      (room) =>
-        room.pricePerNight >= priceRange[0] &&
-        room.pricePerNight <= priceRange[1] &&
-        (selectedBedType === "All" || room.bedType.includes(selectedBedType))
-    )
-    setFilteredRooms(filtered)
-    console.log("Filtered Rooms:", filtered)
-    updateActiveFilters()
+  
   }
 
   const updateActiveFilters = () => {
@@ -72,7 +68,7 @@ export default function RoomsPage() {
 
   useEffect(() => {
     filterRooms()
-  }, [priceRange, selectedView, selectedBedType])
+  }, [])
 
   return (
     <div className="min-h-screen flex flex-col bg-amber-50">
@@ -91,13 +87,21 @@ export default function RoomsPage() {
           <div className="relative h-full container mx-auto px-4 flex flex-col justify-center items-center text-center">
             <h1 className="text-5xl md:text-6xl font-serif font-medium text-white mb-4">Our Rooms & Suites</h1>
             <p className="text-xl md:text-2xl text-white/90 max-w-2xl">
-              Experience the perfect blend of comfort and luxury in our thoughtfully designed accommodations.
+             Step into a world of quiet sophistication and absolute comfort.
+            
+
             </p>
+      
             <Button
-              className="mt-8 bg-amber-600 hover:bg-amber-700 text-white"
-              onClick={() => setIsFilterVisible(true)}
+              className="bg-[#bf840d] hover:bg-[#8B5E04] text-white text-lg px-8 py-3 mt-5"
+              onClick={() => {
+                const section = document.getElementById('rooms-list-section');
+                if (section) {
+                  section.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
             >
-              Find Your Perfect Room
+           Book Your Ideal Retreat
             </Button>
           </div>
         </div>
@@ -115,7 +119,7 @@ export default function RoomsPage() {
         )}
 
         {/* Filter Section */}
-        <Dialog open={isFilterVisible} onOpenChange={setIsFilterVisible}>
+        {/* <Dialog open={isFilterVisible} onOpenChange={setIsFilterVisible}>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
               <DialogTitle>Find Your Perfect Room</DialogTitle>
@@ -176,10 +180,10 @@ export default function RoomsPage() {
               </Button>
             </div>
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
 
         {/* Active Filters */}
-        {activeFilters.length > 0 && (
+        {/* {activeFilters.length > 0 && (
           <div className="container mx-auto px-4 mt-8">
             <div className="flex flex-wrap gap-2 items-center">
               <span className="text-sm font-medium text-amber-800">Active Filters:</span>
@@ -193,7 +197,7 @@ export default function RoomsPage() {
               </Button>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Rooms Section */}
         {isLoading ? (
@@ -203,7 +207,7 @@ export default function RoomsPage() {
             </div>
           </div>
         ) : (
-          <section className="py-16">
+          <section className="py-16" id="rooms-list-section">
           
             <div className="container mx-auto px-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -236,7 +240,7 @@ function RoomCard({ room }: { room: Room }) {
       }
 
       // Log the raw string for debugging
-      console.log('Raw string:', jsonString);
+      // console.log('Raw string:', jsonString);
 
       return jsonString.split(',').map(item => 
         item.trim()
@@ -244,8 +248,8 @@ function RoomCard({ room }: { room: Room }) {
            .replace(/\\"/g, '"')         
       ).filter(Boolean);                
     } catch (error) {
-      console.error('Error parsing JSON:', error);
-      console.log('Failed to parse:', jsonString);
+      // console.error('Error parsing JSON:', error);
+      // console.log('Failed to parse:', jsonString);
       return [];
     }
   };
@@ -254,10 +258,10 @@ function RoomCard({ room }: { room: Room }) {
 
 // const amenities= JSON.parse(room.amenities)
 //   console.log('Parsed amenities:', amenities);
-console.log(room.amenities)
+// console.log(room.amenities)
 
   const additionalInfo = parseJsonSafely(room.additionalDetails[0]);
-  console.log('Parsed additional info:', additionalInfo,room);
+  // console.log('Parsed additional info:', additionalInfo,room);
 
 
   const nextImage = () => {

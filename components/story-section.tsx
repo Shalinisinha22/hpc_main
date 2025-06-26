@@ -22,15 +22,20 @@ const storyImages = [
   },
 ]
 
+// Ensure there are always 4 faces for the cube
+const cubeImages = Array(4)
+  .fill(0)
+  .map((_, i) => storyImages[i % storyImages.length])
+
 export default function StorySection() {
   const [currentFace, setCurrentFace] = useState(0)
 
   const handlePrevious = () => {
-    setCurrentFace((prev) => (prev === 0 ? storyImages.length - 1 : prev - 1))
+    setCurrentFace((prev) => (prev === 0 ? cubeImages.length - 1 : prev - 1))
   }
 
   const handleNext = () => {
-    setCurrentFace((prev) => (prev === storyImages.length - 1 ? 0 : prev + 1))
+    setCurrentFace((prev) => (prev === cubeImages.length - 1 ? 0 : prev + 1))
   }
 
   return (
@@ -41,8 +46,8 @@ export default function StorySection() {
           <div className="relative w-full aspect-square max-w-[500px] mx-auto">
             <div className="cube-container w-full h-full">
               <div className="cube" style={{ transform: `rotateY(${currentFace * -90}deg)` }}>
-                {storyImages.map((image, index) => (
-                  <div key={image.id} className={`cube-face cube-face-${index + 1}`}>
+                {cubeImages.map((image, index) => (
+                  <div key={index} className={`cube-face cube-face-${index + 1}`}>
                     <Image
                       src={image.url || "/placeholder.svg"}
                       alt={image.alt}

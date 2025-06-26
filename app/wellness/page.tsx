@@ -24,51 +24,69 @@ const amenities = [
   {
     name: "Swimming Pool",
     icon: Pool,
-    description: "Dive into luxury with our infinity pool overlooking the ocean. Perfect for laps or leisurely swims.",
-    features: ["Temperature-controlled", "Infinity edge", "Poolside bar", "Comfortable loungers"],
+    description:
+      "Perched on the rooftop, our serene pool is encircled by plush sunbeds and shaded umbrellas — perfect for soaking up the sun, unwinding in tranquillity, and taking in the panoramic views above the city bustle.",
+    features: [
+      "Temperature-controlled",
+      "Infinity edge",
+      "Poolside bar",
+      "Comfortable loungers",
+      "Open daily from 11:00 AM to 8:00 PM",
+    ],
     offer: "Book a cabana for a day and receive complimentary fruit platters and refreshments.",
     images: [
-      "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1519449556851-5720b33024e7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
-      "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://patliputracontinental.com/images/wellness/Pool.jpg",
     ],
   },
   {
     name: "Ocean Salon & Spa",
     icon: Spa,
     description:
-      "Indulge in ultimate relaxation with our range of spa treatments inspired by ancient healing traditions.",
-    features: ["Massage therapies", "Facial treatments", "Ayurvedic rituals", "Couples' packages"],
+      "Inspired by a deep desire to offer exceptional beauty and wellness services, Ocean Salon & Spa is a serene retreat devoted to tranquillity, peace of mind, and holistic well-being.",
+    features: [
+      "Massage therapies",
+      "Facial treatments",
+      "Ayurvedic rituals",
+      "Couples' packages",
+      "Open daily from 11:00 AM to 8:00 PM",
+    ],
     offer: "Book any 90-minute treatment and receive a complimentary 30-minute add-on of your choice.",
     images: [
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1600334129128-685c5582fd35?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://patliputracontinental.com/images/wellness/1686829683Spa_11zon%20(1).jpg",
     ],
   },
   {
     name: "Gym",
     icon: Dumbbell,
     description:
-      "Stay fit during your stay with our state-of-the-art gym equipment and personalized training sessions.",
-    features: ["Latest cardio machines", "Free weights area", "Yoga studio", "Personal trainers available"],
+      "Located on the ground floor, our well-appointed gym features state-of-the-art equipment and modern training methods. Whether you're in the mood for an intense workout or a light stretch and TRX session, there's ample space to move at your own pace.",
+    features: [
+      "Latest cardio machines",
+      "Free weights area",
+      "Yoga studio",
+      "Personal trainers available",
+      "Open daily from 11:00 AM to 8:00 PM",
+    ],
     offer: "Enjoy a complimentary fitness assessment and personalized workout plan with any 5-day gym pass purchase.",
     images: [
-      "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1593079831268-3381b0db4a77?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
+      "https://patliputracontinental.com/images/wellness/Gym1.jpg",
     ],
   },
   {
     name: "Game Zone",
     icon: Gamepad2,
-    description: "Unwind and have fun in our entertainment area featuring a variety of games for all ages.",
-    features: ["Billiards table", "Table tennis", "Video game consoles", "Board games collection"],
+    description:
+      "Add a playful twist to your stay at our Game Zone, featuring a pool table and a relaxed atmosphere. Complimentary for in-house guests, it's the perfect spot to unwind and enjoy a friendly game.",
+    features: [
+      "Billiards table",
+      "Table tennis",
+      "Video game consoles",
+      "Board games collection",
+      "Open daily from 11:00 AM to 8:00 PM",
+    ],
     offer: "Happy Hour: Enjoy 2-for-1 on all game zone activities every day from 3 PM to 5 PM.",
     images: [
-      "https://images.unsplash.com/photo-1582550945154-66ea8fff25e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1611996575749-79a3a250f948?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2026&q=80",
+      "https://patliputracontinental.com/images/wellness/Game%20Zone.jpg",
     ],
   },
 ]
@@ -159,7 +177,10 @@ export default function WellnessPage() {
           <div className="absolute inset-0 bg-black opacity-50"></div>
           <div className="relative z-10 text-center text-white">
             <h1 className="text-5xl font-bold mb-4">Wellness & Recreation</h1>
-            <p className="text-xl mb-8">Rejuvenate your body and mind in our luxurious facilities</p>
+            <p className="text-xl mb-8">
+Refresh your senses and restore your spirit with our indulgent leisure facilities.
+
+</p>
             <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white">Explore Our Amenities</Button>
           </div>
         </section>
@@ -176,7 +197,7 @@ export default function WellnessPage() {
           </div>
         </section>
 
-        {/* Wellness Packages Section */}
+        {/* Wellness Packages Section
         <section className="py-16 bg-gray-100">
           <div className="container mx-auto px-4">
             <h2 className="text-4xl font-bold text-center mb-12">Wellness Packages</h2>
@@ -199,7 +220,7 @@ export default function WellnessPage() {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
       </main>
       <Footer />
     </div>

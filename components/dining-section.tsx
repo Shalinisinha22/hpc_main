@@ -8,32 +8,33 @@ import { useMediaQuery } from "@/hooks/use-mobile"
 const diningOptions = [
   {
     id: 1,
-    title: "Bistro",
+    title: "Saffron",
     description:
-      "Multi Cuisines Restaurant offering an exquisite blend of international and local cuisines in a luxurious setting.",
+      "A multi-cuisine restaurant serving a curated blend of Indian, Continental, and global flavours — all in a refined, luxurious setting.",
     image:
       "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    specialties: "International, Continental, Indian",
-    openingHours: "7:00 AM - 11:00 PM",
+    specialties: "International • Continental • Indian",
+    openingHours: "6:30 AM – 10:00 PM",
   },
   {
     id: 2,
     title: "Chao China",
-    description: "Chinese Restaurant with authentic flavors and modern interpretations of classic dishes.",
+    description:
+      "Step into a world where traditional Chinese flavours meet contemporary flair. Chao China serves up bold, aromatic dishes and Asian fusion favourites, crafted to delight every palate.",
     image:
       "https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2129&q=80",
     specialties: "Chinese, Asian Fusion",
-    openingHours: "12:00 PM - 11:00 PM",
+    openingHours: "12:00 PM – 11:00 PM",
   },
   {
     id: 3,
     title: "Coca Mocha",
     description:
-      "Coffee Shop featuring artisanal coffees, pastries, and a relaxed atmosphere perfect for casual meetings.",
+      "Start your day or take a mid-day pause at Coca Mocha, where artisanal coffees meet freshly baked pastries in a cosy, laid-back setting. Perfect for casual catch-ups, quiet work hours, or simply unwinding.",
     image:
       "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1978&q=80",
     specialties: "Coffee, Pastries, Light Snacks",
-    openingHours: "6:00 AM - 10:00 PM",
+    openingHours: "6:00 AM – 10:00 PM",
   },
 ]
 

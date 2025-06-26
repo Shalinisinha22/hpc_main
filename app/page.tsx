@@ -13,6 +13,7 @@ import BrandValuesSection from "@/components/brand-values-section"
 import ExploreSection from "@/components/explore-section"
 import OffersSection from "@/components/offers-section"
 import AwardsSection from "@/components/awards-section" // Declared the variable
+import TestimonialsSection from "@/components/testimonials-section" // Import the TestimonialsSection component
 
 export default function Home() {
   return (
@@ -27,8 +28,14 @@ export default function Home() {
         <ExploreSection />
         <MeetingsEventsSection />
         <GallerySectionComponent />
+          <TestimonialsSection
+          isMobile={false}
+          restaurantNames={["All Hotels", "All Banquets", "All Restaurants"]}
+        />
         <BrandValuesSection />
         <AwardsSection />
+  
+      
       </main>
       <Footer />
       <WhatsappPopup />
