@@ -92,7 +92,7 @@ export default function ExploreSection() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-serif text-[#bf840d] mb-4">#ExploreBihar</h2>
-          <p className="text-gray-600 text-lg">Share your journey and tag us #HPCPatna and @HotelPatliputraContinental </p>
+          <p className="text-gray-600 text-lg">Create memories worth sharing — tag @HotelPatliputraContinental and use #HPCPatna to be a part of our story. </p>
         </div>
 
         <div className="relative" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
@@ -121,7 +121,7 @@ export default function ExploreSection() {
                   <Button
                     size="icon"
                     variant="ghost"
-                    className="absolute top-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={() => {
                       if (image.coords) {
                         const hotel = `${HOTEL_COORDS.lat},${HOTEL_COORDS.lng}`;
@@ -131,6 +131,7 @@ export default function ExploreSection() {
                     }}
                     aria-label="Show directions on map"
                   >
+
                     <img src="/google-maps.png" alt="Google Maps" className="h-6 w-6" />
                   </Button>
                 </div>
@@ -141,9 +142,7 @@ export default function ExploreSection() {
 
         <div className="mt-12 text-center">
           <p className="text-gray-600 text-lg mb-6">
-            Discover the rich cultural heritage and spiritual significance of Bihar, from ancient Buddhist sites to
-            historical landmarks and vibrant local art. Experience the diverse attractions that make Bihar a unique
-            destination.
+          Step into the soul of Bihar — where history breathes, spirituality awakens, and tradition thrives in every corner.
           </p>
           <Button
             className="bg-[#bf840d] hover:bg-[#a06f0b] text-white px-8 py-6 text-lg"

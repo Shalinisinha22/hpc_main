@@ -320,64 +320,6 @@ Thank you for your booking! 🙏`;
     }
   }
 
-  // const handleExpressCheckout = async () => {
-  //   if (!roomId || !checkInDate || !checkOutDate || !name || !email || !phone) {
-  //     toast({
-  //       title: "Missing Information",
-  //       description: "Please fill in all required fields before proceeding.",
-  //       variant: "destructive",
-  //     })
-  //     return
-  //   }
-
-  //   setIsProcessing(true)
-  //   try {
-  //     const bookingData = {
-  //       roomId,
-  //       checkInDate: new Date(checkInDate),
-  //       checkOutDate: new Date(checkOutDate),
-  //       noOfGuests: {
-  //         adults: Number(adults),
-  //         children: Number(children)
-  //       },
-  //       noOfRooms: Number(noOfRooms),
-  //       fullName: name,
-  //       email,
-  //       phone,
-  //       specialRequest: specialRequests,
-  //       totalPrice: totalPrice,
-  //       paymentStatus: 'confirmed'
-  //     }
-
-  //     const response = await fetch('http://localhost:8000/api/v1/bookings', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         "authorization": `Bearer ${localStorage.getItem("hpcToken")}`
-  //       },
-  //       body: JSON.stringify(bookingData)
-  //     })
-
-  //     const result = await response.json()
-      
-  //     if (result?.bookingId) {
-  //       setBookingId(result.bookingId || '')
-  //       setBookingComplete(true)
-  //       toast({
-  //         title: "Booking Confirmed!",
-  //         description: "Your express checkout was successful. Check your email for booking details.",
-  //       })
-  //     } else {
-  //       throw new Error(result.message || 'Failed to create booking')
-  //     }
-  //   } catch (error) {
-  //     console.error('Express checkout error:', error)
-  //     toast({
-  //       title: "Booking Failed",
-  //       description: error instanceof Error ? error.message : "Failed to complete booking. Please try again.",
-  //       variant: "destructive",
-  //     })
-  //   } finally {
 
   const handleCompleteBooking = async () => {
     if (!roomId || !checkInDate || !checkOutDate || !name || !email || !phone) {
@@ -482,7 +424,7 @@ useEffect(() => {
     const paymentStatus = urlParams.get('payment')
     const bookingIdParam = urlParams.get('bookingId')
     if (paymentStatus === 'cancel' && bookingIdParam) {
-      // Stay on page, show toast, do not redirect
+     
       toast({
         title: 'Payment Cancelled',
         description: 'Your payment was cancelled. You can try again or choose another payment method.',
@@ -696,13 +638,13 @@ useEffect(() => {
               Return to Home
               </Button>
               
-              {localStorage.getItem('hpc-User') && (
+              {typeof window !== 'undefined' && localStorage.getItem('hpc-User') && (
               <Button
-              variant="outline"
-              className="border-amber-600 text-amber-600 hover:bg-amber-50"
-              onClick={() => (window.location.href = "/my-bookings")}
+                variant="outline"
+                className="border-amber-600 text-amber-600 hover:bg-amber-50"
+                onClick={() => window.location.assign('/my-bookings')}
               >
-              View My Bookings
+                View My Bookings
               </Button>
               )}
               
@@ -991,7 +933,7 @@ useEffect(() => {
     <Label htmlFor="ccavenue" className="flex-1 flex items-center gap-2">
       {/* Use local logo instead of remote CCAvenue logo to avoid 404 */}
       <Image src="/cc_avenue.png" alt="CCAvenue" width={60} height={30} />
-      CCAvenue
+  
     </Label>
   </div>
   <div className="flex items-center space-x-2 border p-4 rounded-md">

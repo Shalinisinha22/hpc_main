@@ -3,6 +3,18 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 
+
+// Suite Delight
+// Where each suite tells a tale of elegance, indulgence, and impeccable service.
+
+
+// Weekend Offer
+// Save 30% on weekend stays. Book for Saturday & Sunday and enjoy more for less.
+
+// Midweek Offer
+// Midweek just got better.Book now and unlock exclusive midweek perks.
+
+
 const offers = [
   {
     title: "Romantic Getaway",

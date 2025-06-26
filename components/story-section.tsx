@@ -81,15 +81,9 @@ export default function StorySection() {
             <h2 className="text-4xl md:text-5xl font-serif text-gray-800 mb-6">Our Story</h2>
             <div className="space-y-4 text-gray-600">
               <p>
-                Hotel Patliputra Continental stands as a beacon of modern luxury in the heart of Patna. Our journey
-                began with a vision to provide world-class hospitality while honoring the rich cultural heritage of
-                Bihar's capital city.
+               Hotel Patliputra Continental stands as a distinguished symbol of luxury in the heart of Patna. Founded with a vision to offer world-class hospitality while embracing the cultural richness of Bihar, we continue to ror business or leisure, our unwavering dedication to service, modern comforts, and elegant surroundings ensures a memorable experience, every time.
               </p>
-              <p>
-                Today, we pride ourselves on delivering exceptional service and contemporary comfort to both business
-                and leisure travelers. Our commitment to excellence is reflected in every aspect of our hotel, from our
-                sophisticated accommodations to our premium amenities and professional staff.
-              </p>
+             
             </div>
           </div>
         </div>

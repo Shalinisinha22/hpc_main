@@ -144,10 +144,10 @@ export default function MeetingsEventsSection() {
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl md:text-5xl font-serif text-center text-[#bf840d] mb-4">Meetings & Events</h2>
-        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-          From intimate gatherings to grand celebrations, our versatile spaces and expert team ensure your event is a
-          resounding success.
+        <p className="text-center text-gray-600 mb-2 max-w-2xl mx-auto">
+      Where Every Event Becomes a Signature Moment
         </p>
+        <p  className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Be it a grand wedding or an exclusive boardroom meet — our team brings energy, precision, and a personalised approach to every occasion.</p>
 
         {isLoading ? (
           <div className="text-center py-12">
@@ -196,22 +196,22 @@ export default function MeetingsEventsSection() {
           <div className="text-center">
             <Briefcase className="w-12 h-12 text-[#bf840d] mx-auto mb-4" />
             <h3 className="text-xl font-serif mb-2">Business Meetings</h3>
-            <p className="text-gray-600">State-of-the-art facilities for productive sessions</p>
+            <p className="text-gray-600">Modern amenities and seamless service for focused, productive sessions.</p>
           </div>
           <div className="text-center">
             <Users className="w-12 h-12 text-[#bf840d] mx-auto mb-4" />
             <h3 className="text-xl font-serif mb-2">Conferences</h3>
-            <p className="text-gray-600">Spacious venues for large-scale events</p>
+            <p className="text-gray-600">Spacious, tech-enabled venues perfect for impactful gatherings.</p>
           </div>
           <div className="text-center">
             <Gift className="w-12 h-12 text-[#bf840d] mx-auto mb-4" />
             <h3 className="text-xl font-serif mb-2">Weddings</h3>
-            <p className="text-gray-600">Elegant settings for your special day</p>
+            <p className="text-gray-600">Timeless elegance and flawless execution for your big day.</p>
           </div>
           <div className="text-center">
             <Calendar className="w-12 h-12 text-[#bf840d] mx-auto mb-4" />
             <h3 className="text-xl font-serif mb-2">Social Events</h3>
-            <p className="text-gray-600">Versatile spaces for all types of celebrations</p>
+            <p className="text-gray-600">Flexible, stylish spaces tailored for every celebration</p>
           </div>
         </div>
       </div>
@@ -269,121 +269,126 @@ export default function MeetingsEventsSection() {
         </DialogContent>
       </Dialog>
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center mt-10">
-          <form className="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg relative z-50" onSubmit={handleSubmit}>
-            <button
-              type="button"
-              onClick={() => setModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 focus:outline-none"
-              aria-label="Close"
+        <div className="fixed inset-0 bg-black bg-opacity-40 z-40 flex items-center justify-center">
+          <div className="w-full max-w-lg h-[80vh] overflow-y-auto bg-white rounded-lg shadow-lg relative z-50 p-0">
+            <form
+              className="p-8"
+              onSubmit={handleSubmit}
             >
-              <X className="w-6 h-6" />
-            </button>
-            <h3 className="text-2xl font-bold mb-6 text-[#bf840d]">Request for Quote</h3>
-            <div className="mb-4">
-              <Label htmlFor="venue">Venue Name *</Label>
-              <select
-                id="venue"
-                className="form-select w-full border rounded p-2"
-                value={selectedHall}
-                onChange={e => {
-                  setSelectedHall(e.target.value)
-                  setForm(f => ({ ...f, hall: e.target.value }))
-                }}
-                required
+              <button
+                type="button"
+                onClick={() => setModalOpen(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 focus:outline-none"
+                aria-label="Close"
               >
-                <option value="">Select Hall</option>
-                {halls.map(h => (
-                  <option key={h._id} value={h.hall_name}>{h.hall_name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <Label htmlFor="date">Preferred Date *</Label>
-              <Input
-                id="date"
-                type="date"
-                value={form.date}
-                min={new Date().toISOString().split('T')[0]}
-                onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <Label htmlFor="guests">Number of Guests *</Label>
-              <Input
-                id="guests"
-                type="number"
-                min="1"
-                value={form.guests}
-                onChange={e => setForm(f => ({ ...f, guests: e.target.value }))}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <Label htmlFor="name">Full Name *</Label>
-              <Input
-                id="name"
-                type="text"
-                value={form.name}
-                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <Label htmlFor="mobile">Mobile *</Label>
-              <Input
-                id="mobile"
-                type="tel"
-                value={form.mobile}
-                onChange={e => setForm(f => ({ ...f, mobile: e.target.value }))}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <Label htmlFor="email">Email Address *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <Label htmlFor="purpose">Purpose of the Event *</Label>
-              <select
-                id="purpose"
-                className="form-select w-full border rounded p-2"
-                value={form.purpose}
-                onChange={e => setForm(f => ({ ...f, purpose: e.target.value }))}
-                required
-              >
-                <option value="">Choose Purpose of the Event</option>
-                <option value="wedding">Wedding</option>
-                <option value="conference">Conference</option>
-                <option value="meeting">Meeting</option>
-                <option value="social event">Social Event</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <Label htmlFor="message">Message (optional)</Label>
-              <textarea
-                id="message"
-                className="form-input w-full border rounded p-2"
-                value={form.message}
-                onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
-                maxLength={1000}
-                rows={3}
-                placeholder="Any special requests or details (max 1000 characters)"
-              />
-            </div>
-            {formError && <div className="text-red-600 mb-2 text-sm">{formError}</div>}
-            <div className="text-xs text-gray-500 mb-4">* All fields are mandatory.</div>
-            <div className="flex justify-end">
-              <Button type="submit" className="bg-[#bf840d] text-white">Submit</Button>
-            </div>
-          </form>
+                <X className="w-6 h-6" />
+              </button>
+              <h3 className="text-2xl font-bold mb-6 text-[#bf840d]">Request for Quote</h3>
+              <div className="mb-4">
+                <Label htmlFor="venue">Venue Name *</Label>
+                <select
+                  id="venue"
+                  className="form-select w-full border rounded p-2"
+                  value={selectedHall}
+                  onChange={e => {
+                    setSelectedHall(e.target.value)
+                    setForm(f => ({ ...f, hall: e.target.value }))
+                  }}
+                  required
+                >
+                  <option value="">Select Hall</option>
+                  {halls.map(h => (
+                    <option key={h._id} value={h.hall_name}>{h.hall_name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-4">
+                <Label htmlFor="date">Preferred Date *</Label>
+                <Input
+                  id="date"
+                  type="date"
+                  value={form.date}
+                  min={new Date().toISOString().split('T')[0]}
+                  onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <Label htmlFor="guests">Number of Guests *</Label>
+                <Input
+                  id="guests"
+                  type="number"
+                  min="1"
+                  value={form.guests}
+                  onChange={e => setForm(f => ({ ...f, guests: e.target.value }))}
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <Label htmlFor="name">Full Name *</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={form.name}
+                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <Label htmlFor="mobile">Mobile *</Label>
+                <Input
+                  id="mobile"
+                  type="tel"
+                  value={form.mobile}
+                  onChange={e => setForm(f => ({ ...f, mobile: e.target.value }))}
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <Label htmlFor="email">Email Address *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={form.email}
+                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <Label htmlFor="purpose">Purpose of the Event *</Label>
+                <select
+                  id="purpose"
+                  className="form-select w-full border rounded p-2"
+                  value={form.purpose}
+                  onChange={e => setForm(f => ({ ...f, purpose: e.target.value }))}
+                  required
+                >
+                  <option value="">Choose Purpose of the Event</option>
+                  <option value="wedding">Wedding</option>
+                  <option value="conference">Conference</option>
+                  <option value="meeting">Meeting</option>
+                  <option value="social event">Social Event</option>
+                </select>
+              </div>
+              <div className="mb-4">
+                <Label htmlFor="message">Message (optional)</Label>
+                <textarea
+                  id="message"
+                  className="form-input w-full border rounded p-2"
+                  value={form.message}
+                  onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                  maxLength={1000}
+                  rows={3}
+                  placeholder="Any special requests or details (max 1000 characters)"
+                />
+              </div>
+              {formError && <div className="text-red-600 mb-2 text-sm">{formError}</div>}
+              <div className="text-xs text-gray-500 mb-4">* All fields are mandatory.</div>
+              <div className="flex justify-end">
+                <Button type="submit" className="bg-[#bf840d] text-white">Submit</Button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
       {halls.length === 0 && (

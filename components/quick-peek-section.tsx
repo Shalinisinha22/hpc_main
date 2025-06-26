@@ -50,7 +50,8 @@ export default function QuickPeekSection() {
     <section className="py-8 sm:py-12 md:py-16 bg-white">
       <div className="container mx-auto px-4">
         <h2 className="text-center text-2xl sm:text-3xl md:text-4xl font-serif text-[#bf840d] mb-6 sm:mb-8 md:mb-10">
-          <span className="inline-block border-b-2 border-[#bf840d] pb-1 sm:pb-2">QUICK PEEK</span>
+          <span className="inline-block border-b-2 border-[#bf840d] pb-1 sm:pb-2">QUICK GLANCE
+</span>
         </h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
@@ -74,7 +75,7 @@ export default function QuickPeekSection() {
               </Button>
 
               <a
-                href="mailto:reservations@luxehaven.com"
+                href="mailto:reservations@hpcpatna.com"
                 className="flex items-center gap-3 text-gray-700 hover:text-[#bf840d] transition-colors text-lg"
               >
                 <Mail className="w-5 h-5 text-[#bf840d]" />
@@ -89,12 +90,21 @@ export default function QuickPeekSection() {
                   <Phone className="w-5 h-5 text-[#bf840d]" />
                  +91 612 2250 204/205/206
                 </a>
-                <a
-                  href="tel:+1-555-123-4568"
+           
+                    {/* <a
+                  href="tel:+91 7061 552 455"
                   className="flex items-center gap-3 text-gray-700 hover:text-[#bf840d] transition-colors text-lg pl-8"
                 >
-        
+                  <Phone className="w-5 h-5 text-[#bf840d]" />
+        +91 7061 552 455
                 </a>
+                    <a
+                  href="tel: +91 913 555 1379"
+                  className="flex items-center gap-3 text-gray-700 hover:text-[#bf840d] transition-colors text-lg pl-8"
+                >
+                  <Phone className="w-5 h-5 text-[#bf840d]" />
+         +91 913 555 1379
+                </a> */}
               </div>
             </div>
           </div>
@@ -102,16 +112,12 @@ export default function QuickPeekSection() {
           {/* Middle Column - Description */}
           <div className="bg-white p-8 rounded-xl shadow-lg flex flex-col justify-between border border-[#bf840d]/20">
             <div>
-              <h3 className="text-3xl font-serif text-[#bf840d] mb-6">ONE STEP INTO STYLISH RELAXATION</h3>
+              <h3 className="text-3xl font-serif text-[#bf840d] mb-6">STEP INTO STYLISH RELAXATION</h3>
               <div className="space-y-4 text-gray-700 text-lg">
-                <p>
-                  With perfect combination of contemporary design and architecture, offering both business and leisure
-                  travellers outstanding services and comfort.
+                <p>An impeccable blend of contemporary design and thoughtful architecture, HPC offers a welcoming haven for both business and leisure travellers.
                 </p>
                 <p>
-                  We set with the goal of creating a consistent & reliable offering that gives you what you care about
-                  the most - a great room with amenities and delicious food, in the best location, at a surprisingly
-                  affordable rate.
+              We are committed to delivering what matters most — well-appointed rooms, fine amenities, delicious cuisine, and a prime location — all at a surprisingly sensible rate.
                 </p>
               </div>
             </div>
@@ -125,7 +131,7 @@ export default function QuickPeekSection() {
 
           {/* Right Column - Wellness */}
           <div className="bg-white p-8 rounded-xl shadow-lg border border-[#bf840d]/20">
-            <h3 className="text-3xl font-serif text-[#bf840d] mb-6">HPC Wellness</h3>
+            <h3 className="text-3xl font-serif text-[#bf840d] mb-6">Explore the World of HPC</h3>
             <div className="grid grid-cols-2 gap-4">
               {amenities.map((item, index) => (
                 <div

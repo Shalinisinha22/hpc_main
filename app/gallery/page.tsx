@@ -86,7 +86,7 @@ export default function GalleryPage() {
         {/* Rooms & Suites Gallery */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-8">Rooms & Suites</h2>
+            <h2 className="text-3xl font-serif text-[#bf840d] mb-8 tracking-wide border-b-2 border-[#bf840d] inline-block pb-1">Rooms & Suites</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {roomImages.map((img, idx) => (
                 <div
@@ -109,7 +109,7 @@ export default function GalleryPage() {
         {/* Meeting & Events Gallery */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-8">Meeting & Events</h2>
+           <h2 className="text-3xl font-serif text-[#bf840d] mb-8 tracking-wide border-b-2 border-[#bf840d] inline-block pb-1">Meeting & Events</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {hallImages.map((img, idx) => (
                 <div
@@ -132,7 +132,7 @@ export default function GalleryPage() {
         {/* Dining Gallery */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-8">Dining</h2>
+             <h2 className="text-3xl font-serif text-[#bf840d] mb-8 tracking-wide border-b-2 border-[#bf840d] inline-block pb-1">Dining</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {diningImages.map((img, idx) => (
                 <div

@@ -59,10 +59,14 @@ export default function BookingWidget() {
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className={`w-full justify-start text-left font-normal ${!checkInDate ? "text-muted-foreground" : ""}`}
+                  className={`w-full justify-start text-left font-normal bg-white border-amber-600 focus:ring-amber-600 shadow-sm hover:border-amber-700 ${!checkInDate ? "text-muted-foreground" : "text-amber-900"}`}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {checkInDate ? format(checkInDate, "EEE, MMM d, yyyy") : <span>Select date</span>}
+                  <CalendarIcon className="mr-2 h-4 w-4 text-amber-600" />
+                  {checkInDate ? (
+                    <span className="font-semibold">{format(checkInDate, "EEE, MMM d, yyyy")}</span>
+                  ) : (
+                    <span className="text-gray-400">Select date</span>
+                  )}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -71,7 +75,11 @@ export default function BookingWidget() {
                   selected={checkInDate}
                   onSelect={handleCheckInSelect}
                   initialFocus
-                  disabled={(date) => date < new Date()}
+                  disabled={(date) => {
+                    const today = new Date();
+                    today.setHours(0,0,0,0);
+                    return date < today;
+                  }}
                   className="rounded-md border shadow-md"
                 />
               </PopoverContent>
@@ -85,10 +93,14 @@ export default function BookingWidget() {
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className={`w-full justify-start text-left font-normal ${!checkOutDate ? "text-muted-foreground" : ""}`}
+                  className={`w-full justify-start text-left font-normal bg-white border-amber-600 focus:ring-amber-600 shadow-sm hover:border-amber-700 ${!checkOutDate ? "text-muted-foreground" : "text-amber-900"}`}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {checkOutDate ? format(checkOutDate, "EEE, MMM d, yyyy") : <span>Select date</span>}
+                  <CalendarIcon className="mr-2 h-4 w-4 text-amber-600" />
+                  {checkOutDate ? (
+                    <span className="font-semibold">{format(checkOutDate, "EEE, MMM d, yyyy")}</span>
+                  ) : (
+                    <span className="text-gray-400">Select date</span>
+                  )}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -97,7 +109,16 @@ export default function BookingWidget() {
                   selected={checkOutDate}
                   onSelect={handleCheckOutSelect}
                   initialFocus
-                  disabled={(date) => date <= (checkInDate || new Date())}
+                  disabled={(date) => {
+                    const today = new Date();
+                    today.setHours(0,0,0,0);
+                    if (checkInDate) {
+                      const minCheckOut = new Date(checkInDate);
+                      minCheckOut.setHours(0,0,0,0);
+                      return date <= minCheckOut;
+                    }
+                    return date <= today;
+                  }}
                   className="rounded-md border shadow-md"
                 />
               </PopoverContent>

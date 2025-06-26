@@ -5,27 +5,27 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 
 const heroContent = [
+  // {
+  //   title: "Experience Luxury in the Heart of Patna",
+  //   description: "Where modern comfort meets traditional hospitality at Hotel Patliputra Continental.",
+  //   image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/22.jpg-QbgXA0qOxbvDFx7L4aNYf6V3fMJnCu.jpeg",
+  // },
+  // {
+  //   title: "Elegant Accommodations",
+  //   description: "Discover our thoughtfully designed rooms with premium amenities and contemporary styling.",
+  //   image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/26.jpg-fuJtksW8PUBnyd3scARCJC3ez9HRbs.jpeg",
+  // },
   {
-    title: "Experience Luxury in the Heart of Patna",
-    description: "Where modern comfort meets traditional hospitality at Hotel Patliputra Continental.",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/22.jpg-QbgXA0qOxbvDFx7L4aNYf6V3fMJnCu.jpeg",
-  },
-  {
-    title: "Elegant Accommodations",
-    description: "Discover our thoughtfully designed rooms with premium amenities and contemporary styling.",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/26.jpg-fuJtksW8PUBnyd3scARCJC3ez9HRbs.jpeg",
-  },
-  {
-    title: "Comfort Meets Style",
-    description: "Spacious rooms featuring modern aesthetics and sophisticated furnishings.",
+    title: "Where Comfort Meets Sophistication",
+    description: "Unwind in our spacious, thoughtfully designed rooms featuring modern aesthetics and elegant furnishings",
     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/24.jpg-5rTgBj6FxRTHp1dHBsAD7TcK8EHvlT.jpeg",
   },
-  {
-    title: "Your Home Away From Home",
-    description: "Experience our warm hospitality and attention to every detail.",
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/23%20%281%29.jpg-U0n1vgUbDc625xfWuos00s4E0bkfe1.jpeg",
-  },
+  // {
+  //   title: "Your Home Away From Home",
+  //   description: "Experience our warm hospitality and attention to every detail.",
+  //   image:
+  //     "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/23%20%281%29.jpg-U0n1vgUbDc625xfWuos00s4E0bkfe1.jpeg",
+  // },
 ]
 
 export default function Hero() {

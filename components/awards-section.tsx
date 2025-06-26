@@ -58,8 +58,7 @@ export default function AwardsSection() {
             <span className="inline-block border-b-2 border-[#bf840d] pb-2">Our Awards</span>
           </h2>
           <p className="text-center text-gray-600 max-w-2xl mx-auto">
-            Luxe Haven has been recognized for its exceptional service, luxurious accommodations, and unforgettable
-            experiences by some of the most prestigious organizations in the travel industry.
+           Hotel Patliputra Continental is proud to be honoured by some of the travel industry's most esteemed organisations — a testament to our commitment to exceptional service, refined luxury, and unforgettable guest.
           </p>
         </div>
 
