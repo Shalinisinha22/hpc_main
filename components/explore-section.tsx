@@ -14,7 +14,7 @@ const exploreImages = [
   },
   {
     url: "https://upload.wikimedia.org/wikipedia/commons/d/dd/Temple_No.-_3%2C_Nalanda_Archaeological_Site.jpg",
-    caption: "Nalanda University Ruins",
+    caption: "Nalanda University",
     coords: { lat: 25.1357, lng: 85.4436 },
   },
   {
@@ -114,8 +114,8 @@ export default function ExploreSection() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute top-0 left-0 right-0 flex justify-end items-start p-4">
                     {image.coords && (
-                      <span className="flex items-center gap-1 text-xs text-amber-200 bg-black/60 rounded px-2 py-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 2C6.686 2 4 4.686 4 8c0 4.418 5.293 9.293 5.52 9.52a.75.75 0 0 0 1.06 0C10.707 17.293 16 12.418 16 8c0-3.314-2.686-6-6-6zm0 2a4 4 0 0 1 4 4c0 2.763-2.74 6.234-4 7.554C8.74 12.234 6 8.763 6 6a4 4 0 0 1 4-4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" clipRule="evenodd"/></svg>
+                      <span className="flex items-center gap-1 text-xs text-amber-200 bg-black/40 rounded px-2 py-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4  text-red-800" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 2C6.686 2 4 4.686 4 8c0 4.418 5.293 9.293 5.52 9.52a.75.75 0 0 0 1.06 0C10.707 17.293 16 12.418 16 8c0-3.314-2.686-6-6-6zm0 2a4 4 0 0 1 4 4c0 2.763-2.74 6.234-4 7.554C8.74 12.234 6 8.763 6 6a4 4 0 0 1 4-4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" clipRule="evenodd"/></svg>
                         {`${getDistanceKm(HOTEL_COORDS.lat, HOTEL_COORDS.lng, image.coords.lat, image.coords.lng)} km from hotel`}
                       </span>
                     )}

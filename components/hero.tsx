@@ -53,7 +53,7 @@ export default function Hero() {
       </div>
 
       <div className="relative h-full container mx-auto px-4 flex flex-col justify-center pt-20 z-10">
-        <div className="max-w-2xl">
+        <div className="max-w-2xl bg-[rgba(95,72,43,0.45)] rounded-2xl p-8 md:p-10 shadow-lg backdrop-blur-sm">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-white mb-4 transition-opacity duration-500">
             {heroContent[currentIndex].title}
           </h1>

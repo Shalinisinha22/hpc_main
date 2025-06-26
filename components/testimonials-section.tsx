@@ -60,43 +60,27 @@ const testimonials: Testimonial[] = [
     avatar: "https://i.pravatar.cc/150?img=5",
     likes: 29,
   },
-//   {
-//     name: "John Smith",
-//     location: "Sydney, Australia",
-//     comment:
-//       "The culinary journey at Bistro is unmatched. Each dish tells a story of tradition and innovation. Highly recommended!",
-//     rating: 4,
-//     date: "May 12, 2023",
-//     restaurant: "Bistro",
-//     dish: "Seafood Paella",
-//     image:
-//       "https://images.unsplash.com/photo-1534080564583-6be75777b70a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-//     avatar: "https://i.pravatar.cc/150?img=7",
-//     likes: 35,
-//   },
+  {
+    name: "John Smith",
+    location: "Sydney, Australia",
+    comment:
+      "The culinary journey at Bistro is unmatched. Each dish tells a story of tradition and innovation. Highly recommended!",
+    rating: 4,
+    date: "May 12, 2023",
+    restaurant: "Bistro",
+    dish: "Seafood Paella",
+    image:
+      "https://images.unsplash.com/photo-1534080564583-6be75777b70a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    avatar: "https://i.pravatar.cc/150?img=7",
+    likes: 35,
+  },
 ]
 
-const allHotelsTestimonials = testimonials.map(t => ({ ...t, restaurant: "All Hotels" }));
-const allBanquetsTestimonials = testimonials.map(t => ({ ...t, restaurant: "All Banquets" }));
-const allRestaurantsTestimonials = testimonials.map(t => ({ ...t, restaurant: "All Restaurants" }));
-
-const allTestimonials = [
-  ...testimonials,
-  ...allHotelsTestimonials,
-  ...allBanquetsTestimonials,
-  ...allRestaurantsTestimonials,
-];
-
 export default function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean, restaurantNames: string[] }) {
-  const [activeRestaurant, setActiveRestaurant] = useState<string | null>("All Hotels")
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
   const [expandedTestimonial, setExpandedTestimonial] = useState<number | null>(null)
 
-  const filteredTestimonials = activeRestaurant
-    ? allTestimonials.filter((t) => t.restaurant === activeRestaurant)
-    : allTestimonials
-
-  // Prevent errors if no testimonials after filtering
+  const filteredTestimonials = testimonials
   const safeCurrent = filteredTestimonials.length > 0 ? currentTestimonial % filteredTestimonials.length : 0;
   const hasTestimonials = filteredTestimonials.length > 0;
 
@@ -126,31 +110,6 @@ export default function TestimonialsSection({ isMobile, restaurantNames }: { isM
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Authentic reviews from our valued guests who have experienced our culinary delights
           </p>
-        </div>
-        <div className="flex justify-center mb-12">
-          <div className="inline-flex bg-gray-100 p-1 rounded-lg">
-            {/* <button
-              onClick={() => setActiveRestaurant(null)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                activeRestaurant === null ? "bg-white shadow-sm text-amber-800" : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              All Restaurants
-            </button> */}
-            {restaurantNames.map((name) => (
-              <button
-                key={name}
-                onClick={() => setActiveRestaurant(name)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                  activeRestaurant === name
-                    ? "bg-white shadow-sm text-amber-800"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-              >
-                {name}
-              </button>
-            ))}
-          </div>
         </div>
         <div className="max-w-6xl mx-auto mb-16">
           <div className="relative">

@@ -28,6 +28,7 @@ const offers = [
       "ID proof required at check-in",
       "This offer cannot be clubbed with other promotions. Additional taxes apply. Hotel policies and amenities apply as per room category.",
     ],
+    offer:"20%"
   },
   {
     title: "Weekend Indulgence Offer",
@@ -53,6 +54,7 @@ const offers = [
       "Bookings via official website only",
       "T&Cs apply. Offer not combinable with others. Taxes extra as applicable. Early check-in/late check-out subject to availability.",
     ],
+      offer:"30%"
   },
   {
     title: "Suite Delights",
@@ -81,6 +83,7 @@ const offers = [
       "Valid photo ID required at check-in",
       "T&Cs apply. Additional services not included in the package are chargeable. Taxes extra as applicable. This offer cannot be clubbed with others.",
     ],
+      offer:"25%"
   },
 
 ]
@@ -130,11 +133,14 @@ export default function OffersPage() {
                     className="w-full h-82 object-contain bg-white"
                   />
                   <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-2">{offer.title}</h3>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-xl font-semibold">{offer.title}</h3>
+                      <span className="ml-2 bg-[#bf840d] text-white text-sm font-bold px-3 py-1 rounded-full shadow-sm">{offer.offer} OFF</span>
+                    </div>
                     <p className="text-gray-600 text-sm mb-4 text-justify">
                       {offer.description}
                     </p>
-                    <div className="flex justify-end items-center">
+                    <div className="flex justify-center items-center">
                       <Link href={`/offers/${offer.slug}`}>
                         <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white">
                           View Details

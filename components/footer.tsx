@@ -83,13 +83,13 @@ export default function Footer() {
 
           {/* Google Map */}
           <div>
-            <h3 className="text-2xl font-serif mb-6 text-amber-200">Find Us</h3>
-            <div className="rounded-lg overflow-hidden shadow-lg border border-amber-700">
+            <h3 className="text-2xl font-serif mb-6 text-amber-200">Locate Us</h3>
+            <div className="rounded-lg overflow-hidden shadow-lg border border-amber-700 aspect-[4/3] bg-white">
               <iframe
                 title="Hotel Patliputra Continental Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3609.370073964839!2d85.0999343150106!3d25.58523498371306!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ed584b2e2b7e2b%3A0x7e2e2e2e2e2e2e2e!2sHotel%20Patliputra%20Continental!5e0!3m2!1sen!2sin!4v1680000000000!5m2!1sen!2sin"
+                src="https://www.google.com/maps?q=Hotel+Patliputra+Continental,+PC+Golambar,+Bypass+Crossing,+Anisabad,+Patna+-+800002&output=embed"
                 width="100%"
-                height="220"
+                height="100%"
                 style={{ border: 0 }}
                 allowFullScreen=""
                 loading="lazy"

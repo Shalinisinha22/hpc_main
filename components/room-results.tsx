@@ -54,8 +54,9 @@ export default function RoomResults({
           throw new Error('Failed to fetch rooms')
         }
         const data = await response.json()
+        const filteredData = data.sort((a, b) => a.pricePerNight - b.pricePerNight)
        console.log('Fetched rooms:', data) 
-          setRooms(data)
+          setRooms(filteredData)
           setFilteredRooms(data)
   
       } catch (error) {

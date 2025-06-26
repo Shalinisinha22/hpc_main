@@ -196,10 +196,11 @@ export default function EventsPage() {
                       <p className="text-gray-600 text-sm sm:text-base mb-2">{hall.short_intro}</p>
                       <div className="text-gray-700 text-sm line-clamp-3 sm:line-clamp-none mb-4" dangerouslySetInnerHTML={{ __html: hall.desc }} />
 
-                      <Tabs defaultValue="details" className="w-full">
+                      <Tabs defaultValue="seating" className="w-full">
                         <TabsList className="grid grid-cols-3 w-full">
+                                <TabsTrigger value="seating">Capacity</TabsTrigger>
                           <TabsTrigger value="details">Details</TabsTrigger>
-                          <TabsTrigger value="seating">Seating</TabsTrigger>
+                    
                           <TabsTrigger value="amenities">Amenities</TabsTrigger>
                         </TabsList>
 
