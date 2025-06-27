@@ -392,7 +392,7 @@ export default function Header() {
                     Sign In
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-48 p-3" onMouseLeave={() => setIsPopoverOpen(false)}>
+                <PopoverContent className="w-48 p-3">
                   <div className="flex flex-col gap-2">
                     <h3 className="text-sm font-semibold mb-2">Sign-In/Join</h3>
                     <Dialog>
@@ -508,50 +508,56 @@ export default function Header() {
                             </div> */}
                           </DialogDescription>
                         </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="login-email" className="text-right">
-                              Email
-                            </Label>
-                            <Input
-                              id="login-email"
-                              type="email"
-                              value={loginEmail}
-                              onChange={(e) => setLoginEmail(e.target.value)}
-                              className="col-span-3"
-                            />
+                        <form
+                          onSubmit={e => {
+                            e.preventDefault();
+                            handleLogin();
+                          }}
+                        >
+                          <div className="grid gap-4 py-4">
+                            <div className="grid grid-cols-4 items-center gap-4">
+                              <Label htmlFor="login-email" className="text-right">
+                                Email
+                              </Label>
+                              <Input
+                                id="login-email"
+                                type="email"
+                                value={loginEmail}
+                                onChange={(e) => setLoginEmail(e.target.value)}
+                                className="col-span-3"
+                              />
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                              <Label htmlFor="login-password" className="text-right">
+                                Password
+                              </Label>
+                              <Input
+                                id="login-password"
+                                type="password"
+                                value={loginPassword}
+                                onChange={(e) => setLoginPassword(e.target.value)}
+                                className="col-span-3"
+                              />
+                            </div>
+                            {/* <div className="flex justify-end">
+                              <Button
+                                variant="link"
+                                className="text-[#bf840d] hover:text-[#8B5E04] p-0 h-auto font-normal"
+                              >
+                                Forgot password?
+                              </Button>
+                            </div> */}
                           </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="login-password" className="text-right">
-                              Password
-                            </Label>
-                            <Input
-                              id="login-password"
-                              type="password"
-                              value={loginPassword}
-                              onChange={(e) => setLoginPassword(e.target.value)}
-                              className="col-span-3"
-                            />
-                          </div>
-                          {/* <div className="flex justify-end">
+                          <DialogFooter>
                             <Button
-                              variant="link"
-                              className="text-[#bf840d] hover:text-[#8B5E04] p-0 h-auto font-normal"
+                              type="submit"
+                              className="bg-[#bf840d] hover:bg-[#a06f0b] text-white"
+                              disabled={isLoading}
                             >
-                              Forgot password?
+                              {isLoading ? "Signing in..." : "Sign In"}
                             </Button>
-                          </div> */}
-                        </div>
-                        <DialogFooter>
-                          <Button
-                            type="submit"
-                            className="bg-[#bf840d] hover:bg-[#a06f0b] text-white"
-                            onClick={handleLogin}
-                            disabled={isLoading}
-                          >
-                            {isLoading ? "Signing in..." : "Sign In"}
-                          </Button>
-                        </DialogFooter>
+                          </DialogFooter>
+                        </form>
                       </DialogContent>
                     </Dialog>
 
