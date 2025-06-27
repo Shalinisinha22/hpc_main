@@ -78,119 +78,86 @@ export default function BookingPage() {
 
   // Print receipt function
   const handlePrintReceipt = () => {
+    const logoUrl = `${window.location.origin}/hotel-patliputra-logo.png`;
     const printContent = `
       <!DOCTYPE html>
       <html>
       <head>
         <title>Booking Receipt - ${bookingId}</title>
         <style>
-          body { font-family: Arial, sans-serif; margin: 20px; }
-          .header { text-align: center; margin-bottom: 30px; }
-          .booking-details { margin-bottom: 20px; }
-          .section { margin-bottom: 15px; }
-          .label { font-weight: bold; color: #92400e; }
-          .value { margin-left: 10px; }
-          .price-section { border-top: 2px solid #92400e; padding-top: 15px; margin-top: 20px; }
-          .total { font-size: 18px; font-weight: bold; }
-          .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
+          body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #fff; }
+          .receipt-container { max-width: 600px; margin: 0 auto; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 2px 8px #0001; padding: 32px 32px 24px 32px; }
+          .receipt-header { display: flex; align-items: center; border-bottom: 2px solid #bf840d; padding-bottom: 16px; margin-bottom: 24px; }
+          .logo { width: 120px; height: 60px; object-fit: contain; margin-right: 20px; }
+          .hotel-info { flex: 1; }
+          .hotel-title { font-size: 1.5rem; font-weight: bold; color: #222; }
+          .hotel-address { color: #555; font-size: 1rem; margin-top: 2px; }
+          .hotel-meta { color: #888; font-size: 0.85rem; margin-top: 2px; }
+          .receipt-title { color: #bf840d; font-size: 1.3rem; font-weight: 600; text-align: right; }
+          .receipt-date { color: #888; font-size: 0.9rem; text-align: right; }
+          .section-title { font-weight: 600; color: #bf840d; margin-bottom: 8px; margin-top: 24px; font-size: 1.1rem; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+          td { padding: 4px 0; font-size: 1rem; }
+          .label { color: #666; width: 120px; }
+          .value { color: #222; font-weight: 500; }
+          .summary-table td { font-size: 1rem; }
+          .summary-table .label { width: 180px; }
+          .summary-table .total { font-size: 1.1rem; font-weight: bold; color: #bf840d; border-top: 1px solid #eee; padding-top: 8px; }
+          .status-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.9rem; font-weight: 500; }
+          .status-paid { background: #d1fae5; color: #047857; }
+          .status-pending { background: #fef3c7; color: #b45309; }
+          .status-cancel { background: #fee2e2; color: #b91c1c; }
+          .footer { margin-top: 32px; text-align: center; color: #888; font-size: 0.95rem; }
         </style>
       </head>
       <body>
-        <div class="header">
-          <h1>Hotel Booking Receipt</h1>
-          <h2>Booking Confirmed!</h2>
-        </div>
-        
-        <div class="booking-details">
-          <div class="section">
-            <span class="label">Booking ID:</span>
-            <span class="value">${bookingId}</span>
+        <div class="receipt-container">
+          <div class="receipt-header">
+  <img src="${logoUrl}" class="logo" alt="Hotel Patliputra Continental Logo" />
+
+
+            <div class="hotel-info">
+              <div class="hotel-title">Hotel Patliputra Continental</div>
+              <div class="hotel-address">AIIMS Road, Walmi, Patna Pin-801505</div>
+              <div class="hotel-meta">Email: reservations@hpcpatna.com | PAN: AAJCR9703K | GSTIN: 10AAJCR9703K1ZA | SAC CODE: 996311</div>
+            </div>
           </div>
-          
-          <div class="section">
-            <span class="label">Room:</span>
-            <span class="value">${room.room_title}</span>
+          <div style="flex:1"></div>
+          <div style="justify-content: center; text-align: center; margin-bottom: 24px;">
+            <div class="receipt-title">Booking Receipt</div>
+            <div class="receipt-date">Date: ${new Date().toLocaleDateString()}</div>
+            <div class="receipt-date">Booking ID: ${bookingId || '-'}</div>
           </div>
-          
-          <div class="section">
-            <span class="label">Guest Name:</span>
-            <span class="value">${name}</span>
-          </div>
-          
-          <div class="section">
-            <span class="label">Email:</span>
-            <span class="value">${email}</span>
-          </div>
-          
-          <div class="section">
-            <span class="label">Phone:</span>
-            <span class="value">${phone}</span>
-          </div>
-          
-          <div class="section">
-            <span class="label">Check-in Date:</span>
-            <span class="value">${new Date(checkInDate).toLocaleDateString()}</span>
-          </div>
-          
-          <div class="section">
-            <span class="label">Check-out Date:</span>
-            <span class="value">${new Date(checkOutDate).toLocaleDateString()}</span>
-          </div>
-          
-          <div class="section">
-            <span class="label">Duration:</span>
-            <span class="value">${nights} ${nights === 1 ? 'night' : 'nights'}</span>
-          </div>
-          
-          <div class="section">
-            <span class="label">Guests:</span>
-            <span class="value">${adults} ${Number(adults) === 1 ? 'Adult' : 'Adults'}${children !== "0" ? `, ${children} ${Number(children) === 1 ? 'Child' : 'Children'}` : ''}</span>
-          </div>
-          
-          <div class="section">
-            <span class="label">Rooms:</span>
-            <span class="value">${noOfRooms} ${Number(noOfRooms) === 1 ? 'Room' : 'Rooms'}</span>
-          </div>
-          
-          <div class="section">
-            <span class="label">Payment Status:</span>
-            <span class="value">${paymentMethod === 'pay-later' ? 'Pay at Hotel' : 'Paid'}</span>
-          </div>
-        </div>
-        
-        <div class="price-section">
-          <div class="section">
-            <span class="label">Room Rate (${nights} nights):</span>
-            <span class="value">₹${basePrice.toLocaleString('en-IN')}</span>
-          </div>
-          
-          <div class="section">
-            <span class="label">Taxes & Fees (${gstRate * 100}%):</span>
-            <span class="value">₹${taxesAndFees.toLocaleString('en-IN')}</span>
-          </div>
-          
-          ${appliedCoupon ? `
-          <div class="section">
-            <span class="label">Discount (${appliedCoupon.discount}%):</span>
-            <span class="value">-₹${discountAmount.toLocaleString('en-IN')}</span>
-          </div>
-          ` : ''}
-          
-          <div class="section total">
-            <span class="label">Total Amount:</span>
-            <span class="value">₹${totalPrice.toLocaleString('en-IN')}</span>
-          </div>
-        </div>
-        
-        <div class="footer">
-          <p>Thank you for choosing our hotel!</p>
-          <p>For any queries, please contact us with your booking ID.</p>
+          <div class="section-title">Guest Information</div>
+          <table>
+            <tr><td class="label">Name</td><td class="value">${name || '-'}</td></tr>
+            <tr><td class="label">Phone</td><td class="value">${phone || '-'}</td></tr>
+            <tr><td class="label">Email</td><td class="value">${email || '-'}</td></tr>
+          </table>
+          <div class="section-title">Booking Information</div>
+          <table>
+            <tr><td class="label">Room</td><td class="value">${room.room_title}</td></tr>
+            <tr><td class="label">Check-in</td><td class="value">${checkInDate ? new Date(checkInDate).toLocaleDateString() : 'N/A'}</td></tr>
+            <tr><td class="label">Check-out</td><td class="value">${checkOutDate ? new Date(checkOutDate).toLocaleDateString() : 'N/A'}</td></tr>
+            <tr><td class="label">Rooms</td><td class="value">${noOfRooms}</td></tr>
+            <tr><td class="label">Guests</td><td class="value">Adults: ${adults}, Children: ${children}</td></tr>
+          </table>
+          <div class="section-title">Payment Summary</div>
+          <table class="summary-table">
+            <tr><td class="label">Room Rate (${nights} nights)</td><td class="value">₹${basePrice.toLocaleString('en-IN')}</td></tr>
+            <tr><td class="label">Taxes & Fees (${gstRate * 100}%)</td><td class="value">₹${taxesAndFees.toLocaleString('en-IN')}</td></tr>
+            ${appliedCoupon ? `<tr><td class="label">Discount (${appliedCoupon.discount}%)</td><td class="value">-₹${discountAmount.toLocaleString('en-IN')}</td></tr>` : ''}
+            <tr><td class="label total">Total Amount</td><td class="value total">₹${totalPrice.toLocaleString('en-IN')}</td></tr>
+            <tr><td class="label">Payment Status</td><td><span class="status-badge ${paymentMethod === 'pay-later' ? 'status-pending' : 'status-paid'}">${paymentMethod === 'pay-later' ? 'Pay at Hotel' : 'Paid'}</span></td></tr>
+          </table>
+          ${specialRequests ? `<div class="section-title">Special Request</div><div style="color:#444; font-size:1rem; margin-bottom:8px;">${specialRequests}</div>` : ''}
+          <div class="footer">This is a computer-generated receipt. For queries, contact reservations@hpcpatna.com</div>
         </div>
       </body>
       </html>
     `;
 
-    const printWindow = window.open('', '_blank');
+  const printWindow = window.open('', '_blank');
     if (printWindow) {
       printWindow.document.write(printContent);
       printWindow.document.close();
@@ -201,28 +168,37 @@ export default function BookingPage() {
   };
 
   // WhatsApp share function
-  const handleWhatsAppShare = () => {
-    const message = `🏨 *Hotel Booking Confirmed!* 🎉
+ const handleWhatsAppShare = () => {
+  const message = `📌 Booking Confirmation – Hotel Patliputra Continental
 
-📋 *Booking Details:*
+Dear ${name},
+
+Thank you for choosing Hotel Patliputra Continental. We are delighted to confirm your reservation with the following details:
+
+📋 Reservation Details
 • Booking ID: ${bookingId}
 • Room: ${room.room_title}
-• Guest: ${name}
+• Guest Name: ${name}
 • Check-in: ${new Date(checkInDate).toLocaleDateString()}
 • Check-out: ${new Date(checkOutDate).toLocaleDateString()}
 • Duration: ${nights} ${nights === 1 ? 'night' : 'nights'}
 • Guests: ${adults} ${Number(adults) === 1 ? 'Adult' : 'Adults'}${children !== "0" ? `, ${children} ${Number(children) === 1 ? 'Child' : 'Children'}` : ''}
-• Rooms: ${noOfRooms} ${Number(noOfRooms) === 1 ? 'Room' : 'Rooms'}
+• Rooms Booked: ${noOfRooms} ${Number(noOfRooms) === 1 ? 'Room' : 'Rooms'}
 
-💰 *Total Amount: ₹${totalPrice.toLocaleString('en-IN')}*
-💳 *Payment Status: ${paymentMethod === 'pay-later' ? 'Pay at Hotel' : 'Paid'}*
+💰 Total Amount: ₹${totalPrice.toLocaleString('en-IN')}
+💳 Payment Status: ${paymentMethod === 'pay-later' ? 'To be paid at the hotel' : 'Paid'}
 
-Thank you for your booking! 🙏`;
+We look forward to welcoming you and ensuring you have a comfortable and memorable stay with us. Should you need any assistance, feel free to reach out to our reservations team.
 
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
-  };
+Warm regards,  
+Hotel Patliputra Continental  
+📞 +91 612 2250 204 
+🌐 www.hotelpatliputracontinental.com`;
+
+  const encodedMessage = encodeURIComponent(message);
+  const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+  window.open(whatsappUrl, '_blank');
+};
 
   // Calculate prices
   const basePrice = (room?.pricePerNight || 0) * nights * Number(noOfRooms)
@@ -472,11 +448,7 @@ useEffect(() => {
     fetchRoomDetails()
   }, [roomId, toast])
 
-
-
-
-
-  // Show loading state
+  // Place all conditional returns at the top level, after all hooks and before any other code
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -491,7 +463,6 @@ useEffect(() => {
     )
   }
 
-  // Show error if room not found
   if (!room) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -674,6 +645,7 @@ useEffect(() => {
     )
   }
 
+  // main booking form UI (no duplicate returns or misplaced tags)
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -782,7 +754,8 @@ useEffect(() => {
                             required
                             className="mt-1"
                             placeholder="DD/MM/YYYY"
-                            onFocus={(e) => e.target.type = 'date'}
+                            onFocus={(e) => e.target.type = 'date'
+                            }
                             onBlur={(e) => {
                               if (!e.target.value) e.target.type = 'text'
                             }}
