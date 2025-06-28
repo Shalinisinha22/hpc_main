@@ -60,20 +60,20 @@ const testimonials: Testimonial[] = [
     avatar: "https://i.pravatar.cc/150?img=5",
     likes: 29,
   },
-  {
-    name: "John Smith",
-    location: "Sydney, Australia",
-    comment:
-      "The culinary journey at Bistro is unmatched. Each dish tells a story of tradition and innovation. Highly recommended!",
-    rating: 4,
-    date: "May 12, 2023",
-    restaurant: "Bistro",
-    dish: "Seafood Paella",
-    image:
-      "https://images.unsplash.com/photo-1534080564583-6be75777b70a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    avatar: "https://i.pravatar.cc/150?img=7",
-    likes: 35,
-  },
+  // {
+  //   name: "John Smith",
+  //   location: "Sydney, Australia",
+  //   comment:
+  //     "The culinary journey at Bistro is unmatched. Each dish tells a story of tradition and innovation. Highly recommended!",
+  //   rating: 4,
+  //   date: "May 12, 2023",
+  //   restaurant: "Bistro",
+  //   dish: "Seafood Paella",
+  //   image:
+  //     "https://images.unsplash.com/photo-1534080564583-6be75777b70a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+  //   avatar: "https://i.pravatar.cc/150?img=7",
+  //   likes: 35,
+  // },
 ]
 
 export default function TestimonialsSection({ isMobile, restaurantNames }: { isMobile: boolean, restaurantNames: string[] }) {

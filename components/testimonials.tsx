@@ -33,15 +33,15 @@ const testimonials = [
     rating: 5,
     image: "https://i.pravatar.cc/150?img=5",
   },
-  {
-    id: 4,
-    name: "John Smith",
-    location: "Sydney, Australia",
-    comment:
-      "The perfect blend of luxury and comfort. The views from our room were breathtaking, and the concierge service went above and beyond to make our stay memorable.",
-    rating: 5,
-    image: "https://i.pravatar.cc/150?img=7",
-  },
+  // {
+  //   id: 4,
+  //   name: "John Smith",
+  //   location: "Sydney, Australia",
+  //   comment:
+  //     "The perfect blend of luxury and comfort. The views from our room were breathtaking, and the concierge service went above and beyond to make our stay memorable.",
+  //   rating: 5,
+  //   image: "https://i.pravatar.cc/150?img=7",
+  // },
 ]
 
 export default function Testimonials() {
