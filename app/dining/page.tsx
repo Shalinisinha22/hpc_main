@@ -3,6 +3,7 @@
 import { DialogTrigger } from "@/components/ui/dialog";
 
 import { useState, useEffect } from "react";
+import { parse, isAfter, isBefore, isEqual, format } from "date-fns";
 import axios from "axios";
 import Image from "next/image";
 import Header from "@/components/header";
@@ -171,13 +172,20 @@ export default function DiningPage() {
                         {restaurant.shortIntro}
                       </p>
                       <div className="flex flex-col gap-3 mb-5">
-                        <div className="flex items-center">
-                          <Clock className="w-4 h-4 mr-2 text-[#bf840d]" />
-                          <span className="text-sm">
-                            {restaurant.breakfastTiming ||
-                              restaurant.lunchDinnerTiming}
-                          </span>
-                        </div>
+                        {restaurant.breakfastTiming && (
+                          <div className="flex items-center">
+                            <Clock className="w-4 h-4 mr-2 text-[#bf840d]" />
+                            <span className="text-sm font-medium">Breakfast: </span>
+                            <span className="text-sm ml-1">{restaurant.breakfastTiming}</span>
+                          </div>
+                        )}
+                        {restaurant.lunchDinnerTiming && (
+                          <div className="flex items-center">
+                            <Clock className="w-4 h-4 mr-2 text-[#bf840d]" />
+                            <span className="text-sm font-medium">Lunch & Dinner: </span>
+                            <span className="text-sm ml-1">{restaurant.lunchDinnerTiming}</span>
+                          </div>
+                        )}
                         <div className="flex items-center">
                           <MapPin className="w-4 h-4 mr-2 text-[#bf840d]" />
                           <span className="text-sm">{restaurant.location}</span>
@@ -186,7 +194,13 @@ export default function DiningPage() {
                           <Phone className="w-4 h-4 mr-2 text-[#bf840d]" />
                           <span className="text-sm">{restaurant.phone}</span>
                         </div>
+                        <div className="flex items-center">
+                          <span className="text-[#bf840d] font-semibold text-sm">Avg. Price for 2: ₹{restaurant.avgPriceFor2}</span>
+                        </div>
                       </div>
+                      {restaurant.description && (
+                        <div className="text-gray-700 text-sm mb-2" dangerouslySetInnerHTML={{ __html: restaurant.description }} />
+                      )}
                       <div className="flex flex-col gap-3">
                         <MenuDialog restaurant={restaurant} />
                         <ReservationDialog restaurant={restaurant} />
@@ -251,13 +265,20 @@ export default function DiningPage() {
                           {activeRestaurant.shortIntro}
                         </p>
                         <div className="flex flex-wrap gap-6 mb-8">
-                          <div className="flex items-center">
-                            <Clock className="w-5 h-5 mr-2 text-[#bf840d]" />
-                            <span>
-                              {activeRestaurant.breakfastTiming ||
-                                activeRestaurant.lunchDinnerTiming}
-                            </span>
-                          </div>
+                          {activeRestaurant.breakfastTiming && (
+                            <div className="flex items-center">
+                              <Clock className="w-5 h-5 mr-2 text-[#bf840d]" />
+                              <span className="text-sm font-medium">Breakfast: </span>
+                              <span className="text-sm ml-1">{activeRestaurant.breakfastTiming}</span>
+                            </div>
+                          )}
+                          {activeRestaurant.lunchDinnerTiming && (
+                            <div className="flex items-center">
+                              <Clock className="w-5 h-5 mr-2 text-[#bf840d]" />
+                              <span className="text-sm font-medium">Lunch & Dinner: </span>
+                              <span className="text-sm ml-1">{activeRestaurant.lunchDinnerTiming}</span>
+                            </div>
+                          )}
                           <div className="flex items-center">
                             <MapPin className="w-5 h-5 mr-2 text-[#bf840d]" />
                             <span>{activeRestaurant.location}</span>
@@ -266,7 +287,13 @@ export default function DiningPage() {
                             <Phone className="w-5 h-5 mr-2 text-[#bf840d]" />
                             <span>{activeRestaurant.phone}</span>
                           </div>
+                          <div className="flex items-center">
+                            <span className="text-[#bf840d] font-semibold text-sm">Avg. Price for 2: ₹{activeRestaurant.avgPriceFor2}</span>
+                          </div>
                         </div>
+                        {activeRestaurant.description && (
+                          <div className="text-gray-700 text-base mb-4" dangerouslySetInnerHTML={{ __html: activeRestaurant.description }} />
+                        )}
                         <div className="flex gap-4">
                           <MenuDialog restaurant={activeRestaurant} />
                           <ReservationDialog restaurant={activeRestaurant} />
@@ -459,10 +486,103 @@ function ReservationDialog({ restaurant }: { restaurant: any }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Get today's date in yyyy-mm-dd
+  const getTodayString = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+  // Get current time in HH:MM (24h)
+  const getCurrentTimeString = () => {
+    const now = new Date();
+    return now.toTimeString().slice(0,5);
+  };
+  // Check if selected date is today
+  const isToday = date === getTodayString();
+
+  // Parse a time string (either "HH:mm" or "h:mm AM/PM") into a Date object on a reference date
+  const parseTimeToDate = (timeStr: string, refDate: Date = new Date(2000, 0, 1)) => {
+    // Try "HH:mm" (24h) first
+    let parsed = parse(timeStr, "HH:mm", refDate);
+    if (!isNaN(parsed.getTime())) return parsed;
+    // Try "h:mm a" (AM/PM)
+    parsed = parse(timeStr, "h:mm a", refDate);
+    if (!isNaN(parsed.getTime())) return parsed;
+    // Try "h a" (e.g. "7 AM")
+    parsed = parse(timeStr, "h a", refDate);
+    if (!isNaN(parsed.getTime())) return parsed;
+    return null;
+  };
+
+  // Checks if selected time is within any of the provided time ranges
+  const isTimeWithinAny = (selected: string, timeRanges: string[]) => {
+    if (!selected || !timeRanges.length) return true;
+    const refDate = new Date(2000, 0, 1);
+    const sel = parseTimeToDate(selected, refDate);
+    if (!sel) return false;
+    for (const range of timeRanges) {
+      if (!range) continue;
+      // Support multiple ranges separated by "," (e.g. "6:30 AM - 10:30 AM, 7:00 PM - 11:00 PM")
+      const subRanges = range.split(",").map(r => r.trim());
+      for (const sub of subRanges) {
+        if (!sub.includes("-")) continue;
+        const [startStr, endStr] = sub.split("-").map(s => s.trim());
+        const start = parseTimeToDate(startStr, refDate);
+        const end = parseTimeToDate(endStr, refDate);
+        if (!start || !end) continue;
+        if ((isAfter(sel, start) || isEqual(sel, start)) && (isBefore(sel, end) || isEqual(sel, end))) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    // Validate date is not in the past
+    const todayStr = getTodayString();
+    if (date < todayStr) {
+      setError("Reservation date cannot be in the past.");
+      setLoading(false);
+      return;
+    }
+    // Validate time is not in the past if date is today
+    if (date === todayStr && time < getCurrentTimeString()) {
+      setError("Reservation time cannot be in the past.");
+      setLoading(false);
+      return;
+    }
+    // Validate time within restaurant hours (breakfast OR lunch/dinner)
+    const validRanges: string[] = [];
+    if (restaurant.breakfastTiming) validRanges.push(restaurant.breakfastTiming);
+    if (restaurant.lunchDinnerTiming) validRanges.push(restaurant.lunchDinnerTiming);
+
+    // Helper to parse all sub-ranges and format as "start - end"
+    const getAllReadableRanges = (ranges: string[]) => {
+      const readable: string[] = [];
+      for (const range of ranges) {
+        if (!range) continue;
+        const subRanges = range.split(",").map(r => r.trim());
+        for (const sub of subRanges) {
+          if (!sub.includes("-")) continue;
+          const [start, end] = sub.split("-").map(s => s.trim());
+          readable.push(`${start} - ${end}`);
+        }
+      }
+      return readable;
+    };
+
+    if (!isTimeWithinAny(time, validRanges)) {
+      const readableRanges = getAllReadableRanges(validRanges);
+      setError(
+        `Selected time is outside restaurant's operating hours.\nValid timings: ` +
+        readableRanges.join(", ")
+      );
+      setLoading(false);
+      return;
+    }
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/dining-bookings`,
@@ -550,6 +670,7 @@ function ReservationDialog({ restaurant }: { restaurant: any }) {
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 required
+                min={getTodayString()}
               />
             </div>
             <div className="space-y-1">
@@ -560,6 +681,7 @@ function ReservationDialog({ restaurant }: { restaurant: any }) {
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
                 required
+                min={isToday ? getCurrentTimeString() : undefined}
               />
             </div>
             <div className="space-y-1">
