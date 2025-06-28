@@ -12,7 +12,7 @@ const storyImages = [
   },
   {
     id: 2,
-    url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/26.jpg-fuJtksW8PUBnyd3scARCJC3ez9HRbs.jpeg",
+    url: "/hotel-patliputra-continental.jpg",
     alt: "Luxurious hotel room interior",
   },
   {
@@ -20,12 +20,15 @@ const storyImages = [
     url: "https://pix8.agoda.net/hotelImages/129/1292195/1292195_16092714010046992314.jpg?ca=6&ce=1&s=1024x",
     alt: "Modern hotel accommodation",
   },
+    {
+    id: 4,
+    url: "/hotel-patliputra-continental.jpg",
+    alt: "Luxurious hotel room interior",
+  },
 ]
 
-// Ensure there are always 4 faces for the cube
-const cubeImages = Array(4)
-  .fill(0)
-  .map((_, i) => storyImages[i % storyImages.length])
+// Use exactly the images provided, up to 4 faces
+const cubeImages = storyImages.slice(0, 4)
 
 export default function StorySection() {
   const [currentFace, setCurrentFace] = useState(0)
@@ -40,10 +43,10 @@ export default function StorySection() {
 
   return (
     <section className="py-16 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="container mx-auto px-4 mb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* Image Section */}
-          <div className="relative w-full aspect-square max-w-[500px] mx-auto">
+          <div className="relative w-full aspect-square max-w-[480px] min-h-[340px] mx-auto md:max-w-[400px] md:min-h-[260px] sm:max-w-[95vw] sm:min-h-[140px] ">
             <div className="cube-container w-full h-full">
               <div className="cube" style={{ transform: `rotateY(${currentFace * -90}deg)` }}>
                 {cubeImages.map((image, index) => (
@@ -77,7 +80,7 @@ export default function StorySection() {
           </div>
 
           {/* Text Content */}
-          <div className="lg:pl-8">
+          <div className="w-full lg:pl-8 md:pl-4 sm:pl-0 mt-8 md:mt-0">
             <div className="mb-4">
               <span className="text-amber-800 text-sm tracking-wider uppercase border-b-2 border-amber-800 pb-1">
                 THE PATLIPUTRA EXPERIENCE
@@ -114,10 +117,34 @@ export default function StorySection() {
           backface-visibility: hidden;
         }
 
-        .cube-face-1 { transform: rotateY(0deg) translateZ(50%); }
-        .cube-face-2 { transform: rotateY(90deg) translateZ(50%); }
-        .cube-face-3 { transform: rotateY(180deg) translateZ(50%); }
-        .cube-face-4 { transform: rotateY(-90deg) translateZ(50%); }
+        /* Calculate the correct Z distance for the cube faces */
+        .cube-face-1 { transform: rotateY(0deg) translateZ(240px); }
+        .cube-face-2 { transform: rotateY(90deg) translateZ(240px); }
+        .cube-face-3 { transform: rotateY(180deg) translateZ(240px); }
+        .cube-face-4 { transform: rotateY(-90deg) translateZ(240px); }
+
+        @media (max-width: 640px) {
+          .cube-container {
+            min-width: 0;
+            min-height: 0;
+            max-width: 100vw;
+            max-height: 60vw;
+          }
+          .cube {
+            width: 100vw;
+            height: 60vw;
+            min-height: 120px;
+            max-width: 100vw;
+            max-height: 60vw;
+          }
+          .cube-face {
+            width: 100vw;
+            height: 60vw;
+            min-height: 120px;
+            max-width: 100vw;
+            max-height: 60vw;
+          }
+        }
 
         @media (max-width: 640px) {
           .cube-container {
