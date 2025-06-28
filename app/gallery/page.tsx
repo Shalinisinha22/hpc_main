@@ -26,6 +26,10 @@ export default function GalleryPage() {
   const [diningImages, setDiningImages] = useState<GalleryImage[]>([])
   const [modalOpen, setModalOpen] = useState(false)
   const [modalImages, setModalImages] = useState<GalleryImage[]>([])
+  // Show more toggles for each section
+  const [showAllRooms, setShowAllRooms] = useState(false);
+  const [showAllHalls, setShowAllHalls] = useState(false);
+  const [showAllDining, setShowAllDining] = useState(false);
 
   useEffect(() => {
     async function fetchImages() {
@@ -86,13 +90,34 @@ export default function GalleryPage() {
         {/* Rooms & Suites Gallery */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-serif text-[#bf840d] mb-8 tracking-wide border-b-2 border-[#bf840d] inline-block pb-1">Rooms & Suites</h2>
+            <h2 className="text-3xl font-serif text-[#bf840d] mb-8 tracking-wide border-b-2 border-[#bf840d] pb-1 flex items-center justify-between">
+              <span>Rooms & Suites</span>
+              {roomImages.length > 4 && (
+                <button
+                  className="ml-4 text-[#bf840d] hover:text-[#8B5E04] transition-colors flex items-center"
+                  onClick={() => setShowAllRooms((v) => !v)}
+                  aria-label={showAllRooms ? "Show less" : "Show more"}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className={`w-6 h-6 transition-transform ${showAllRooms ? "rotate-180" : ""}`}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 15l-7-7-7 7" />
+                  </svg>
+                  <span className="ml-1 text-base font-medium">{showAllRooms ? "Show less" : "Show more"}</span>
+                </button>
+              )}
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {roomImages.map((img, idx) => (
+              {(showAllRooms ? roomImages : roomImages.slice(0, 4)).map((img, idx) => (
                 <div
                   key={img._id || idx}
                   className="relative aspect-[3/2] overflow-hidden rounded-xl shadow-lg cursor-pointer group bg-gray-100"
-                  onClick={() => openModal(roomImages, idx)}
+                  onClick={() => openModal(showAllRooms ? roomImages : roomImages.slice(0, 4), idx)}
                 >
                   <Image src={img.url || "/placeholder.svg"} alt={img.room_name || img.name || "Room image"} fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-end justify-start p-4">
@@ -109,13 +134,34 @@ export default function GalleryPage() {
         {/* Meeting & Events Gallery */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
-           <h2 className="text-3xl font-serif text-[#bf840d] mb-8 tracking-wide border-b-2 border-[#bf840d] inline-block pb-1">Meeting & Events</h2>
+            <h2 className="text-3xl font-serif text-[#bf840d] mb-8 tracking-wide border-b-2 border-[#bf840d] pb-1 flex items-center justify-between">
+              <span>Meeting & Events</span>
+              {hallImages.length > 4 && (
+                <button
+                  className="ml-4 text-[#bf840d] hover:text-[#8B5E04] transition-colors flex items-center"
+                  onClick={() => setShowAllHalls((v) => !v)}
+                  aria-label={showAllHalls ? "Show less" : "Show more"}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className={`w-6 h-6 transition-transform ${showAllHalls ? "rotate-180" : ""}`}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 15l-7-7-7 7" />
+                  </svg>
+                  <span className="ml-1 text-base font-medium">{showAllHalls ? "Show less" : "Show more"}</span>
+                </button>
+              )}
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {hallImages.map((img, idx) => (
+              {(showAllHalls ? hallImages : hallImages.slice(0, 4)).map((img, idx) => (
                 <div
                   key={img._id || idx}
                   className="relative aspect-[3/2] overflow-hidden rounded-xl shadow-lg cursor-pointer group bg-gray-100"
-                  onClick={() => openModal(hallImages, idx)}
+                  onClick={() => openModal(showAllHalls ? hallImages : hallImages.slice(0, 4), idx)}
                 >
                   <Image src={img.url || "/placeholder.svg"} alt={img.hall_name || img.name || "Hall image"} fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-end justify-start p-4">
@@ -132,13 +178,34 @@ export default function GalleryPage() {
         {/* Dining Gallery */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
-             <h2 className="text-3xl font-serif text-[#bf840d] mb-8 tracking-wide border-b-2 border-[#bf840d] inline-block pb-1">Dining</h2>
+            <h2 className="text-3xl font-serif text-[#bf840d] mb-8 tracking-wide border-b-2 border-[#bf840d] pb-1 flex items-center justify-between">
+              <span>Dining</span>
+              {diningImages.length > 4 && (
+                <button
+                  className="ml-4 text-[#bf840d] hover:text-[#8B5E04] transition-colors flex items-center"
+                  onClick={() => setShowAllDining((v) => !v)}
+                  aria-label={showAllDining ? "Show less" : "Show more"}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className={`w-6 h-6 transition-transform ${showAllDining ? "rotate-180" : ""}`}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 15l-7-7-7 7" />
+                  </svg>
+                  <span className="ml-1 text-base font-medium">{showAllDining ? "Show less" : "Show more"}</span>
+                </button>
+              )}
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {diningImages.map((img, idx) => (
+              {(showAllDining ? diningImages : diningImages.slice(0, 4)).map((img, idx) => (
                 <div
                   key={img._id || idx}
                   className="relative aspect-[3/2] overflow-hidden rounded-xl shadow-lg cursor-pointer group bg-gray-100"
-                  onClick={() => openModal(diningImages, idx)}
+                  onClick={() => openModal(showAllDining ? diningImages : diningImages.slice(0, 4), idx)}
                 >
                   <Image src={img.url || "/placeholder.svg"} alt={img.dining_name || img.name || "Dining image"} fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-end justify-start p-4">

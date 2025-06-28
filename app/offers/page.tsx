@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
@@ -107,7 +108,12 @@ export default function OffersPage() {
             <p className="text-xl mb-8">
               Uncover our bespoke packages and craft timeless memories.
             </p>
-            <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white">
+            <Button  className="bg-[#bf840d] hover:bg-[#8B5E04] text-white" onClick={() => {
+                const section = document.getElementById('offer-list-section');
+                if (section) {
+                  section.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}  >
               View All Offers
             </Button>
           </div>
@@ -119,7 +125,7 @@ export default function OffersPage() {
             <h2 className="text-3xl font-bold text-center mb-12">
               Current Offers
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div id="offer-list-section" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {offers.map((offer, index) => (
                 <div
                   key={index}

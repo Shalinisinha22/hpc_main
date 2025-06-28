@@ -181,7 +181,12 @@ export default function WellnessPage() {
 Refresh your senses and restore your spirit with our indulgent leisure facilities.
 
 </p>
-            <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white">Explore Our Amenities</Button>
+            <Button  onClick={() => {
+                const section = document.getElementById('wellness-list-section');
+                if (section) {
+                  section.scrollIntoView({ behavior: 'smooth' });
+                }
+              }} className="bg-[#bf840d] hover:bg-[#8B5E04] text-white">Explore Our Amenities</Button>
           </div>
         </section>
 
@@ -189,7 +194,7 @@ Refresh your senses and restore your spirit with our indulgent leisure facilitie
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <h2 className="text-4xl font-bold text-center mb-12">Our Wellness Amenities</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div id="wellness-list-section" className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {amenities.map((amenity, index) => (
                 <AmenityCard key={index} amenity={amenity} />
               ))}

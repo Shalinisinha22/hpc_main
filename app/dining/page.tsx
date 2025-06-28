@@ -123,7 +123,7 @@ export default function DiningPage() {
             <Button
               className="bg-[#bf840d] hover:bg-[#8B5E04] text-white text-lg px-8 py-3"
               onClick={() => {
-                const section = document.getElementById("rooms-list-section");
+                const section = document.getElementById("dining-list-section");
                 if (section) {
                   section.scrollIntoView({ behavior: "smooth" });
                 }
@@ -150,7 +150,7 @@ export default function DiningPage() {
 
             {isMobile ? (
               // Mobile Layout
-              <div className="space-y-8">
+              <div id="dining-list-section" className="space-y-8">
                 {diningData.map((restaurant, index) => (
                   <div
                     key={restaurant._id}
@@ -211,7 +211,7 @@ export default function DiningPage() {
               </div>
             ) : (
               // Desktop Layout
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+              <div id="dining-list-section" className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 <div className="lg:col-span-1">
                   <ul className="space-y-4">
                     {diningData.map((restaurant, index) => (

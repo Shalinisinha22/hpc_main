@@ -156,7 +156,12 @@ export default function EventsPage() {
           <h1 className="text-3xl sm:text-5xl font-bold mb-4">Events & Meetings</h1>
           <p className="text-base sm:text-xl mb-6">Create lasting impressions in our elegant, adaptable venues.
 </p>
-          <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white">Plan Your Event</Button>
+          <Button  onClick={() => {
+                const section = document.getElementById('event-list-section');
+                if (section) {
+                  section.scrollIntoView({ behavior: 'smooth' });
+                }
+              }} className="bg-[#bf840d] hover:bg-[#8B5E04] text-white">Plan Your Event</Button>
         </div>
       </section>
 
@@ -178,7 +183,8 @@ export default function EventsPage() {
           )}
 
           {!isLoading && !error && (
-            <div className="grid grid-cols-1 gap-10">
+              
+            <div   id="event-list-section" className="grid grid-cols-1 gap-10">
               {halls.map((hall) => (
                 <div key={hall._id} className="bg-white rounded-lg shadow-md overflow-hidden border border-amber-100">
                   <div className="flex flex-col lg:flex-row">
@@ -248,6 +254,7 @@ export default function EventsPage() {
                 </div>
               ))}
             </div>
+             
           )}
 
           {/* Modal */}
