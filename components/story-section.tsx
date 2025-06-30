@@ -43,10 +43,10 @@ export default function StorySection() {
 
   return (
     <section className="py-16 bg-white">
-      <div className="container mx-auto px-4 mb-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+      <div className="container mx-auto px-2 sm:px-4 mb-10">
+        <div className="flex flex-col lg:flex-row gap-8 md:gap-10 items-center">
           {/* Image Section */}
-          <div className="relative w-full aspect-square max-w-[480px] min-h-[340px] mx-auto md:max-w-[400px] md:min-h-[260px] sm:max-w-[95vw] sm:min-h-[140px] ">
+          <div className="relative w-full max-w-[420px] aspect-square min-h-[220px] mx-auto flex-shrink-0 md:max-w-[340px] md:min-h-[180px] sm:max-w-[95vw] sm:min-h-[120px] xs:max-w-full xs:min-h-[100px]">
             <div className="cube-container w-full h-full">
               <div className="cube" style={{ transform: `rotateY(${currentFace * -90}deg)` }}>
                 {cubeImages.map((image, index) => (
@@ -56,6 +56,7 @@ export default function StorySection() {
                       alt={image.alt}
                       fill
                       className="object-cover rounded-lg"
+                      sizes="(max-width: 640px) 90vw, (max-width: 1024px) 340px, 420px"
                     />
                   </div>
                 ))}
@@ -65,14 +66,14 @@ export default function StorySection() {
             {/* Navigation buttons */}
             <button
               onClick={handlePrevious}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-amber-900 p-2 rounded-full shadow-lg"
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-amber-900 p-2 rounded-full shadow-lg"
               aria-label="Previous image"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
             <button
               onClick={handleNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-amber-900 p-2 rounded-full shadow-lg"
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-amber-900 p-2 rounded-full shadow-lg"
               aria-label="Next image"
             >
               <ChevronRight className="h-6 w-6" />
@@ -80,18 +81,17 @@ export default function StorySection() {
           </div>
 
           {/* Text Content */}
-          <div className="w-full lg:pl-8 md:pl-4 sm:pl-0 mt-8 md:mt-0">
+          <div className="w-full lg:pl-8 md:pl-4 sm:pl-0 mt-8 md:mt-0 text-center lg:text-left">
             <div className="mb-4">
               <span className="text-amber-800 text-sm tracking-wider uppercase border-b-2 border-amber-800 pb-1">
                 THE PATLIPUTRA EXPERIENCE
               </span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-serif text-gray-800 mb-6">Our Story</h2>
-            <div className="space-y-4 text-gray-600">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-gray-800 mb-6">Our Story</h2>
+            <div className="space-y-4 text-gray-600 text-base sm:text-lg">
               <p>
-               Hotel Patliputra Continental stands as a distinguished symbol of luxury in the heart of Patna. Founded with a vision to offer world-class hospitality while embracing the cultural richness of Bihar, we continue to ror business or leisure, our unwavering dedication to service, modern comforts, and elegant surroundings ensures a memorable experience, every time.
+                Hotel Patliputra Continental stands as a distinguished symbol of luxury in the heart of Patna. Founded with a vision to offer world-class hospitality while embracing the cultural richness of Bihar, we continue to ror business or leisure, our unwavering dedication to service, modern comforts, and elegant surroundings ensures a memorable experience, every time.
               </p>
-             
             </div>
           </div>
         </div>
@@ -118,10 +118,26 @@ export default function StorySection() {
         }
 
         /* Calculate the correct Z distance for the cube faces */
-        .cube-face-1 { transform: rotateY(0deg) translateZ(240px); }
-        .cube-face-2 { transform: rotateY(90deg) translateZ(240px); }
-        .cube-face-3 { transform: rotateY(180deg) translateZ(240px); }
-        .cube-face-4 { transform: rotateY(-90deg) translateZ(240px); }
+        .cube-face-1 { transform: rotateY(0deg) translateZ(210px); }
+        .cube-face-2 { transform: rotateY(90deg) translateZ(210px); }
+        .cube-face-3 { transform: rotateY(180deg) translateZ(210px); }
+        .cube-face-4 { transform: rotateY(-90deg) translateZ(210px); }
+
+        @media (max-width: 1024px) {
+          .cube-face-1, .cube-face-2, .cube-face-3, .cube-face-4 {
+            transform: none !important;
+            position: static;
+            width: 100%;
+            height: 100%;
+          }
+          .cube {
+            transform: none !important;
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+          }
+        }
 
         @media (max-width: 640px) {
           .cube-container {
@@ -129,26 +145,21 @@ export default function StorySection() {
             min-height: 0;
             max-width: 100vw;
             max-height: 60vw;
+            perspective: 500px;
           }
           .cube {
             width: 100vw;
             height: 60vw;
-            min-height: 120px;
+            min-height: 100px;
             max-width: 100vw;
             max-height: 60vw;
           }
           .cube-face {
             width: 100vw;
             height: 60vw;
-            min-height: 120px;
+            min-height: 100px;
             max-width: 100vw;
             max-height: 60vw;
-          }
-        }
-
-        @media (max-width: 640px) {
-          .cube-container {
-            perspective: 500px;
           }
         }
       `}</style>
