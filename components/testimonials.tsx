@@ -19,10 +19,10 @@ interface Testimonial {
 
 const testimonials: Testimonial[] = [
   {
-    name: "Sarah Johnson",
-    location: "New York, USA",
+    name: "Umesh S",
+    location: "Patna, Bihar",
     comment:
-      "The Bistro offers an unforgettable dining experience. The flavors are exquisite and the service is impeccable!",
+      "Good service no doubt. Staffs are very comparative and also help me. Location was great nearby market everything shop available here. Thanks to Miss Muskan Shalini Also one more muskan. Room amenities size cleaning awesome. Most valuable price for stay.",
     rating: 5,
     date: "March 15, 2023",
     restaurant: "Bistro",
@@ -33,28 +33,28 @@ const testimonials: Testimonial[] = [
     likes: 42,
   },
   {
-    name: "Michael Chen",
-    location: "London, UK",
+    name: "Sonu",
+    location: "Patna, Bihar",
     comment:
-      "Chao China's authentic Chinese cuisine is the best I've had outside of Beijing. The Peking Duck is a must-try!",
+      "The hotel was too good ambiance. Food quality service everything perfect. Staff behaviour was so comparative and also friendly.",
     rating: 5,
-    date: "February 22, 2023",
-    restaurant: "Chao China",
-    dish: "Peking Duck",
+    date: "April 2, 2023",
+    restaurant: "Bistro",
+    dish: "Signature Buffet",
     image:
       "https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
     avatar: "https://i.pravatar.cc/150?img=3",
     likes: 38,
   },
   {
-    name: "Elena Rodriguez",
-    location: "Madrid, Spain",
+    name: "Ujjal Naskar",
+    location: "Patna, Bihar",
     comment:
-      "Coca Mocha's coffee selection is outstanding. The ambiance is perfect for both work meetings and casual catch-ups.",
+      "It was an excellent stay in hotel patliputra continental,patna. The Room is clean, well maintained with other facilities and the staffs are also well groomed, polite and their behaviour is also very gentle and professional.",
     rating: 5,
-    date: "April 5, 2023",
-    restaurant: "Coca Mocha",
-    dish: "Signature Mocha & Tiramisu",
+    date: "May 10, 2023",
+    restaurant: "Bistro",
+    dish: "Deluxe Room",
     image:
       "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     avatar: "https://i.pravatar.cc/150?img=5",
