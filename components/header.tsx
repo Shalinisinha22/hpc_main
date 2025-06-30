@@ -418,6 +418,7 @@ export default function Header() {
                               className="col-span-3"
                               value={registerName}
                               onChange={(e) => setRegisterName(e.target.value)}
+                              required
                             />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
@@ -430,6 +431,7 @@ export default function Header() {
                               className="col-span-3"
                               value={registerEmail}
                               onChange={(e) => setRegisterEmail(e.target.value)}
+                              required
                             />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
@@ -439,10 +441,10 @@ export default function Header() {
                             <Input
                               id="register-phone"
                               type="tel"
-                          
                               className="col-span-3"
                               value={registerPhone}
                               onChange={(e) => setRegisterPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                              required
                             />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
@@ -455,6 +457,7 @@ export default function Header() {
                               className="col-span-3"
                               value={registerPassword}
                               onChange={(e) => setRegisterPassword(e.target.value)}
+                              required
                             />
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
@@ -467,6 +470,7 @@ export default function Header() {
                               className="col-span-3"
                               value={confirmPassword}
                               onChange={(e) => setConfirmPassword(e.target.value)}
+                              required
                             />
                           </div>
                         </div>

@@ -238,8 +238,26 @@ export default function EventsPage() {
 
                       <div className="mt-6 flex justify-between flex-col sm:flex-row gap-3 text-sm">
                         <div>
-                          <p>📞 {hall.phone}</p>
-                          <p>✉️ {hall.email}</p>
+                          <a
+                            href={`tel:${hall.phone}`}
+                            className="flex items-center gap-1 hover:underline"
+                            style={{ color: '#bf840d' }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 mr-1 text-[#bf840d]">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0-1.243 1.007-2.25 2.25-2.25h2.086c.414 0 .81.172 1.1.477l2.06 2.16a2.25 2.25 0 01.457 2.457l-.7 1.75a.75.75 0 00.172.82l4.548 4.548a.75.75 0 00.82.172l1.75-.7a2.25 2.25 0 012.457.457l2.16 2.06c.305.29.477.686.477 1.1v2.086a2.25 2.25 0 01-2.25 2.25h-.75C5.798 21 3 18.202 3 14.25v-.75z" />
+                            </svg>
+                            {hall.phone}
+                          </a>
+                          <a
+                            href={`mailto:${hall.email}`}
+                            className="flex items-center gap-1 hover:underline mt-1"
+                            style={{ color: '#bf840d' }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 mr-1 text-[#bf840d]">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25H4.5a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-.659 1.591l-7.5 7.5a2.25 2.25 0 01-3.182 0l-7.5-7.5A2.25 2.25 0 013 6.993V6.75" />
+                            </svg>
+                            {hall.email}
+                          </a>
                         </div>
                         <Button
                           variant="outline"
