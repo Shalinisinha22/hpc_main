@@ -112,18 +112,20 @@ export default function OffersSection() {
                   key={index}
                   className="bg-gray-100 rounded-lg overflow-hidden shadow-lg"
                 >
-                  <Image
-                    src={offer.image || "/placeholder.svg"}
-                    alt={offer.title}
-                    width={384}
-                    height={500}
-                    className="w-full h-82 object-contain bg-white"
-                  />
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-xl font-semibold">{offer.title}</h3>
+                  <div className="relative">
+                    <div className="absolute top-0 left-0 w-full flex items-end justify-end px-2 pt-4 z-10">
+              
                       <span className="ml-2 bg-[#bf840d] text-white text-sm font-bold px-3 py-1 rounded-full shadow-sm">{offer.offer} OFF</span>
                     </div>
+                    <Image
+                      src={offer.image || "/placeholder.svg"}
+                      alt={offer.title}
+                      width={384}
+                      height={500}
+                      className="w-full h-82 object-contain"
+                    />
+                  </div>
+                  <div className="p-6">
                     <p className="text-gray-600 text-sm mb-4 text-justify">
                       {offer.description}
                     </p>
@@ -133,7 +135,6 @@ export default function OffersSection() {
                           View Details
                         </Button>
                       </Link>
-                     
                     </div>
                   </div>
                 </div>

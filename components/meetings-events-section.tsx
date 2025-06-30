@@ -144,10 +144,10 @@ export default function MeetingsEventsSection() {
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl md:text-5xl font-serif text-center text-[#bf840d] mb-4">Meetings & Events</h2>
-        <p className="text-center text-gray-600 mb-2 max-w-2xl mx-auto">
+        <p className="text-center text-gray-600 mb-2 max-w-2xl mx-auto font-bold">
       Where Every Event Becomes a Signature Moment
         </p>
-        <p  className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Be it a grand wedding or an exclusive boardroom meet — our team brings energy, precision, and a personalised approach to every occasion.</p>
+        <p  className="text-center text-gray-600 mb-12 max-w-2xl mx-auto ">Be it a grand wedding or an exclusive boardroom meet — our team brings energy, precision, and a personalised approach to every occasion.</p>
 
         {isLoading ? (
           <div className="text-center py-12">
