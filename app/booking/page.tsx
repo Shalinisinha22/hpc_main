@@ -243,21 +243,55 @@ Hotel Patliputra Continental
     return maxDate.toISOString().split('T')[0]
   }
 
-  const handleApplyCoupon = () => {
-    const foundCoupon = VALID_COUPONS.find((coupon) => coupon.code.toLowerCase() === couponCode.toLowerCase())
-
-    if (foundCoupon) {
-      setAppliedCoupon(foundCoupon)
+  // Validate promo code via backend API
+  const handleApplyCoupon = async () => {
+    if (!couponCode) {
+      setAppliedCoupon(null);
       toast({
-        title: "Coupon Applied",
-        description: `${foundCoupon.description} (${foundCoupon.discount}% off)`,
-      })
-    } else {
+        title: "Coupon Removed",
+        description: "Coupon code cleared.",
+      });
+      return;
+    }
+    if (!roomId) {
       toast({
-        title: "Invalid Coupon",
-        description: "The coupon code you entered is invalid or expired.",
+        title: "Missing Information",
+        description: "Please select a room.",
         variant: "destructive",
-      })
+      });
+      return;
+    }
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/promocodes/validate`, {
+        code: couponCode,
+        roomId: roomId
+      });
+      const data = response.data;
+      if (data.valid) {
+        setAppliedCoupon({
+          code: couponCode,
+          discount: data.discount,
+          description: data.promoCode?.description || `${data.discount}% off`,
+        });
+        toast({
+          title: "Coupon Applied",
+          description: data.message || `${data.discount}% off`,
+        });
+      } else {
+        setAppliedCoupon(null);
+        toast({
+          title: "Invalid Coupon",
+          description: data.message || "The coupon code you entered is invalid or expired.",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      setAppliedCoupon(null);
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to validate promo code.",
+        variant: "destructive",
+      });
     }
   }
 
@@ -326,7 +360,8 @@ Hotel Patliputra Continental
         paymentMethod,
         paymentStatus: paymentMethod === 'pay-later' ? 'pending' : 'pending',
         isGuest: !localStorage.getItem('hpc-User'),
-        token: localStorage.getItem("hpc-Token") || ''
+        token: localStorage.getItem("hpc-Token") || '',
+        coupon: appliedCoupon ? appliedCoupon.code : undefined
       }
 
       const response = await api.post(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, bookingData,{
@@ -802,7 +837,7 @@ useEffect(() => {
                               id="adults"
                               className="w-full p-2 border border-gray-300 rounded-md"
                               value={noOfRooms}
-                              onChange={(e) => setNoOfRoom(e.target.value)}
+                              onChange={(e) => setNoOfRoom(Number(e.target.value))}
                             >
                               <option value="1">1</option>
                               <option value="2">2</option>
@@ -875,7 +910,7 @@ useEffect(() => {
       ></textarea>
     </div>
 
-    {!localStorage.getItem('hpc-User') && (
+    {/* {!localStorage.getItem('hpc-User') && (
       <div className="flex items-center space-x-2">
         <Checkbox
           id="save-info"
@@ -889,7 +924,7 @@ useEffect(() => {
           Save my information for future bookings
         </label>
       </div>
-    )}
+    )} */}
   </div>
 )}
                   {/* Step 3: Payment */}
@@ -986,7 +1021,7 @@ useEffect(() => {
                       </p>
                       <p className="text-sm text-gray-500">
                         {guests} Guests • {nights} {nights === 1 ? "Night" : "Nights"} • {noOfRooms}{" "}
-                        {noOfRooms === "1" ? "Room" : "Rooms"}
+                        {noOfRooms === 1 ? "Room" : "Rooms"}
                       </p>
                     </div>
                   </div>
@@ -1031,10 +1066,17 @@ useEffect(() => {
                         placeholder="Enter coupon code"
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value)}
+                        disabled={!!appliedCoupon}
                       />
-                      <Button variant="outline" onClick={handleApplyCoupon} disabled={!couponCode}>
-                        Apply
-                      </Button>
+                      {!appliedCoupon ? (
+                        <Button variant="outline" onClick={handleApplyCoupon} disabled={!couponCode}>
+                          Apply
+                        </Button>
+                      ) : (
+                        <Button variant="destructive" onClick={() => { setCouponCode(""); setAppliedCoupon(null); toast({ title: "Coupon Removed", description: "Coupon code cleared. Amount adjusted." }); }}>
+                          Remove
+                        </Button>
+                      )}
                     </div>
                     {appliedCoupon && (
                       <div className="mt-2 text-sm flex items-center gap-1 text-green-600">
