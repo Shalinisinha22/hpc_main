@@ -18,7 +18,7 @@ export default function TermsAndConditions() {
     <div className="min-h-screen flex flex-col bg-[#f8f6f2]">
       <Header />
       <main className="flex-1">
-        <div className="relative h-[40vh] md:h-[50vh] overflow-hidden flex items-center justify-center mb-8">
+        <div className="relative h-[40vh] sm:h-[50vh] overflow-hidden flex items-center justify-center mb-8">
           <Image
             src="/banner.jpg"
             alt="Terms & Conditions Banner"
@@ -26,14 +26,13 @@ export default function TermsAndConditions() {
             priority
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/10" />
+          <div className="absolute inset-0 bg-black/60" />
           <div className="relative z-10 text-center text-white px-4">
-            <h1 className="text-3xl md:text-5xl font-bold mb-2 drop-shadow-lg">Terms & Conditions</h1>
-            <p className="text-base md:text-xl drop-shadow">Please read our terms of service and hotel policies carefully.</p>
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2 drop-shadow-lg">Terms & Conditions</h1>
           </div>
         </div>
         <div className="container mx-auto px-2 md:px-4 py-8">
-         <div className="bg-white/95  rounded-2xl shadow-2xl p-4 md:p-10 max-w-4xl mx-auto relative">
+         <div className="bg-white/95  rounded-2xl shadow-2xl p-4 sm:p-8 md:p-10 max-w-4xl mx-auto relative">
             <div className="prose max-w-none prose-amber prose-h1:text-[#bf840d] prose-h2:text-[#bf840d] prose-h3:text-[#bf840d] prose-h2:mb-6 prose-h3:mb-3 prose-li:mb-4 prose-p:mb-6 prose-ol:pl-8 prose-ol:mt-4 prose-ol:mb-8 prose-strong:text-[#bf840d] prose-strong:font-semibold text-gray-800 text-lg leading-relaxed">
               <h2 className="border-l-4 border-[#bf840d] pl-4 mb-6 text-2xl font-bold py-2 rounded">INTRODUCTION:</h2>
 
@@ -87,6 +86,9 @@ export default function TermsAndConditions() {
                 <li><span className="font-semibold text-[#bf840d]">Loss of or Damage to Property Brought In</span><br />9.1 Customer shall bear the risk of damage or loss of objects on exhibit or other items including personal property brought into the event rooms/hotel. The hotel assumes no liability for loss, destruction, or damage to or of such objects, also not for property damages, with the exception of cases of gross negligence or intent on the part of the hotel. Excepted here from are cases of damage caused as a result of harm inflicted on life, limb and physical health. In addition, in all cases in which the safekeeping represents a contractually typical obligation due to the circumstances of the individual case, release from this liability shall be prohibited. 9.2 Decorations brought in must conform to the fire protection technical requirements. The hotel is entitled to require official evidence thereof. Should such proof not be given, then the hotel shall be entitled to remove materials already brought in at the cost of the customer. Due to the possibility of damage, the hotel must be asked before objects are assembled or installed. 9.3 Objects on exhibit and other items must be removed immediately following the end of the event. If the customer fails to do so, the hotel may remove and store such at the customer's expense. If the objects remain in the room used for the event, the hotel may charge reasonable compensation for use for the period that they remain there.</li>
                 <li><span className="font-semibold text-[#bf840d]">Customer's Liability for Damage</span><br />10.1 Insofar as the customer is an entrepreneur, he shall be liable for all damage to buildings or furnishings caused by participants in or visitors to the event, employees, other third parties associated with the customer and the customer itself. 10.2 The hotel may require the customer to provide reasonable security, such as a credit card guarantee.</li>
               </ol>
+            </div>
+            <div className="mt-8 text-center">
+              <a href="/" className="text-[#bf840d] underline text-sm sm:text-base">Back to Home</a>
             </div>
             {/* Scroll-to-top button */}
             {showScroll && (

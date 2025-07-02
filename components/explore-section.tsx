@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { MapPin } from "lucide-react"
 
 // Add coordinates for Hotel Patliputra and each site
 const HOTEL_COORDS = { lat: 25.6154, lng: 85.1415 } // Hotel Patliputra, Patna, Bihar
@@ -114,31 +115,29 @@ export default function ExploreSection() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute top-0 left-0 right-0 flex justify-end items-start p-4">
                     {image.coords && (
-                      <span className="flex items-center gap-1 text-xs text-white bg-black/40 rounded px-2 py-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6  text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 2C6.686 2 4 4.686 4 8c0 4.418 5.293 9.293 5.52 9.52a.75.75 0 0 0 1.06 0C10.707 17.293 16 12.418 16 8c0-3.314-2.686-6-6-6zm0 2a4 4 0 0 1 4 4c0 2.763-2.74 6.234-4 7.554C8.74 12.234 6 8.763 6 6a4 4 0 0 1 4-4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" clipRule="evenodd"/></svg>
-                        {`${getDistanceKm(HOTEL_COORDS.lat, HOTEL_COORDS.lng, image.coords.lat, image.coords.lng)} km from hotel`}
+                      <span className="flex items-center gap-1 bg-white/90 text-[#bf840d] rounded-full px-2 py-0.5 shadow border border-[#bf840d] font-medium">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="inline-flex items-center justify-center rounded-full bg-white/80 border border-[#bf840d] p-0.5 shadow h-6 w-6 min-w-0"
+                          onClick={() => {
+                            if (image.coords) {
+                              const hotel = `${HOTEL_COORDS.lat},${HOTEL_COORDS.lng}`;
+                              const dest = `${image.coords.lat},${image.coords.lng}`;
+                              window.open(`https://www.google.com/maps/dir/?api=1&origin=${hotel}&destination=${dest}&travelmode=driving`, '_blank');
+                            }
+                          }}
+                          aria-label="Show directions on map"
+                        >
+                          <img src="/google-maps.png" alt="Google Maps" className="h-3 w-3" />
+                        </Button>
+                        <span className="text-[10px]">{`${getDistanceKm(HOTEL_COORDS.lat, HOTEL_COORDS.lng, image.coords.lat, image.coords.lng)} km from hotel`}</span>
                       </span>
                     )}
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                     <p className="text-lg font-medium">{image.caption}</p>
                   </div>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="absolute top-2 left-2 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() => {
-                      if (image.coords) {
-                        const hotel = `${HOTEL_COORDS.lat},${HOTEL_COORDS.lng}`;
-                        const dest = `${image.coords.lat},${image.coords.lng}`;
-                        window.open(`https://www.google.com/maps/dir/?api=1&origin=${hotel}&destination=${dest}&travelmode=driving`, '_blank');
-                      }
-                    }}
-                    aria-label="Show directions on map"
-                  >
-
-                    <img src="/google-maps.png" alt="Google Maps" className="h-6 w-6" />
-                  </Button>
                 </div>
               </div>
             ))}

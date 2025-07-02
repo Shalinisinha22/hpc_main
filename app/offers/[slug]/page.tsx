@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
@@ -21,7 +23,7 @@ const offerDetails = [
     terms: [
       "Full prepayment at the time of booking",
       "Free cancellation up to 48 hrs before check-in",
-      "Valid for bookings made only on the hotel’s official website",
+      "Valid for bookings made only on the hotel's official website",
       "Early check-in & late check-out subject to availability",
       "Extra bed: ₹1000 + taxes | Children under 12 stay free",
       "ID proof required at check-in",
@@ -89,33 +91,36 @@ export default function OfferDetailsPage({ params }: { params: { slug: string } 
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow">
-        <section className="relative h-[50vh] flex items-center justify-center">
+        <section className="relative h-[40vh] sm:h-[50vh] flex items-center justify-center">
           <Image src={offer.image} alt={offer.title} fill className="object-cover" />
-          <div className="absolute inset-0 bg-black opacity-50"></div>
-          <div className="relative z-10 text-center text-white">
-            <h1 className="text-5xl font-bold mb-4">{offer.title}</h1>
-            <p className="text-xl mb-8 max-w-2xl mx-auto">{offer.summary}</p>
+          <div className="absolute inset-0 bg-black/60"></div>
+          <div className="relative z-10 text-center text-white px-2">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 leading-tight">{offer.title}</h1>
           </div>
         </section>
-        <section className="py-12 bg-white">
-          <div className="container mx-auto px-4 max-w-3xl">
-            <h2 className="text-2xl font-bold mb-4">Offer Highlights</h2>
-            <ul className="list-disc pl-6 mb-8 text-gray-700">
-              {offer.highlights.map((h, i) => (
-                <li key={i} className="mb-2">{h}</li>
-              ))}
-            </ul>
-            <h2 className="text-2xl font-bold mb-4">Terms & Conditions</h2>
-            <ul className="list-disc pl-6 text-gray-700">
-              {offer.terms.map((t, i) => (
-                <li key={i} className="mb-2">{t}</li>
-              ))}
-            </ul>
-            {/* <div className="mt-8 text-center">
-              <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white text-lg px-8 py-3">Book Now</Button>
-            </div> */}
-            <div className="mt-4 text-center">
-              <Link href="/offers" className="text-[#bf840d] underline">Back to Offers</Link>
+        <section className="py-6 sm:py-12 bg-white">
+          <div className="container mx-auto px-2 sm:px-4 max-w-3xl">
+            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8">
+              <h2 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-4 text-[#bf840d]">Offer Highlights</h2>
+              <ul className="list-disc pl-5 sm:pl-6 mb-6 sm:mb-8 text-gray-700 text-sm sm:text-base">
+                {offer.highlights.map((h, i) => (
+                  <li key={i} className="mb-1 sm:mb-2">{h}</li>
+                ))}
+              </ul>
+              <h2 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-4 text-[#bf840d]">Terms & Conditions</h2>
+              <ul className="list-disc pl-5 sm:pl-6 text-gray-700 text-xs sm:text-base">
+                {offer.terms.map((t, i) => (
+                  <li key={i} className="mb-1 sm:mb-2">{t}</li>
+                ))}
+              </ul>
+              <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center gap-3">
+                <Button className="bg-[#bf840d] hover:bg-[#8B5E04] text-white text-base sm:text-lg px-6 sm:px-8 py-2 sm:py-3 rounded-full shadow" onClick={() => window.location.href = '/rooms'}>
+                  Book Now
+                </Button>
+                <Link href="/offers" className="text-[#bf840d] underline text-sm sm:text-base flex items-center justify-center">
+                  Back to Offers
+                </Link>
+              </div>
             </div>
           </div>
         </section>

@@ -58,3 +58,10 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+/* Make all text smaller on mobile */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}

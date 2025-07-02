@@ -8,7 +8,7 @@ export default function RefundPolicy() {
     <div className="min-h-screen flex flex-col bg-[#f8f6f2]">
       <Header />
       <main className="flex-1">
-        <div className="relative h-[32vh] md:h-[40vh] overflow-hidden flex items-center justify-center mb-8">
+        <div className="relative h-[40vh] sm:h-[50vh] overflow-hidden flex items-center justify-center mb-8">
           <Image
             src="/banner.jpg"
             alt="Refund Policy Banner"
@@ -16,14 +16,13 @@ export default function RefundPolicy() {
             priority
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/10" />
+          <div className="absolute inset-0 bg-black/60" />
           <div className="relative z-10 text-center text-white px-4">
-            <h1 className="text-3xl md:text-5xl font-bold mb-2 drop-shadow-lg">Refund & Cancellation Policy</h1>
-            <p className="text-base md:text-xl drop-shadow">Please read our refund and cancellation policy carefully.</p>
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2 drop-shadow-lg">Refund & Cancellation Policy</h1>
           </div>
         </div>
         <div className="container mx-auto px-2 md:px-4 py-8">
-          <div className="bg-white/95 border border-amber-200 rounded-2xl shadow-2xl p-4 md:p-10 max-w-4xl mx-auto relative">
+          <div className="bg-white/95 border border-amber-200 rounded-2xl shadow-2xl p-4 sm:p-8 md:p-10 max-w-4xl mx-auto relative">
             <div className="prose max-w-none prose-amber text-gray-800 prose-h1:text-[#bf840d] prose-h2:text-[#bf840d] prose-h3:text-[#bf840d] prose-h2:mb-6 prose-h3:mb-3 prose-li:mb-4 prose-p:mb-6 prose-ol:pl-8 prose-ol:mt-4 prose-ol:mb-8 prose-ul:pl-8 prose-ul:mt-4 prose-ul:mb-8 prose-strong:text-[#bf840d] prose-strong:font-semibold text-lg leading-relaxed">
               <h2 className="border-l-4 border-[#bf840d] pl-4 mb-6 text-2xl font-bold bg-[#fff8e6]  py-2 rounded">Reservation:</h2>
               <ul className="gap-4 border-l-2 border-amber-200 pl-6  py-4 rounded-lg">
@@ -91,6 +90,9 @@ export default function RefundPolicy() {
               <p className="mb-8">At the time of reservation confirmation, a confirmation number and voucher is generated, print out of it must be taken. It is very important to produce the confirmation voucher upon arrival at the hotel, failure of which may lead to accommodation denial if the hotel is not able to fetch your booking details.</p>
               <h2 className="border-l-4 border-[#bf840d] pl-4 mb-6 text-2xl font-bold bg-[#fff8e6] py-2 rounded mt-10">Payment Security</h2>
               <p className="mb-8">It is important for you to know that whenever you provide us with personal details or credit/debit card information is absolutely secured. Your credit/debit card number, name, address, and telephone number are protected by the latest security technology. Upon checkout, your credit/debit card information is directly transferred to the bank for necessary proceedings.</p>
+            </div>
+            <div className="mt-8 text-center">
+              <a href="/" className="text-[#bf840d] underline text-sm sm:text-base">Back to Home</a>
             </div>
           </div>
         </div>

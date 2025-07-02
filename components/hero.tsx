@@ -40,7 +40,7 @@ export default function Hero() {
   }, [])
 
   return (
-    <div className="relative h-[550px] -mt-20 overflow-hidden bg-white">
+    <div className="relative h-[350px] sm:h-[400px] md:h-[550px] -mt-20 overflow-hidden bg-white">
       <div className="absolute inset-0 z-0">
         <Image
           src={heroContent[currentIndex].image || "/placeholder.svg"}
@@ -49,27 +49,27 @@ export default function Hero() {
           priority
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="absolute inset-0 bg-black/60 md:bg-black/40"></div>
       </div>
 
-      <div className="relative h-full container mx-auto px-4 flex flex-col justify-center pt-20 z-10">
-        <div className="max-w-2xl bg-[rgba(95,72,43,0.45)] rounded-2xl p-8 md:p-10 shadow-lg backdrop-blur-sm">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-white mb-4 transition-opacity duration-500">
+      <div className="relative h-full flex flex-col items-center justify-center px-2 sm:px-4 mt-6 sm:mt-10 md:mt-20 z-10">
+        <div className="w-full max-w-xs sm:max-w-lg md:max-w-2xl bg-[rgba(95,72,43,0.65)] rounded-xl sm:rounded-2xl p-2 sm:p-4 md:p-8 shadow-lg backdrop-blur-sm mx-auto">
+          <h1 className="text-sm sm:text-xl md:text-3xl lg:text-5xl font-serif font-medium text-white mb-2 sm:mb-4 transition-opacity duration-500 text-center">
             {heroContent[currentIndex].title}
           </h1>
-          <p className="text-lg md:text-xl text-white/90 mb-8 transition-opacity duration-500">
+          <p className="text-xs sm:text-sm md:text-base text-white/90 mb-4 sm:mb-8 transition-opacity duration-500 text-center">
             {heroContent[currentIndex].description}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-row flex-wrap gap-2 sm:gap-4 w-full justify-center">
             <Button
-              className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-6 text-lg"
+              className="flex-1 min-w-[100px] max-w-[140px] bg-amber-600 hover:bg-amber-700 text-white px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-base"
               onClick={() => (window.location.href = "/rooms")}
             >
               Book Now
             </Button>
             <Button
               variant="outline"
-              className="bg-black/20 border-white text-white hover:bg-amber-600 hover:border-amber-600 px-8 py-6 text-lg transition-colors duration-300"
+              className="flex-1 min-w-[100px] max-w-[140px] bg-black/20 border-white text-white hover:bg-amber-600 hover:border-amber-600 px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-base transition-colors duration-300"
               onClick={() => (window.location.href = "/rooms")}
             >
               View Our Rooms

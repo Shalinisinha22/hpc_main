@@ -7,7 +7,7 @@ export default function PrivacyPolicy() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <div className="relative h-[40vh] md:h-[50vh] overflow-hidden flex items-center justify-center mb-8">
+        <div className="relative h-[40vh] sm:h-[50vh] overflow-hidden flex items-center justify-center mb-8">
           <Image
             src="/banner.jpg"
             alt="Privacy Policy Banner"
@@ -15,13 +15,12 @@ export default function PrivacyPolicy() {
             priority
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-black/60" />
           <div className="relative z-10 text-center text-white px-4">
-            <h1 className="text-3xl md:text-5xl font-bold mb-2">Privacy Policy</h1>
-            <p className="text-base md:text-xl">Read our privacy policy and hotel policies below.</p>
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2">Privacy Policy</h1>
           </div>
         </div>
-    <div className="bg-white/95 border border-amber-200 rounded-2xl shadow-2xl p-4 md:p-10 max-w-4xl mx-auto relative">
+        <div className="bg-white/95 border border-amber-200 rounded-2xl shadow-2xl p-4 sm:p-8 md:p-10 max-w-4xl mx-auto relative">
           <div className="prose max-w-none prose-amber prose-h1:text-[#bf840d] prose-h2:text-[#bf840d] prose-h3:text-[#bf840d] prose-h2:mb-6 prose-h3:mb-3 prose-li:mb-4 prose-p:mb-6 prose-ol:pl-8 prose-ol:mt-4 prose-ol:mb-8 prose-ul:pl-8 prose-ul:mt-4 prose-ul:mb-8 prose-strong:text-[#bf840d] prose-strong:font-semibold text-lg leading-relaxed">
             <h2 className="border-l-4 border-[#bf840d] pl-4 mb-6 text-2xl font-bold bg-[#fff8e6] py-2 rounded">Arrival and Departure Policy</h2>
             <ul className="gap-4 border-l-2 border-amber-200 pl-6  py-4 rounded-lg">
@@ -186,6 +185,9 @@ export default function PrivacyPolicy() {
 
             <h3 className="border-l-4 border-[#bf840d] pl-4 mb-4 text-xl font-semibold bg-[#fff8e6] py-1 rounded">OTHER HOTEL PATLIPUTRA CONTINENTAL LLP PRIVACY POLICIES</h3>
             <p className="mb-8">In addition to this Privacy Policy, there may be other programs, initiatives, campaigns or promotions which will be governed by additional privacy terms or policies. Kindly read these additional terms or policies before participating in any such programs, initiatives campaigns or promotions as you will be deemed to have agreed, and required, to comply with them if you participate. Any additional privacy terms or policies will be made available to you at the relevant times.</p>
+          </div>
+          <div className="mt-8 text-center">
+            <a href="/" className="text-[#bf840d] underline text-sm sm:text-base">Back to Home</a>
           </div>
         </div>
       </main>
