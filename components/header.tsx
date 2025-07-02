@@ -398,10 +398,10 @@ export default function Header() {
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button variant="outline" className="w-full">
-                          Join
+                          Join Now
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
+                      <DialogContent className="max-w-[95vw] w-full p-2 sm:max-w-[425px] sm:p-6">
                         <DialogHeader>
                           <DialogTitle>Create an Account</DialogTitle>
                           <DialogDescription>
@@ -496,9 +496,9 @@ export default function Header() {
 
                     <Dialog open={isLoginDialogOpen} onOpenChange={setIsLoginDialogOpen}>
                       <DialogTrigger asChild>
-                        <Button className="w-full bg-zinc-900 hover:bg-zinc-700">Sign In</Button>
+                        <Button className="w-full bg-zinc-900 hover:bg-zinc-700 mt-2">Sign In</Button>
                       </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
+                      <DialogContent className="max-w-[95vw] w-full p-2 sm:max-w-[425px] sm:p-6">
                         <DialogHeader>
                           <DialogTitle>Sign In</DialogTitle>
                           <DialogDescription>
@@ -698,99 +698,195 @@ export default function Header() {
                     </Button>
                   </>
                 ) : (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="border-[#bf840d] text-[#bf840d] hover:bg-[#bf840d] hover:text-white w-full"
-                      >
-                        Sign In
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Sign In</DialogTitle>
-                        <DialogDescription>
-                          Enter your credentials to access your account.
-                          {/* <div className="mt-2 p-2 bg-amber-50 text-amber-800 rounded-md text-xs">
-                            Demo credentials:
-                            <br />
-                            ID: {DEMO_USER.id}
-                            <br />
-                            Password: {DEMO_USER.password}
-                          </div> */}
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="mobile-login-email" className="text-right">
-                            Email
-                          </Label>
-                          <Input
-                            id="mobile-login-email"
-                            type="email"
-                            value={loginEmail}
-                            onChange={(e) => setLoginEmail(e.target.value)}
-                            className="col-span-3"
-                          />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="mobile-login-password" className="text-right">
-                            Password
-                          </Label>
-                          <Input
-                            id="mobile-login-password"
-                            type="password"
-                            value={loginPassword}
-                            onChange={(e) => setLoginPassword(e.target.value)}
-                            className="col-span-3"
-                          />
-                        </div>
-                        <div className="flex justify-end">
-                          <Button variant="link" className="text-[#bf840d] hover:text-[#8B5E04] p-0 h-auto font-normal">
-                            Forgot password?
-                          </Button>
-                        </div>
-                      </div>
-                      <DialogFooter>
+                  <>
+                    <Dialog>
+                      <DialogTrigger asChild>
                         <Button
-                          type="submit"
-                          className="bg-[#bf840d] hover:bg-[#a06f0b] text-white"
-                          onClick={async () => {
-                            setIsLoading(true)
-                            try {
-                              const success = await login(loginEmail, loginPassword)
-                              if (success) {
-                                setIsMenuOpen(false)
+                          variant="outline"
+                          className="border-[#bf840d] text-[#bf840d] hover:bg-[#bf840d] hover:text-white w-full"
+                        >
+                          Sign In
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-[95vw] w-full p-2 sm:max-w-[425px] sm:p-6">
+                        <DialogHeader>
+                          <DialogTitle>Sign In</DialogTitle>
+                          <DialogDescription>
+                            Enter your credentials to access your account.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="mobile-login-email" className="text-right">
+                              Email
+                            </Label>
+                            <Input
+                              id="mobile-login-email"
+                              type="email"
+                              value={loginEmail}
+                              onChange={(e) => setLoginEmail(e.target.value)}
+                              className="col-span-3"
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="mobile-login-password" className="text-right">
+                              Password
+                            </Label>
+                            <Input
+                              id="mobile-login-password"
+                              type="password"
+                              value={loginPassword}
+                              onChange={(e) => setLoginPassword(e.target.value)}
+                              className="col-span-3"
+                            />
+                          </div>
+                          <div className="flex justify-end">
+                            <Button variant="link" className="text-[#bf840d] hover:text-[#8B5E04] p-0 h-auto font-normal">
+                              Forgot password?
+                            </Button>
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button
+                            type="submit"
+                            className="bg-[#bf840d] hover:bg-[#a06f0b] text-white"
+                            onClick={async () => {
+                              setIsLoading(true)
+                              try {
+                                const success = await login(loginEmail, loginPassword)
+                                if (success) {
+                                  setIsMenuOpen(false)
+                                  toast({
+                                    title: "Login successful",
+                                    description: "Welcome back to Hotel Patliputra Continental!",
+                                  })
+                                  router.push("/profile")
+                                } else {
+                                  toast({
+                                    title: "Login failed",
+                                    description: "Invalid credentials. Try ID: user123, Password: password123",
+                                    variant: "destructive",
+                                  })
+                                }
+                              } catch (error) {
                                 toast({
-                                  title: "Login successful",
-                                  description: "Welcome back to Hotel Patliputra Continental!",
-                                })
-                                router.push("/profile")
-                              } else {
-                                toast({
-                                  title: "Login failed",
-                                  description: "Invalid credentials. Try ID: user123, Password: password123",
+                                  title: "Login error",
+                                  description: "An error occurred during login",
                                   variant: "destructive",
                                 })
+                              } finally {
+                                setIsLoading(false)
                               }
-                            } catch (error) {
-                              toast({
-                                title: "Login error",
-                                description: "An error occurred during login",
-                                variant: "destructive",
-                              })
-                            } finally {
-                              setIsLoading(false)
-                            }
-                          }}
-                          disabled={isLoading}
+                            }}
+                            disabled={isLoading}
+                          >
+                            {isLoading ? "Signing in..." : "Sign In"}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full mt-2 border-[#bf840d] text-[#bf840d] hover:bg-[#bf840d] hover:text-white"
                         >
-                          {isLoading ? "Signing in..." : "Sign In"}
+                          Join Now
                         </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-[95vw] w-full p-2 sm:max-w-[425px] sm:p-6">
+                        <DialogHeader>
+                          <DialogTitle>Create an Account</DialogTitle>
+                          <DialogDescription>
+                            Join our loyalty program to enjoy exclusive benefits and rewards.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="register-name" className="text-right">
+                              Name
+                            </Label>
+                            <Input
+                              id="register-name"
+                              className="col-span-3"
+                              value={registerName}
+                              onChange={(e) => setRegisterName(e.target.value)}
+                              required
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="register-email" className="text-right">
+                              Email
+                            </Label>
+                            <Input
+                              id="register-email"
+                              type="email"
+                              className="col-span-3"
+                              value={registerEmail}
+                              onChange={(e) => setRegisterEmail(e.target.value)}
+                              required
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="register-phone" className="text-right">
+                              Phone
+                            </Label>
+                            <Input
+                              id="register-phone"
+                              type="tel"
+                              className="col-span-3"
+                              value={registerPhone}
+                              onChange={(e) => setRegisterPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                              required
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="register-password" className="text-right">
+                              Password
+                            </Label>
+                            <Input
+                              id="register-password"
+                              type="password"
+                              className="col-span-3"
+                              value={registerPassword}
+                              onChange={(e) => setRegisterPassword(e.target.value)}
+                              required
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="register-confirm-password" className="text-right">
+                              Confirm
+                            </Label>
+                            <Input
+                              id="register-confirm-password"
+                              type="password"
+                              className="col-span-3"
+                              value={confirmPassword}
+                              onChange={(e) => setConfirmPassword(e.target.value)}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button
+                            type="submit"
+                            className="bg-[#bf840d] hover:bg-[#a06f0b] text-white"
+                            onClick={handleRegister}
+                            disabled={isRegistering}
+                          >
+                            {isRegistering ? (
+                              <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                Creating Account...
+                              </div>
+                            ) : (
+                              "Create Account"
+                            )}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </>
                 )}
                 <div className="relative">
                   <Button
